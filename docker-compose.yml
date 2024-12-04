@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  narco-backend-api-v1:
+    image: narco-backend-api:17.11.24
+    container_name: narco-backend-v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #volumes:
+    #  - .:/app
+    restart: unless-stopped
+    ports:
+      - '${PORT}:${PORT}'
+    networks:
+      - narco-network
+    environment:
+      PORT: ${PORT}
+      SECRET_KEY: ${JWT_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+networks:
+  narco-network:
+    external: true
