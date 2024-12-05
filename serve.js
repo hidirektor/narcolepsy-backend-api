@@ -6,7 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger.config');
 
 app.get('/', function (req, res) {
-    res.json('Complete IoT Solution');
+    res.json('NarcoLepsy Magazine System');
 });
 
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
