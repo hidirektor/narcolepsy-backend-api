@@ -3,19 +3,22 @@ const endpoints = require('./swagger.data');
 const path = require('path');
 
 // Swagger Definition
-const swaggerDefinition = {
-    openapi: '3.0.0',
-    info: {
-        title: 'Complete IoT Solution API',
-        version: '1.0.0',
-        description: 'API documentation for the Complete IoT Solution',
-    },
-    servers: [
-        {
-            url: 'http://localhost:4000/api/v1', // Base URL
+const swaggerSpec = swaggerJSDoc({
+    swaggerDefinition: {
+        swagger: '2.0',
+        info: {
+            title: 'Complete IoT Solution API',
+            version: '1.0.0',
+            description: 'API documentation for the Complete IoT Solution',
         },
-    ],
-};
+        servers: [
+            {
+                url: 'http://localhost:4000/api/v1', // Base URL
+            },
+        ],
+    },
+    apis: ['./swagger.data.js'], // Path to your endpoints file
+});
 
 // Generate Paths and Middleware
 const generatePathsAndRoutes = (router, authValidator, tokenControl) => {
@@ -80,7 +83,7 @@ module.exports = (router, authValidator, tokenControl) => {
     const paths = generatePathsAndRoutes(router, authValidator, tokenControl);
 
     return {
-        ...swaggerDefinition,
+        ...swaggerSpec,
         paths,
     };
 };

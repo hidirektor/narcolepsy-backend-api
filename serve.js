@@ -10,6 +10,9 @@ app.get('/', function (req, res) {
 });
 
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/api/v1/api-docs/json', (req, res) => {
+    res.json(swaggerSpec);
+});
 
 app.use('/api/v1/auth', routers.authRouter);
 //app.use('/api/v3/user', routers.userRouter);
