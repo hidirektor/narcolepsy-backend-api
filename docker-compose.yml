@@ -16,7 +16,7 @@ services:
       - narco-network
     environment:
       PORT: ${PORT}
-      SECRET_KEY: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}

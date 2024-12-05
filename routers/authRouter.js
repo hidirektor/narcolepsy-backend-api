@@ -108,6 +108,9 @@ router.post(
 
 router.post('/logout', tokenControl, authController.logoutAsync);
 
+const toCamelCase = (str) =>
+    str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase()).replace(/^\//, '');
+
 endpoints.forEach((endpoint) => {
     const middlewares = [];
     if (endpoint.body) middlewares.push(authValidator[endpoint.body]);
@@ -115,12 +118,13 @@ endpoints.forEach((endpoint) => {
         middlewares.push(tokenControl);
     }
 
-    const controllerMethod = authController[endpoint.path.replace('/', '')]; // Remove the 'Async' suffix
+    const controllerMethod = authController[toCamelCase(endpoint.path)];
     if (controllerMethod) {
         router[endpoint.method](endpoint.path, ...middlewares, controllerMethod);
     } else {
         console.warn(`No controller method found for ${endpoint.path}`);
     }
 });
+
 
 module.exports = router;
