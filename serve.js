@@ -9,14 +9,12 @@ app.get('/', function (req, res) {
     res.json('NarcoLepsy Magazine System');
 });
 
-app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get('/api/v1/api-docs/json', (req, res) => {
-    res.json(swaggerSpec);
-});
+app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use('/api/v1/auth', routers.authRouter);
-//app.use('/api/v3/user', routers.userRouter);
-//app.use('/api/v3/file', routers.fileRouter);
+
+app.use('/v1/auth', routers.authRouter);
+//app.use('/v3/user', routers.userRouter);
+//app.use('/v3/file', routers.fileRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');

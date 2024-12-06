@@ -1,89 +1,62 @@
-const swaggerJSDoc = require('swagger-jsdoc');
 const endpoints = require('./swagger.data');
-const path = require('path');
 
-// Swagger Definition
-const swaggerSpec = swaggerJSDoc({
-    swaggerDefinition: {
-        swagger: '2.0',
+const generateSwaggerSpec = () => {
+    const paths = {};
+
+    endpoints.forEach(endpoint => {
+        const { path, method, summary, description, body, responses } = endpoint;
+
+        if (!paths[path]) paths[path] = {};
+
+        paths[path][method.toLowerCase()] = {
+            summary,
+            description,
+            requestBody: body
+                ? {
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: Object.fromEntries(
+                                    Object.entries(body).map(([name, details]) => [
+                                        name,
+                                        { type: details.type },
+                                    ])
+                                ),
+                                required: Object.entries(body)
+                                    .filter(([, details]) => details.required)
+                                    .map(([name]) => name),
+                            },
+                        },
+                    },
+                }
+                : undefined,
+            responses: Object.entries(responses).reduce((acc, [status, details]) => {
+                acc[status] = {
+                    description: details.description,
+                    ...(details.schema ? { content: { 'application/json': { schema: details.schema } } } : {}),
+                };
+                return acc;
+            }, {}),
+        };
+    });
+
+    return {
+        openapi: '3.0.0',
         info: {
-            title: 'Complete IoT Solution API',
+            title: 'NarcoLepsy API Gateway',
             version: '1.0.0',
-            description: 'API documentation for the Complete IoT Solution',
+            description: 'This back end belongs to Narco Lepsy magazine system. Its operate whole magazine system.',
         },
         servers: [
             {
-                url: 'http://localhost:4000/api/v1', // Base URL
+                url: 'https://api.narcolepsy.com/v1',
+                description: 'Main Server',
             },
         ],
-    },
-    apis: ['./swagger.data.js'], // Path to your endpoints file
-});
-
-// Generate Paths and Middleware
-const generatePathsAndRoutes = (router, authValidator, tokenControl) => {
-    const paths = {};
-
-    endpoints.forEach((endpoint) => {
-        if (!endpoint.path || !endpoint.method || !endpoint.controller) {
-            console.warn(`Invalid endpoint: ${JSON.stringify(endpoint)}`);
-            return;
-        }
-
-        // Add to Swagger paths
-        paths[endpoint.path] = {
-            [endpoint.method]: {
-                summary: endpoint.summary || '',
-                description: endpoint.description || '',
-                requestBody: endpoint.body
-                    ? {
-                        required: true,
-                        content: {
-                            'application/json': {
-                                schema: {
-                                    type: 'object',
-                                    properties: endpoint.body,
-                                },
-                            },
-                        },
-                    }
-                    : undefined,
-                responses: Object.entries(endpoint.responses || {}).reduce((acc, [status, response]) => {
-                    acc[status] = { description: response.description };
-                    return acc;
-                }, {}),
-            },
-        };
-
-        // Resolve controller dynamically
-        try {
-            const [controllerPath, functionName] = endpoint.controller.split('.');
-            const controller = require(path.resolve(controllerPath));
-
-            if (!controller || typeof controller[functionName] !== 'function') {
-                throw new Error(`Method ${functionName} not found in ${controllerPath}`);
-            }
-
-            // Add routes to Express router
-            const middlewares = [];
-            if (endpoint.body) middlewares.push(authValidator[endpoint.body]);
-            if (['/token-decode', '/logout'].includes(endpoint.path)) {
-                middlewares.push(tokenControl);
-            }
-            router[endpoint.method](endpoint.path, ...middlewares, controller[functionName]);
-        } catch (error) {
-            console.error(`No controller method found for ${endpoint.path}:`, error.message);
-        }
-    });
-
-    return paths;
-};
-
-module.exports = (router, authValidator, tokenControl) => {
-    const paths = generatePathsAndRoutes(router, authValidator, tokenControl);
-
-    return {
-        ...swaggerSpec,
         paths,
     };
 };
+
+const spec = generateSwaggerSpec();
+module.exports = spec;
