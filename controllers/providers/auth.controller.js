@@ -213,18 +213,22 @@ class AuthController {
     }
 
     async resetPasswordAsync(req, res) {
-        const {userName, newPassword, otpSentTime} = req.body;
+        const {userName, newPassword, otpCode} = req.body;
 
         try {
-            const user = await db.User.findOne({where: {userName}});
+            const user = await db.User.findOne({where: {nickName: userName}});
             if (!user) {
                 return res.status(404).json({message: 'User not found'});
             }
 
-            const userID = user.userID;
-            const otpLog = await db.OTPLog.findOne({where: {userID, otpSentTime}});
-            if (!otpLog) {
-                return res.status(404).json({message: 'OTP not found'});
+            const otpCodeRedisRecord = await redisClient.get(`auth:user:${user.userID}:otpRecord`);
+            if (!otpCodeRedisRecord) {
+                return res.status(404).json({ message: 'OTP code not found' });
+            }
+
+            const otpRecord = JSON.parse(otpCodeRedisRecord);
+            if (otpRecord.otpCode !== otpCode) {
+                return res.status(400).json({ message: 'Invalid OTP code' });
             }
 
             user.password = await bcrypt.hash(newPassword, 10);
