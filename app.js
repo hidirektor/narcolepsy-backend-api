@@ -10,11 +10,16 @@ const app = express();
 
 // including models
 const db = require('./models');
+const {join} = require("node:path");
 
 // db connection with sequelize
 db.sequelize.sync({force: false});
 
 app.use(cors());
+
+app.set('view engine', 'ejs');
+app.set('utils/notification/templates', join(__dirname, 'utils/notification/templates'));
+app.use(express.static(join(__dirname, 'public')));
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));

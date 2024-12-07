@@ -1,7 +1,9 @@
 const amqp = require('amqplib/callback_api');
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
-const rabbitClient = require('./rabbitClient');
+const ejs = require('ejs');
+const path = require('path');
+const inlineCss = require('inline-css');
 
 const RABBITMQ_USER = process.env.RABBITMQ_USER || 'guest';
 const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD || 'guest';
@@ -25,6 +27,21 @@ const transporter = nodemailer.createTransport({
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
+const sendEmailWithRetry = async (mailOptions, retries = 5, delay = 5000) => {
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("E-posta başarıyla gönderildi.");
+    } catch (error) {
+        if (retries > 0 && error.responseCode === 421) {
+            console.log(`Hata oluştu. ${retries} kez daha deneyip bekliyorum...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            await sendEmailWithRetry(mailOptions, retries - 1, delay);
+        } else {
+            console.error('E-posta gönderim hatası:', error);
+        }
+    }
+};
+
 const startQueueListener = () => {
     if (!channel) {
         connectToRabbitMQ();
@@ -36,17 +53,17 @@ const startQueueListener = () => {
 
         console.log(`"${queueName}" kuyruğundan gelen mesajlar dinleniyor...`);
 
-        channel.consume(queueName, (msg) => {
+        channel.consume(queueName, async (msg) => {
             if (msg !== null) {
                 const message = JSON.parse(msg.content.toString());
 
                 if (message.type === 'email') {
-                    sendEmail(message.to, message.subject, message.html);
+                    await processEmail(message);
                 }
 
                 if (message.type === 'sms') {
                     console.log('SMS mesajı alındı:', message);
-                    sendSMS(message.to, message.body);
+                    sendSMS(message.to, message.message);
                 }
 
                 channel.ack(msg);
@@ -57,21 +74,39 @@ const startQueueListener = () => {
     }
 };
 
-const sendEmail = (to, subject, html) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: to,
-        subject: subject,
-        html: html,
-    };
+const processEmail = async ({ templateName, variables, to, subject }) => {
+    try {
+        const leftImagePath = path.resolve(__dirname, `../../../public/images/left-image.png`);
+        const rightImagePath = path.resolve(__dirname, `../../../public/images/right-image.png`);
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('E-posta gönderim hatası:', error);
-        } else {
-            console.log('E-posta gönderildi:', info.response);
-        }
-    });
+        const templatePath = path.resolve(__dirname, `../../notification/views/${templateName}.ejs`);
+        let html = await ejs.renderFile(templatePath, variables);
+
+        html = await inlineCss(html, { url: ' ' });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: to,
+            subject: subject,
+            html: html,
+            attachments: [
+                {
+                    filename: 'left-image.png',
+                    path: leftImagePath,
+                    cid: 'left-image'
+                },
+                {
+                    filename: 'right-image.png',
+                    path: rightImagePath,
+                    cid: 'right-image'
+                }
+            ],
+        };
+
+        await sendEmailWithRetry(mailOptions);
+    } catch (error) {
+        console.error('E-posta şablonu işleme hatası:', error);
+    }
 };
 
 const sendSMS = (to, body) => {

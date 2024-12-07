@@ -86,7 +86,7 @@ class AuthController {
 
             await transaction.commit();
 
-            NotificationService.sendRegisterMail('${process.env.BASE_URL}/v1/auth/verify/${userID}', req.body.eMail, "NarcoLepsy'ye Hoşgeldiniz !");
+            NotificationService.queueRegisterMail(`${process.env.BASE_URL}/v1/auth/verify/${userID}`, `${req.body.userName} ${req.body.userSurname}`, req.body.eMail, `Merhaba, ${req.body.userName} ${req.body.userSurname}!`);
 
             res.status(HttpStatusCode.OK).json('User registered.');
         } catch (err) {

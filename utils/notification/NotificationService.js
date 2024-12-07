@@ -4,27 +4,24 @@ const path = require('path');
 
 class NotificationService {
 
-    static async sendMail(templateName, variables, toEmail, subject) {
+    static async queueEmail(templateName, variables, toEmail, subject) {
         try {
-            const templatePath = path.resolve(__dirname, 'templates/register-template.ejs');
-
-            const html = await ejs.renderFile(templatePath, variables);
-
             const mailMessage = {
                 type: 'email',
+                templateName: templateName,
+                variables: variables,
                 to: toEmail,
                 subject: subject,
-                html: html
             };
 
             await RabbitClient.sendToQueue('notificationQueue', mailMessage);
 
         } catch (error) {
-            console.error('E-posta gönderme hatası:', error);
+            console.error('E-posta kuyruğa ekleme hatası:', error);
         }
     }
 
-    static async sendSMS(toPhoneNumber, message) {
+    static async queueSMS(toPhoneNumber, message) {
         try {
             const smsMessage = {
                 type: 'sms',
@@ -35,16 +32,17 @@ class NotificationService {
             await RabbitClient.sendToQueue('notificationQueue', smsMessage);
 
         } catch (error) {
-            console.error('SMS gönderme hatası:', error);
+            console.error('SMS kuyruğa ekleme hatası:', error);
         }
     }
 
-    static sendRegisterMail(verificationUrl, email, subject) {
+    static queueRegisterMail(verificationUrl, name, email, subject) {
         const variables = {
             verificationUrl: verificationUrl,
+            name: name,
         };
 
-        return this.sendMail('register-template', variables, email, subject);
+        return this.queueEmail('register-template', variables, email, subject);
     }
 }
 
