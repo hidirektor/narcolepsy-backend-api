@@ -14,9 +14,6 @@ const roles = require('../../models/roles');
 
 const NotificationService = require('../../utils/notification/NotificationService');
 
-const errorTemplate = '../../utils/notification/templates/error-mail-verification';
-const successTemplate = '../../utils/notification/templates/success-mail-verification';
-
 class AuthController {
     constructor() {
     }
@@ -305,17 +302,19 @@ class AuthController {
     async verifyUserEmailAsync(req, res) {
         const { userID } = req.params;
 
+        const verificationUrl = `${process.env.BASE_URL}/v1/auth/verify/${userID}`;
+
         try {
             const userVerification = await db.UserVerifications.findOne({
                 where: { userID }
             });
 
             if (!userVerification) {
-                return res.status(404).render(errorTemplate, { message: 'User not found or already verified.' });
+                return res.status(404).render('error-mail-verification.ejs', { message: 'User not found or already verified.', verificationUrl });
             }
 
             if (userVerification.mailVerification) {
-                return res.status(400).render(errorTemplate, { message: 'User email is already verified.' });
+                return res.status(400).render('error-mail-verification.ejs', { message: 'User email is already verified.', verificationUrl });
             }
 
             const verificationTimestamp = Math.floor(Date.now() / 1000);
@@ -329,10 +328,10 @@ class AuthController {
                 }
             );
 
-            res.render(successTemplate, { message: 'Your email has been successfully verified!' });
+            res.render('success-mail-verification.ejs', { message: 'Your email has been successfully verified!' });
         } catch (error) {
             console.error('Error verifying user email:', error);
-            res.status(500).render(errorTemplate, { message: 'An unexpected error occurred while verifying the email.' });
+            res.status(500).render('error-mail-verification.ejs', { message: 'An unexpected error occurred while verifying the email.', verificationUrl });
         }
     }
 

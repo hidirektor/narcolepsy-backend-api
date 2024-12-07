@@ -76,7 +76,7 @@ const startQueueListener = () => {
 
 const processEmail = async ({ templateName, variables, to, subject }) => {
     try {
-        const templatePath = path.resolve(__dirname, `../../notification/views/${templateName}.ejs`);
+        const templatePath = path.resolve(__dirname, `../../../views/${templateName}.ejs`);
         const html = await ejs.renderFile(templatePath, variables);
 
         const mailOptions = {

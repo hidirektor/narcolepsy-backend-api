@@ -17,6 +17,9 @@ db.sequelize.sync({force: false});
 
 app.use(cors());
 
+app.set('view engine', 'ejs');
+app.set('utils/notification/views', join(__dirname, 'utils/notification/views'));
+
 app.use(express.static(join(__dirname, 'public')));
 
 app.use(bodyParser.json({limit: '50mb'}));
