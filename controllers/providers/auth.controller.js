@@ -160,7 +160,10 @@ class AuthController {
                 userType: findUser.result.userType
             });
 
-            await redisClient.set(redisKey, redisValue);
+            const expirationSeconds = (time) => time.match(/^(\d+)(d)$/) ? parseInt(time.match(/^(\d+)(d)$/)[1], 10) * 24 * 60 * 60 : 0;
+            const expirationTime = expirationSeconds(tokenExpiration);
+
+            await redisClient.set(redisKey, redisValue, 'EX', expirationTime);
 
             res.json({findUser: findUser.result, accessToken});
         } catch (error) {
@@ -201,7 +204,8 @@ class AuthController {
                 changeTime: currentTime,
                 nextChangeTime: currentTime + (7 * 24 * 60 * 60),
             });
-            await redisClient.set(redisKey, redisValue);
+
+            await redisClient.set(redisKey, redisValue, 'EX', 7 * 24 * 60 * 60);
 
             if (closeSessions) {
                 await invalidateAllTokens(user.userID);
@@ -282,14 +286,16 @@ class AuthController {
                 endTime: currentTime + (3 * 60), // 3 dakika geçerlilik süresi
             });
 
-            await redisClient.set(redisKey, redisValue);
+            await redisClient.set(redisKey, redisValue, 'EX', 180);
+
+            const smsText = "Onay kodunuz: {generatedCode}. Lütfen bu kodu girerek işleminizi tamamlayın.";
 
             if (isMailVerified) {
-                await OTPService.sendMail(generatedCode);
+                await NotificationService.queueOtpMail(generatedCode, `${user.userName} ${user.userSurname}`, user.eMail, "Doğrulama Kodunuz !");
             }
 
             if (isPhoneVerified) {
-                await OTPService.sendSMS(generatedCode);
+                await NotificationService.queueSMS(`${user.countryCode}${user.phoneNumber}`, smsText);
             }
 
             res.json({message: 'OTP Code sent successfully'});

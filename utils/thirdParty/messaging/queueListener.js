@@ -62,8 +62,8 @@ const startQueueListener = () => {
                 }
 
                 if (message.type === 'sms') {
+                    await sendSMS(message.to, message.message);
                     console.log('SMS mesajı alındı:', message);
-                    sendSMS(message.to, message.message);
                 }
 
                 channel.ack(msg);

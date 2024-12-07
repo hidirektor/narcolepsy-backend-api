@@ -44,6 +44,15 @@ class NotificationService {
 
         return this.queueEmail('register-template', variables, email, subject);
     }
+
+    static queueOtpMail(generatedCode, name, email, subject) {
+        const variables = {
+            generatedCode: generatedCode,
+            name: name,
+        };
+
+        return this.queueEmail('otp-mail-template', variables, email, subject);
+    }
 }
 
 module.exports = NotificationService;
