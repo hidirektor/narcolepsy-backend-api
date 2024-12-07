@@ -11,21 +11,23 @@ class AuthValidator {
         try {
             await joi
                 .object({
-                    eMail: joi.string().email().max(100).when('phoneNumber', {
-                        is: joi.exist(),
-                        then: joi.forbidden(),
-                        otherwise: joi.required()
-                    }),
+                    eMail: joi.string().email().max(100)
+                        .when('phoneNumber', {
+                            is: joi.exist(),
+                            then: joi.forbidden(),
+                            otherwise: joi.required()
+                        }),
                     phoneNumber: joi.string().custom((value, helpers) => {
-                        if (!req.body.countryCode || req.body.countryCode.trim() === '') {
-                            return helpers.message('Country code is required');
+                        const { countryCode } = req.body;
+
+                        if (countryCode && value) {
+                            const fullPhoneNumber = countryCode + value;
+
+                            if (!isValidPhoneNumber(fullPhoneNumber)) {
+                                return helpers.message('Phone number is not valid');
+                            }
                         }
 
-                        const fullPhoneNumber = req.body.countryCode + value;
-
-                        if (!isValidPhoneNumber(fullPhoneNumber, {defaultCountry: req.body.countryCode})) {
-                            return helpers.message('Phone number is not valid');
-                        }
                         return value;
                     }),
                     countryCode: joi.string()
@@ -34,13 +36,13 @@ class AuthValidator {
                         .when('phoneNumber', {
                             is: joi.exist(),
                             then: joi.required(),
-                            otherwise: joi.optional()
+                            otherwise: joi.forbidden()
                         }),
                     password: joi.string().max(99).required(),
                     rememberMe: joi.boolean().default(false)
                 })
-                .xor('eMail', 'phoneNumber')
                 .validateAsync(req.body);
+
             next();
         } catch (err) {
             res.status(HttpStatusCode.EXPECTATION_FAILED).send(err.message);

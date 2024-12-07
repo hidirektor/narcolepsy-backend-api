@@ -24,7 +24,7 @@ class Authorization {
     }
 
     static isEngineerOrSysop(req) {
-        const {userType} = req.decode;  // Token'dan userType alıyoruz
+        const {userType} = req.decode;
         return userType === 'ENGINEER' || userType === 'SYSOP';
     }
 

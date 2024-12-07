@@ -16,13 +16,13 @@ router.post('/sign-in', authValidator.login, authController.loginAsync);
 router.get('/token-decode', tokenControl, authController.tokenDecodeAsync);
 
 router.post(
-    '/changePassword',
+    '/change-password',
     tokenControl,
     authController.changePasswordAsync
 );
 
 router.post(
-    '/resetPassword',
+    '/reset-password',
     authValidator.resetPassword,
     authController.resetPasswordAsync
 );

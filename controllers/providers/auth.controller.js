@@ -96,9 +96,13 @@ class AuthController {
             const findUser = await userCrud.findOne({
                 where: {
                     [db.Sequelize.Op.or]: [
-                        req.body.eMail ? {eMail: req.body.eMail} : null,
-                        req.body.phoneNumber ? {phoneNumber: req.body.phoneNumber} : null,
-                        req.body.phoneNumber ? {phoneNumber: req.body.phoneNumber} : null,
+                        req.body.eMail ? { eMail: req.body.eMail } : null,
+                        req.body.phoneNumber && req.body.countryCode
+                            ? {
+                                phoneNumber: req.body.phoneNumber,
+                                countryCode: req.body.countryCode
+                            }
+                            : null
                     ].filter(condition => condition !== null)
                 }
             });
@@ -134,7 +138,7 @@ class AuthController {
                 userType: findUser.result.userType
             };
 
-            const accessToken = jwt.sign(payload, process.env.SECRET_KEY, {
+            const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn: tokenExpiration
             });
 

@@ -12,7 +12,7 @@ const app = express();
 const db = require('./models');
 
 // db connection with sequelize
-db.sequelize.sync({force: true});
+db.sequelize.sync({force: false});
 
 app.use(cors());
 
