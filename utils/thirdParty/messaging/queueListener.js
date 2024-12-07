@@ -76,31 +76,14 @@ const startQueueListener = () => {
 
 const processEmail = async ({ templateName, variables, to, subject }) => {
     try {
-        const leftImagePath = path.resolve(__dirname, `../../../public/images/left-image.png`);
-        const rightImagePath = path.resolve(__dirname, `../../../public/images/right-image.png`);
-
         const templatePath = path.resolve(__dirname, `../../notification/views/${templateName}.ejs`);
-        let html = await ejs.renderFile(templatePath, variables);
-
-        html = await inlineCss(html, { url: ' ' });
+        const html = await ejs.renderFile(templatePath, variables);
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: to,
             subject: subject,
             html: html,
-            attachments: [
-                {
-                    filename: 'left-image.png',
-                    path: leftImagePath,
-                    cid: 'left-image'
-                },
-                {
-                    filename: 'right-image.png',
-                    path: rightImagePath,
-                    cid: 'right-image'
-                }
-            ],
         };
 
         await sendEmailWithRetry(mailOptions);
