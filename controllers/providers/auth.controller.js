@@ -12,7 +12,10 @@ const userPreferencesCrud = new GenericCRUD({model: db.UserPreferences, where: n
 const userVerificationsCrud = new GenericCRUD({model: db.UserVerifications, where: null});
 const roles = require('../../models/roles');
 
-//const { generateOTP, verifyOTP } = require('../../utils/3rdPartyServices/redis/otpService');
+const NotificationService = require('../../utils/notification/NotificationService');
+
+const errorTemplate = '../../utils/notification/templates/error-mail-verification';
+const successTemplate = '../../utils/notification/templates/success-mail-verification';
 
 class AuthController {
     constructor() {
@@ -82,6 +85,8 @@ class AuthController {
             await db.UserVerifications.create({userID}, {transaction});
 
             await transaction.commit();
+
+            NotificationService.sendRegisterMail('${process.env.BASE_URL}/v1/auth/verify/${userID}', req.body.eMail, "NarcoLepsy'ye Hoşgeldiniz !");
 
             res.status(HttpStatusCode.OK).json('User registered.');
         } catch (err) {
@@ -240,6 +245,94 @@ class AuthController {
         } catch (error) {
             console.error('Error resetting password:', error);
             res.status(500).json({message: 'An unexpected error occurred while resetting the password.'});
+        }
+    }
+
+    async sendOtpAsync(req, res) {
+        const { userName } = req.body;
+
+        try {
+            const user = await db.User.findOne({where: {nickName: userName}});
+            if (!user) {
+                return res.status(404).json({message: 'User not found'});
+            }
+
+            const otpCodeRedisRecord = await redisClient.get(`auth:user:${user.userID}:otpRecord`);
+            if (otpCodeRedisRecord) {
+                return res.status(404).json({ message: 'OTP code has already been generated for this user.' });
+            }
+
+            const userVerification = await db.UserVerifications.findOne({ where: { userID: user.userID } });
+            if (!userVerification) {
+                return res.status(404).json({ message: 'User verification record not found' });
+            }
+
+            const isMailVerified = userVerification.mailVerification && !isNaN(userVerification.mailVerification) && userVerification.mailVerification > 0;
+            const isPhoneVerified = userVerification.phoneVerification && !isNaN(userVerification.phoneVerification) && userVerification.phoneVerification > 0;
+
+            if (!isMailVerified && !isPhoneVerified) {
+                return res.status(400).json({ message: 'No verified methods found for the user' });
+            }
+
+            const generatedCode = Math.floor(100000 + Math.random() * 900000);
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            const redisKey = `auth:user:${user.userID}:otpRecord`;
+            const redisValue = JSON.stringify({
+                userID: user.userID,
+                changeTime: currentTime,
+                otpCode: generatedCode,
+                endTime: currentTime + (3 * 60), // 3 dakika geçerlilik süresi
+            });
+
+            await redisClient.set(redisKey, redisValue);
+
+            if (isMailVerified) {
+                await OTPService.sendMail(generatedCode);
+            }
+
+            if (isPhoneVerified) {
+                await OTPService.sendSMS(generatedCode);
+            }
+
+            res.json({message: 'OTP Code sent successfully'});
+        } catch (error) {
+            console.error('Error resetting password:', error);
+            res.status(500).json({message: 'An unexpected error occurred while resetting the password.'});
+        }
+    }
+
+    async verifyUserEmailAsync(req, res) {
+        const { userID } = req.params;
+
+        try {
+            const userVerification = await db.UserVerifications.findOne({
+                where: { userID }
+            });
+
+            if (!userVerification) {
+                return res.status(404).render(errorTemplate, { message: 'User not found or already verified.' });
+            }
+
+            if (userVerification.mailVerification) {
+                return res.status(400).render(errorTemplate, { message: 'User email is already verified.' });
+            }
+
+            const verificationTimestamp = Math.floor(Date.now() / 1000);
+
+            await db.UserVerifications.update(
+                {
+                    mailVerification: verificationTimestamp
+                },
+                {
+                    where: { userID }
+                }
+            );
+
+            res.render(successTemplate, { message: 'Your email has been successfully verified!' });
+        } catch (error) {
+            console.error('Error verifying user email:', error);
+            res.status(500).render(errorTemplate, { message: 'An unexpected error occurred while verifying the email.' });
         }
     }
 

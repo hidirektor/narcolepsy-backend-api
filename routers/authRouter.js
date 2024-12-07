@@ -27,6 +27,13 @@ router.post(
     authController.resetPasswordAsync
 );
 
+router.post(
+    '/send-otp',
+    authController.sendOtpAsync
+);
+
+router.get('/verify/:userID', authController.verifyUserEmailAsync);
+
 router.post('/logout', tokenControl, authController.logoutAsync);
 
 module.exports = router;

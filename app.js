@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const serve = require('./serve');
-//const startQueueListener = require('./utils/3rdPartyServices/rabbitmq/queueListener');
+const { startQueueListener } = require('./utils/thirdParty/messaging/queueListener');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -24,7 +24,7 @@ app.set('api_key', process.env.SECRET_KEY || 'secret');
 app.use(serve);
 
 // Start RabbitMQ Queue Listener
-//startQueueListener();
+startQueueListener();
 
 app.listen(PORT, () => {
     console.log('Ready on http://localhost:' + PORT);
