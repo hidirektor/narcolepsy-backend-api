@@ -288,7 +288,7 @@ class AuthController {
 
             await redisClient.set(redisKey, redisValue, 'EX', 180);
 
-            const smsText = "Onay kodunuz: {generatedCode}. Lütfen bu kodu girerek işleminizi tamamlayın.";
+            const smsText = `Onay kodunuz: ${generatedCode}. Lütfen bu kodu girerek işleminizi tamamlayın.`;
 
             if (isMailVerified) {
                 await NotificationService.queueOtpMail(generatedCode, `${user.userName} ${user.userSurname}`, user.eMail, "Doğrulama Kodunuz !");

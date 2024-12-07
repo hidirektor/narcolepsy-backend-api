@@ -101,9 +101,11 @@ const sendSMS = (to, body) => {
         })
         .then((message) => {
             console.log('SMS gönderildi:', message.sid);
+            console.log('Twilio Yanıtı:', message); // Twilio'dan gelen yanıtı logla
         })
         .catch((error) => {
             console.error('SMS gönderimi hatası:', error);
+            console.error('Twilio Hata Yanıtı:', error.response.body); // Hata detaylarını logla
         });
 };
 
