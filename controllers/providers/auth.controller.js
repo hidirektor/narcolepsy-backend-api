@@ -145,12 +145,16 @@ class AuthController {
             const finalDeviceInfo = req.headers['user-agent'];
 
             // Redis'te kullanıcı bilgilerini ve token'ı sakla
-            const redisKey = `auth_${findUser.result.userID}`;
+            const redisKey = `auth:user:${findUser.result.userID}:token`;
             const redisValue = JSON.stringify({
                 token: accessToken,
                 deviceInfo: finalDeviceInfo,
-                loginTime: new Date().toISOString(),
+                loginTime: Math.floor(Date.now() / 1000),
                 userName: findUser.result.userName,
+                userSurname: findUser.result.userSurname,
+                dialCode: findUser.result.countryCode,
+                phoneNumber: findUser.result.phoneNumber,
+                eMail: findUser.result.eMail,
                 userType: findUser.result.userType
             });
 
@@ -168,14 +172,15 @@ class AuthController {
         const {userName, oldPassword, newPassword, closeSessions} = req.body;
 
         try {
-            const user = await db.User.findOne({where: {userName}});
+            const user = await db.User.findOne({where: {nickName: userName}});
             if (!user) return res.status(404).json({message: 'User not found'});
 
             const validPassword = await bcrypt.compare(oldPassword, user.password);
             if (!validPassword) return res.status(401).json({message: 'Invalid current password'});
 
+            const lastPasswordChangeTime = await redisClient.get(`cooldown:user:${user.userID}:lastPasswordChange`);
             const currentTime = Math.floor(Date.now() / 1000);
-            if (user.lastPasswordChange && (currentTime - user.lastPasswordChange) < 7 * 24 * 60 * 60) {
+            if (lastPasswordChangeTime && (currentTime - parseInt(lastPasswordChangeTime)) < 7 * 24 * 60 * 60) {
                 return res.status(400).json({message: 'Password can only be changed once every 7 days'});
             }
 
@@ -187,6 +192,14 @@ class AuthController {
             user.password = await bcrypt.hash(newPassword, 10);
             user.lastPasswordChange = currentTime;
             await user.save();
+
+            const redisKey = `cooldown:user:${user.userID}:lastPasswordChange`;
+            const redisValue = JSON.stringify({
+                userID: user.userID,
+                changeTime: currentTime,
+                nextChangeTime: currentTime + (7 * 24 * 60 * 60),
+            });
+            await redisClient.set(redisKey, redisValue);
 
             if (closeSessions) {
                 await invalidateAllTokens(user.userID);

@@ -13,7 +13,7 @@ router.post('/sign-up', authValidator.signUp, authController.signUpAsync);
 
 router.post('/sign-in', authValidator.login, authController.loginAsync);
 
-router.get('/token-decode', tokenControl, authController.tokenDecodeAsync);
+//router.get('/token-decode', tokenControl, authController.tokenDecodeAsync);
 
 router.post(
     '/change-password',
