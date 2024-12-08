@@ -342,10 +342,10 @@ class AuthController {
     }
 
     async logoutAsync(req, res) {
-        const {token} = req.body;
+        const {userID, token} = req.body;
 
         try {
-            await invalidateToken(token);
+            await invalidateToken(userID, token);
             res.status(200).json({message: 'Logged out successfully'});
         } catch (error) {
             res.status(500).json({message: 'Error logging out', error});

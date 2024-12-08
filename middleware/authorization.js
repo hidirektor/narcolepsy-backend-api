@@ -43,9 +43,24 @@ class Authorization {
         }
     }
 
-    static async invalidateToken(token) {
+    static async invalidateToken(userID, token) {
         try {
-            await redisClient.set(`blacklist_${token}`, true, 'EX', process.env.JWT_EXPIRE_TIME);
+            const keys = await redisClient.keys(`auth:user:${userID}:token_*`);
+
+            for (const key of keys) {
+                const data = await redisClient.get(key);
+                if (data) {
+                    const parsedData = JSON.parse(data);
+
+                    if (parsedData.token === token) {
+                        await redisClient.del(key);
+                        console.log(`Token "${token}" userID "${userID}" için başarıyla silindi.`);
+                        return;
+                    }
+                }
+            }
+
+            console.log(`Belirtilen token "${token}" userID "${userID}" için bulunamadı.`);
         } catch (error) {
             console.error('Failed to invalidate token:', error);
         }
@@ -53,12 +68,14 @@ class Authorization {
 
     static async invalidateAllTokens(userID) {
         try {
-            const tokens = await redisClient.keys(`token_${userID}_*`);
-            const pipeline = redisClient.pipeline();
-            tokens.forEach(token => {
-                pipeline.set(`blacklist_${token}`, true, 'EX', process.env.JWT_EXPIRE_TIME);
-            });
-            await pipeline.exec();
+            const tokens = await redisClient.keys(`auth:user:${userID}:token_*`);
+
+            if (tokens.length > 0) {
+                await redisClient.del(tokens);
+                console.log(`User ${userID} için tüm tokenlar başarıyla silindi.`);
+            } else {
+                console.log(`User ${userID} için silinecek token bulunamadı.`);
+            }
         } catch (error) {
             console.error('Failed to invalidate all tokens:', error);
         }
