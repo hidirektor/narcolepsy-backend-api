@@ -160,6 +160,41 @@ const endpoints = [
         },
         controller: 'controllers/providers/authController.verifyOtpAsync',
     },
+    {
+        sectionTitle: 'Payment',
+        path: 'payment/start-checkout-form',
+        method: 'post',
+        summary: 'Initialize CF',
+        description: 'Initialize CF from Iyzico.',
+        body: {
+            userID: { type: 'string', required: true },
+            packageID: { type: 'string', required: true },
+            ipAddress: { type: 'string', required: true },
+        },
+        responses: {
+            201: { description: 'CF data sent successfully.' },
+            400: { description: 'Failed to initialize checkout.' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/authController.startCheckoutAsync',
+    },
+    {
+        sectionTitle: 'Payment',
+        path: 'payment/verify-payment',
+        method: 'post',
+        summary: 'Verify CF Payment',
+        description: 'It allow to verify CF payment.',
+        body: {
+            token: { type: 'string', required: true },
+            userID: { type: 'string', required: true },
+        },
+        responses: {
+            201: { description: 'Payment verified successfully.' },
+            400: { description: 'Payment failed. Please try again or contact us.' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/authController.verifyCheckoutPaymentAsync',
+    },
 ];
 
 module.exports = endpoints;

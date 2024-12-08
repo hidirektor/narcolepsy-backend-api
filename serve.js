@@ -22,8 +22,7 @@ app.use('/v1/api-docs', swaggerUi.serve, (req, res) => {
 });
 
 app.use('/v1/auth', routers.authRouter);
-//app.use('/v3/user', routers.userRouter);
-//app.use('/v3/file', routers.fileRouter);
+app.use('/v1/payment', routers.paymentRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');
