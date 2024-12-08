@@ -25,7 +25,7 @@ app.use(express.static(join(__dirname, 'public')));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set('api_key', process.env.SECRET_KEY || 'secret');
+app.set('api_key', process.env.JWT_SECRET || 'secret');
 
 app.use(serve);
 
