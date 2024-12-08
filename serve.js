@@ -3,14 +3,23 @@ const app = express();
 const routers = require('./routers');
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./docs/swagger.config');
+const fs = require('fs');
+const {join} = require("node:path");
 
 app.get('/', function (req, res) {
     res.json('NarcoLepsy Magazine System');
 });
 
-app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.use('/v1/api-docs', swaggerUi.serve, (req, res) => {
+    const swaggerSpec = JSON.parse(fs.readFileSync(join(__dirname, './docs/swagger.json'), 'utf8'));
+
+    res.setHeader('Cache-Control', 'no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+    res.render('api-docs', { swaggerSpec: JSON.stringify(swaggerSpec) });
+});
 
 app.use('/v1/auth', routers.authRouter);
 //app.use('/v3/user', routers.userRouter);

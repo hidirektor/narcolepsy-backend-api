@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const serve = require('./serve');
 const { startQueueListener } = require('./utils/thirdParty/messaging/queueListener');
+const generateSwaggerSpec = require('./docs/swagger.config');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -25,9 +26,9 @@ app.use(express.static(join(__dirname, 'public')));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set('api_key', process.env.JWT_SECRET || 'secret');
-
 app.use(serve);
+
+generateSwaggerSpec();
 
 // Start RabbitMQ Queue Listener
 startQueueListener();

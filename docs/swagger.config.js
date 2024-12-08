@@ -1,10 +1,13 @@
+const fs = require('fs');
+const path = require('path');
 const endpoints = require('./swagger.data');
 
 const generateSwaggerSpec = () => {
     const paths = {};
+    const sections = {};
 
     endpoints.forEach(endpoint => {
-        const { path, method, summary, description, body, responses } = endpoint;
+        const { path, method, summary, description, body, responses, sectionTitle } = endpoint;
 
         if (!paths[path]) paths[path] = {};
 
@@ -34,19 +37,43 @@ const generateSwaggerSpec = () => {
             responses: Object.entries(responses).reduce((acc, [status, details]) => {
                 acc[status] = {
                     description: details.description,
-                    ...(details.schema ? { content: { 'application/json': { schema: details.schema } } } : {}),
+                    content: details.content
+                        ? details.content
+                        : details.schema
+                            ? {
+                                'application/json': {
+                                    schema: details.schema
+                                },
+                            }
+                            : undefined,
                 };
                 return acc;
             }, {}),
+            tags: sectionTitle ? [sectionTitle] : [],
         };
+
+        if (sectionTitle) {
+            if (!sections[sectionTitle]) sections[sectionTitle] = [];
+            sections[sectionTitle].push(path);
+        }
     });
 
-    return {
+    const tags = Object.keys(sections).map(title => ({
+        name: title,
+        description: `All endpoints related to ${title}`,
+    }));
+
+    const swaggerSpec = {
         openapi: '3.0.0',
         info: {
             title: 'NarcoLepsy API Gateway',
             version: '1.0.0',
-            description: 'This backend system is designed to power the NarcoLepsy magazine platform, encompassing both manghwa and manhwa content. It serves as the core infrastructure for managing and operating the entire magazine ecosystem efficiently and reliably.',
+            description: 'This backend system is designed to power the NarcoLepsy magazine platform.',
+            contact: {
+                name: 'Halil İbrahim Direktör',
+                email: 'hidirektor@gmail.com',
+                url: 'https://hidirektor.com.tr',
+            },
         },
         servers: [
             {
@@ -55,8 +82,13 @@ const generateSwaggerSpec = () => {
             },
         ],
         paths,
+        tags,
     };
+
+    const filePath = path.join(__dirname, 'swagger.json');
+    fs.writeFileSync(filePath, JSON.stringify(swaggerSpec, null, 2));
+
+    return swaggerSpec;
 };
 
-const spec = generateSwaggerSpec();
-module.exports = spec;
+module.exports = generateSwaggerSpec;

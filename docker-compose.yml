@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   narco-backend-api-v1:
-    image: narco-backend-api:17.11.27
+    image: narco-backend-api:17.11.29
     container_name: narco-backend-v1
     build:
       context: .

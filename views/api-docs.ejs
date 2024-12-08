@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NarcoLepsy - Read Comics, Manga & Manhwa</title>
+    <link rel="icon" type="image/svg+xml" href="https://api.narcolepsy.com.tr/images/logo.png"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css" />
+</head>
+<body>
+<div id="swagger-ui"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+<script>
+    const ui = SwaggerUIBundle({
+        spec: <%- swaggerSpec %>,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        displayRequestDuration: true,
+        showCommonExtensions: true,
+        docExpansion: "none",
+        showExtensions: true,
+        tagsSorter: "alpha",
+    });
+</script>
+</body>
+</html>

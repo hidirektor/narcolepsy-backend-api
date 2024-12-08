@@ -1,0 +1,413 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "NarcoLepsy API Gateway",
+    "version": "1.0.0",
+    "description": "This backend system is designed to power the NarcoLepsy magazine platform."
+  },
+  "servers": [
+    {
+      "url": "https://api.narcolepsy.com/v1/",
+      "description": "Main Server"
+    }
+  ],
+  "paths": {
+    "auth/sign-up": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Creates a new user account in the system.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "userSurname": {
+                    "type": "string"
+                  },
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "nickName": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string"
+                  },
+                  "profilePhotoID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userName",
+                  "userSurname",
+                  "eMail",
+                  "nickName",
+                  "phoneNumber",
+                  "countryCode",
+                  "password",
+                  "birthDate",
+                  "profilePhotoID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered."
+          },
+          "400": {
+            "description": "There was a problem adding the user!"
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/sign-in": {
+      "post": {
+        "summary": "Authenticate user and provide access token",
+        "description": "Authenticates the user and returns a token. Dont forget: you can choose eMail - password or phoneNumber - countryCode - password combination.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "rememberMe": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "eMail",
+                  "password",
+                  "rememberMe"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "findUser": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "Halil İbrahim"
+                        },
+                        "userSurname": {
+                          "type": "string",
+                          "example": "Direktör"
+                        },
+                        "eMail": {
+                          "type": "string",
+                          "example": "hidirektor@gmail.com"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "hidirektor"
+                        },
+                        "phoneNumber": {
+                          "type": "string",
+                          "example": "5556783423"
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "example": "+90"
+                        },
+                        "password": {
+                          "type": "string",
+                          "example": "$2a$10$suV//NKJ1kkbSeRc97Not.JRB6GVfirsC7cSPBQxO67Cb6LymPS.a"
+                        },
+                        "userType": {
+                          "type": "string",
+                          "example": "PREMIUM"
+                        }
+                      }
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI3ZTU2OThjYS05Yjg3LTQ5ZTMtODNhZC1jZjJiODdhNzEyNzEiLCJ1c2VyVHlwZSI6IlVTRVIiLCJpYXQiOjE3MzM2NzU0MDYsImV4cCI6MTczMzc2MTgwNn0.321Id3qv6fxLLT7CIKbSQPlgX3ilgNIdMA-Z1h9StEk"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Check your credentials!"
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/change-password": {
+      "post": {
+        "summary": "Update the user’s password securely",
+        "description": "Allows the user to change their password.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "oldPassword": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  },
+                  "closeSessions": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "userName",
+                  "oldPassword",
+                  "newPassword",
+                  "closeSessions"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/reset-password": {
+      "post": {
+        "summary": "Reset password",
+        "description": "Sends a password reset link to the user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  },
+                  "otpCode": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userName",
+                  "newPassword",
+                  "otpCode"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Error resetting password."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Logs out the current user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "500": {
+            "description": "Error logging out"
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/send-otp": {
+      "post": {
+        "summary": "Send OTP",
+        "description": "This endpoint sends otp to verified user methods. It will try send both eMail and SMS otp.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP Code sent successfully"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "OTP code has already been generated for this user."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "auth/verify-otp": {
+      "post": {
+        "summary": "Verify OTP",
+        "description": "This endpoint verifies entered otp code. And its not must used for any reset process. You can use reset-password endpoint directly.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "otpCode": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userName",
+                  "otpCode"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP Code verified successfully"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Invalid OTP code."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "All endpoints related to Authentication"
+    }
+  ]
+}
