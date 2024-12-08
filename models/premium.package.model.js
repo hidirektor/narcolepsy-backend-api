@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             packageID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
-                unique: false,
+                unique: true,
                 allowNull: false
             },
             packageName: {

@@ -29,24 +29,25 @@ db.sequelize = sequelize;
 // Include db tables
 db.User = require('./user.model.js')(sequelize, Sequelize);
 db.UserProfile = require('./user.profile.model.js')(sequelize, Sequelize);
-db.UserPreferences = require('./user.preference.model.js')(sequelize, Sequelize)
-db.UserVerifications = require('./user.verification.model.js')(sequelize, Sequelize)
-db.UserReactions = require('./user.reactions.model.js')(sequelize, Sequelize)
+db.UserPreferences = require('./user.preference.model.js')(sequelize, Sequelize);
+db.UserVerifications = require('./user.verification.model.js')(sequelize, Sequelize);
+db.UserReactions = require('./user.reactions.model.js')(sequelize, Sequelize);
 
-db.Comic = require('./comic.model.js')(sequelize, Sequelize)
-db.ComicDetails = require('./comic.details.model.js')(sequelize, Sequelize)
-db.ComicCategory = require('./comic.category.model.js')(sequelize, Sequelize)
-db.ComicSeason = require('./comic.season.model.js')(sequelize, Sequelize)
-db.ComicEpisode = require('./comic.episode.model.js')(sequelize, Sequelize)
+db.Comic = require('./comic.model.js')(sequelize, Sequelize);
+db.ComicDetails = require('./comic.details.model.js')(sequelize, Sequelize);
+db.ComicCategory = require('./comic.category.model.js')(sequelize, Sequelize);
+db.ComicSeason = require('./comic.season.model.js')(sequelize, Sequelize);
+db.ComicEpisode = require('./comic.episode.model.js')(sequelize, Sequelize);
 
-db.Orders = require('./order.model.js')(sequelize, Sequelize)
-db.PremiumUsers = require('./premium.user.model.js')(sequelize, Sequelize)
+db.Orders = require('./order.model.js')(sequelize, Sequelize);
+db.PremiumUsers = require('./premium.user.model.js')(sequelize, Sequelize);
+db.PremiumPackages = require('./premium.package.model.js')(sequelize, Sequelize);
 
-db.Tickets = require('./support.ticket.model.js')(sequelize, Sequelize)
+db.Tickets = require('./support.ticket.model.js')(sequelize, Sequelize);
 
-db.FollowedComic = require('./followed.comic.model.js')(sequelize, Sequelize)
+db.FollowedComic = require('./followed.comic.model.js')(sequelize, Sequelize);
 
-db.ComicCategoryMapping = require('./comic.category.mapping.model.js')(sequelize, Sequelize)
+db.ComicCategoryMapping = require('./comic.category.mapping.model.js')(sequelize, Sequelize);
 
 // Associations
 db.User.hasOne(db.UserProfile, {
@@ -221,6 +222,18 @@ db.Orders.hasOne(db.PremiumUsers, {
     sourceKey: 'orderID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
+});
+
+db.PremiumPackages.hasOne(db.Orders, {
+    foreignKey: 'packageID',
+    sourceKey: 'packageID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.Orders.belongsTo(db.PremiumPackages, {
+    foreignKey: 'packageID',
+    targetKey: 'packageID'
 });
 
 db.PremiumUsers.belongsTo(db.Orders, {

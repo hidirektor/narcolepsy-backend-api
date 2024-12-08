@@ -18,6 +18,11 @@ module.exports = (sequelize, Sequelize) => {
                 unique: true,
                 allowNull: false
             },
+            packageID: {
+                type: Sequelize.UUID,
+                unique: false,
+                allowNull: false
+            },
             paymentMethod: {
                 type: Sequelize.STRING,
                 unique: false,
