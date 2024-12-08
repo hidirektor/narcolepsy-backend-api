@@ -85,21 +85,6 @@ class UserValidator extends CommonValidator {
             res.status(HttpStatusCode.EXPECTATION_FAILED).send(err.message);
         }
     }
-
-    static async otpVerification(req, res, next) {
-        try {
-            await joi
-                .object({
-                    otp: joi.string().length(6).required(),
-                    otpSentTime: joi.number().required(),
-                    userName: joi.string().required()
-                })
-                .validateAsync(req.body);
-            next();
-        } catch (err) {
-            res.status(HttpStatusCode.EXPECTATION_FAILED).send(err.message);
-        }
-    }
 }
 
 module.exports = UserValidator;
