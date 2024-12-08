@@ -32,6 +32,11 @@ router.post(
     authController.sendOtpAsync
 );
 
+router.post(
+    '/verify-otp',
+    authController.verifyOtpAsync
+);
+
 router.get('/verify/:userID', authController.verifyUserEmailAsync);
 
 router.post('/logout', tokenControl, authController.logoutAsync);

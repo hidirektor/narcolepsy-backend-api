@@ -46,11 +46,11 @@ const generateSwaggerSpec = () => {
         info: {
             title: 'NarcoLepsy API Gateway',
             version: '1.0.0',
-            description: 'This back end belongs to Narco Lepsy magazine system. Its operate whole magazine system.',
+            description: 'This backend system is designed to power the NarcoLepsy magazine platform, encompassing both manghwa and manhwa content. It serves as the core infrastructure for managing and operating the entire magazine ecosystem efficiently and reliably.',
         },
         servers: [
             {
-                url: 'https://api.narcolepsy.com/v1',
+                url: 'https://api.narcolepsy.com/v1/',
                 description: 'Main Server',
             },
         ],

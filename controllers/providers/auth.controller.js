@@ -305,6 +305,38 @@ class AuthController {
         }
     }
 
+    async verifyOtpAsync(req, res) {
+        const { userName, otpCode } = req.body;
+
+        try {
+            const user = await db.User.findOne({where: {nickName: userName}});
+            if (!user) {
+                return res.status(404).json({message: 'User not found'});
+            }
+
+            const otpCodeRedisRecord = await redisClient.get(`auth:user:${user.userID}:otpRecord`);
+            if (!otpCodeRedisRecord) {
+                return res.status(404).json({ message: 'OTP code was not found. Try again.' });
+            }
+
+            try {
+                const otpRecord = JSON.parse(otpCodeRedisRecord);
+
+                if (otpRecord.otpCode !== otpCode) {
+                    return res.status(400).json({ message: 'Invalid OTP code.' });
+                }
+
+                return res.status(200).json({ message: 'OTP code verified successfully.' });
+            } catch (error) {
+                console.error('Failed to parse OTP record:', error);
+                return res.status(500).json({ message: 'An error occurred while verifying OTP code.' });
+            }
+        } catch (error) {
+            console.error('Error resetting password:', error);
+            res.status(500).json({message: 'An unexpected error occurred while resetting the password.'});
+        }
+    }
+
     async verifyUserEmailAsync(req, res) {
         const { userID } = req.params;
 
