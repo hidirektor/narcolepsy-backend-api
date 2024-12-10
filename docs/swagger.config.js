@@ -7,13 +7,23 @@ const generateSwaggerSpec = () => {
     const sections = {};
 
     endpoints.forEach(endpoint => {
-        const { path, method, summary, description, body, responses, sectionTitle } = endpoint;
+        const { path, method, summary, description, body, responses, parameters, sectionTitle } = endpoint;
 
         if (!paths[path]) paths[path] = {};
 
         paths[path][method.toLowerCase()] = {
             summary,
             description,
+            parameters: parameters
+                ? Object.entries(parameters).map(([name, details]) => ({
+                    name,
+                    in: 'path',
+                    required: details.required || false,
+                    schema: {
+                        type: details.type,
+                    },
+                }))
+                : undefined,
             requestBody: body
                 ? {
                     content: {
@@ -42,7 +52,7 @@ const generateSwaggerSpec = () => {
                         : details.schema
                             ? {
                                 'application/json': {
-                                    schema: details.schema
+                                    schema: details.schema,
                                 },
                             }
                             : undefined,

@@ -129,6 +129,22 @@ const endpoints = [
     },
     {
         sectionTitle: 'Authentication',
+        path: 'auth/verify/:userID',
+        method: 'get',
+        summary: 'Verify User Email',
+        description: 'The unique identifier of the user whose email is being verified.',
+        parameters: {
+            userID: 'userID',
+        },
+        responses: {
+            200: { description: 'Your email has been successfully verified!' },
+            404: { description: 'User email is already verified.' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/authController.verifyUserEmailAsync',
+    },
+    {
+        sectionTitle: 'Authentication',
         path: 'auth/send-otp',
         method: 'post',
         summary: 'Send OTP',
@@ -194,6 +210,23 @@ const endpoints = [
             403: { description: 'Validation error.' },
         },
         controller: 'controllers/providers/authController.verifyCheckoutPaymentAsync',
+    },
+    {
+        sectionTitle: 'Payment',
+        path: 'auth/verify-payment/web/:userID/:iyziToken',
+        method: 'get',
+        summary: 'Verify User Payment On Web',
+        description: 'The unique identifier of the user whose payment is being verified.',
+        parameters: {
+            userID: 'userID',
+            iyziToken: 'iyziToken',
+        },
+        responses: {
+            200: { description: 'Your payment has been successfully verified!' },
+            404: { description: 'Your payment already verified.' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/authController.verifyPaymentOnWebAsync',
     },
 ];
 
