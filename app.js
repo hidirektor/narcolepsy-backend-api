@@ -1,6 +1,7 @@
 require('dotenv/config');
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const serve = require('./serve');
 const { startQueueListener } = require('./utils/thirdParty/messaging/queueListener');
@@ -16,7 +17,17 @@ const {join} = require("node:path");
 // db connection with sequelize
 db.sequelize.sync({force: false});
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 app.use(cors());
+
+app.use(limiter);
 
 app.set('view engine', 'ejs');
 app.set('utils/notification/views', join(__dirname, 'utils/notification/views'));

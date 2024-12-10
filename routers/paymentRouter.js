@@ -15,4 +15,10 @@ router.post(
     paymentController.startCheckoutAsync
 );
 
+router.get(
+    '/:userID/:paymentToken',
+    tokenControl,
+    paymentController.verifyCheckoutPaymentAsync
+);
+
 module.exports = router;
