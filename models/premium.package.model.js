@@ -27,6 +27,11 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.DOUBLE,
                 unique: false,
                 allowNull: false
+            },
+            packageTime: {
+                type: Sequelize.INTEGER,
+                unique: false,
+                allowNull: false
             }
         },
         {

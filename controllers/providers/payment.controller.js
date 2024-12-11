@@ -8,6 +8,8 @@ const GenericCRUD = require('../genericCrud');
 const userCrud = new GenericCRUD({model: db.User, where: null});
 const productCrud = new GenericCRUD({model: db.PremiumPackages, where: null});
 const orderCrud = new GenericCRUD({model: db.Orders, where: null});
+const premiumCrud = new GenericCRUD({model: db.PremiumUsers, where: null});
+const packageCrud = new GenericCRUD({model: db.PremiumPackages, where: null});
 const roles = require('../../models/roles');
 const payment_status = require('../../models/payment_status');
 
@@ -171,7 +173,7 @@ class PaymentController {
             }
 
             const order = orderResponse.result;
-            const { iyzicoToken } = order;
+            const { iyzicoToken, packageID } = order;
 
             const apiKey = process.env.IYZICO_API_KEY;
             const secretKey = process.env.IYZICO_SECRET_KEY;
@@ -211,6 +213,23 @@ class PaymentController {
                         { where: { userID } },
                         { userType: roles.PREMIUM }
                     );
+
+
+                    const selectedPackage = await packageCrud.findOne({ where: { packageID }});
+                    const existingPremiumRecord = await premiumCrud.findOne({
+                        where: { orderID: order.orderID }
+                    });
+
+                    const premiumPackage = existingPremiumRecord.result;
+
+                    if(!premiumPackage.orderID) {
+                        await premiumCrud.create({
+                            userID: order.userID,
+                            orderID: order.orderID,
+                            startDate: Math.floor(Date.now() / 1000),
+                            endDate: Math.floor(Date.now() / 1000) + (selectedPackage.result.packageTime * 24 * 60 * 60)
+                        });
+                    }
 
                     return res.render('payment-success.ejs', {data: jsonResponse});
                 } else {
