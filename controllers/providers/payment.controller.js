@@ -31,7 +31,7 @@ class PaymentController {
         const apiKey = process.env.IYZICO_API_KEY;
         const secretKey = process.env.IYZICO_SECRET_KEY;
         const url = 'https://api.iyzipay.com/payment/iyzipos/checkoutform/initialize/auth/ecom';
-        const callback_url = `https://api.narcolepsy.com.tr/payment/verify-payment/${userID}`;
+        const callback_url = `https://api.narcolepsy.com.tr/v1/payment/verify-payment/${userID}`;
 
         const transaction = await db.sequelize.transaction();
 
