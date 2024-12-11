@@ -54,6 +54,11 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 unique: false,
                 allowNull: false
+            },
+            orderDate: {
+                type: Sequelize.BIGINT,
+                defaultValue: Math.floor(Date.now() / 1000),
+                allowNull: false
             }
         },
         {

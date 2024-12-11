@@ -2,5 +2,6 @@ module.exports = {
     CREATED: 'CREATED',
     PENDING: 'PENDING',
     CANCELED: 'CANCELED',
+    FAILED: 'FAILED',
     COMPLETED: 'COMPLETED'
 }

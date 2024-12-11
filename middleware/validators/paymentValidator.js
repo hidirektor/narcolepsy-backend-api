@@ -21,4 +21,4 @@ class PaymentValidator {
     }
 }
 
-module.exports = AuthValidator;
+module.exports = PaymentValidator;

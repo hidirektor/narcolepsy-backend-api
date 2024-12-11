@@ -213,13 +213,12 @@ const endpoints = [
     },
     {
         sectionTitle: 'Payment',
-        path: 'auth/verify-payment/web/:userID/:iyziToken',
+        path: 'payment/verify-payment/:userID',
         method: 'get',
         summary: 'Verify User Payment On Web',
         description: 'The unique identifier of the user whose payment is being verified.',
         parameters: {
             userID: 'userID',
-            iyziToken: 'iyziToken',
         },
         responses: {
             200: { description: 'Your payment has been successfully verified!' },

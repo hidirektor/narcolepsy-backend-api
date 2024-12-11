@@ -10,6 +10,8 @@ const generateSwaggerSpec = require('./docs/swagger.config');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.set('trust proxy', false);
+
 // including models
 const db = require('./models');
 const {join} = require("node:path");

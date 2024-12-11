@@ -16,8 +16,7 @@ router.post(
 );
 
 router.get(
-    '/:userID/:paymentToken',
-    tokenControl,
+    '/verify-payment/:userID',
     paymentController.verifyCheckoutPaymentAsync
 );
 
