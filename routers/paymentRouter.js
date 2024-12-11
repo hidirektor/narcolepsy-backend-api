@@ -20,4 +20,15 @@ router.get(
     paymentController.verifyCheckoutPaymentAsync
 );
 
+router.get('/check-payment/:userID', async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        res.render('check-payment', { userID: userID, status: 'loading' });
+    } catch (error) {
+        console.error('Error during payment verification:', error);
+        return res.status(500).send('An error occurred during payment verification.');
+    }
+});
+
 module.exports = router;
