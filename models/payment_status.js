@@ -1,0 +1,6 @@
+module.exports = {
+    CREATED: 'CREATED',
+    PENDING: 'PENDING',
+    CANCELED: 'CANCELED',
+    COMPLETED: 'COMPLETED'
+}

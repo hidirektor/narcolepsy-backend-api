@@ -1,3 +1,5 @@
+const payment_status = require("./payment_status");
+
 module.exports = (sequelize, Sequelize) => {
     const Orders = sequelize.define(
         'Orders',
@@ -29,8 +31,8 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
             },
             paymentStatus: {
-                type: Sequelize.STRING,
-                unique: false,
+                type: Sequelize.ENUM,
+                values: [payment_status.CREATED, payment_status.PENDING, payment_status.CANCELED, payment_status.COMPLETED],
                 allowNull: false
             },
             orderPrice: {
