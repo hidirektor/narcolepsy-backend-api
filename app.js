@@ -10,7 +10,7 @@ const generateSwaggerSpec = require('./docs/swagger.config');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.set('trust proxy', false);
+app.set('trust proxy', 1);
 
 // including models
 const db = require('./models');
@@ -23,11 +23,15 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
     message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true,
+    standardHeaders: false,
     legacyHeaders: false,
 });
 
-app.use(cors());
+app.use(cors({
+    origin: ['https://narcolepsy.com.tr', 'https://api.narcolepsy.com.tr'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(limiter);
 

@@ -100,14 +100,13 @@ class PaymentController {
                 enabledInstallments: [1, 2, 3, 6, 9]
             };
 
-            const lastCheckout = await redisClient.get(`lastCheckout-${userID}`);
+            const lastCheckout = await redisClient.get(`cooldown:user-${userID}:lastCheckout`);
             const currentTime = Date.now();
             if (lastCheckout && currentTime - lastCheckout < 5 * 60 * 1000) {
                 return res.status(400).send('You can only initiate checkout every 5 minutes.');
             }
 
-            // Store the current time to prevent further checkouts within 5 minutes
-            await redisClient.set(`lastCheckout-${userID}`, currentTime);
+            await redisClient.set(`cooldown:user-${userID}:lastCheckout`, currentTime, 'EX', 5 * 60);
 
             // Authorization Strings
             const xIyziRnd = new Date().getTime() + '123456789';

@@ -20,7 +20,7 @@ router.get(
     paymentController.verifyCheckoutPaymentAsync
 );
 
-router.get('/check-payment/:userID', async (req, res) => {
+router.post('/check-payment/:userID', async (req, res) => {
     const { userID } = req.params;
 
     try {
