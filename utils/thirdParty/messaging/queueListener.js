@@ -68,7 +68,9 @@ const setupQueues = () => {
 
 const startQueueListener = () => {
     if (!channel) {
+        console.log('RabbitMQ bağlantısı kuruluyor...');
         connectToRabbitMQ();
+        return;
     }
 
     setupQueues();
