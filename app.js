@@ -36,7 +36,7 @@ app.use(cors({
 app.use(limiter);
 
 app.set('view engine', 'ejs');
-app.set('utils/notification/views', join(__dirname, 'utils/notification/views'));
+app.set('utils/service/views', join(__dirname, 'utils/service/views'));
 
 app.use(express.static(join(__dirname, 'public')));
 

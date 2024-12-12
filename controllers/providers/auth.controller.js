@@ -12,7 +12,7 @@ const userPreferencesCrud = new GenericCRUD({model: db.UserPreferences, where: n
 const userVerificationsCrud = new GenericCRUD({model: db.UserVerifications, where: null});
 const roles = require('../../models/roles');
 
-const NotificationService = require('../../utils/notification/NotificationService');
+const NotificationService = require('../../utils/service/NotificationService');
 
 class AuthController {
     constructor() {

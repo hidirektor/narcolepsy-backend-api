@@ -30,7 +30,6 @@ class NotificationService {
             };
 
             await RabbitClient.sendToQueue('notificationQueue', smsMessage);
-
         } catch (error) {
             console.error('SMS kuyruğa ekleme hatası:', error);
         }

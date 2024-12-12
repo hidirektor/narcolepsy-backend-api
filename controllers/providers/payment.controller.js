@@ -1,22 +1,24 @@
-const db = require('../../models');
 const HttpStatusCode = require('http-status-codes');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
+const CryptoJS = require('crypto-js');
+
 const {errorSender} = require('../../utils');
+
 const redisClient = require('../../utils/thirdParty/redis/redisClient');
+const NotificationService = require('../../utils/service/NotificationService');
+const PremiumService = require('../../utils/service/PremiumService');
+
+const db = require('../../models');
 const GenericCRUD = require('../genericCrud');
+const roles = require('../../models/roles');
+const payment_status = require('../../models/payment_status');
 const userCrud = new GenericCRUD({model: db.User, where: null});
 const productCrud = new GenericCRUD({model: db.PremiumPackages, where: null});
 const orderCrud = new GenericCRUD({model: db.Orders, where: null});
 const premiumCrud = new GenericCRUD({model: db.PremiumUsers, where: null});
 const packageCrud = new GenericCRUD({model: db.PremiumPackages, where: null});
-const roles = require('../../models/roles');
-const payment_status = require('../../models/payment_status');
-
-const axios = require('axios');
-const CryptoJS = require('crypto-js');
-
-const NotificationService = require('../../utils/notification/NotificationService');
 
 class PaymentController {
     constructor() {
@@ -222,12 +224,15 @@ class PaymentController {
                     const premiumPackage = existingPremiumRecord.result;
 
                     if(!premiumPackage.orderID) {
+                        const currentTime = Math.floor(Date.now() / 1000);
+                        const endTime = Math.floor(Date.now() / 1000) + (selectedPackage.result.packageTime * 24 * 60 * 60);
                         await premiumCrud.create({
                             userID: order.userID,
                             orderID: order.orderID,
-                            startDate: Math.floor(Date.now() / 1000),
-                            endDate: Math.floor(Date.now() / 1000) + (selectedPackage.result.packageTime * 24 * 60 * 60)
+                            startDate: currentTime,
+                            endDate: endTime
                         });
+                        await PremiumService.queuePremiumUser(order.userID, endTime);
                     }
 
                     return res.render('payment-success.ejs', {data: jsonResponse});

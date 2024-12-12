@@ -3,7 +3,12 @@ const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 const ejs = require('ejs');
 const path = require('path');
-const inlineCss = require('inline-css');
+const GenericCRUD = require("../../../controllers/genericCrud");
+const db = require("../../../models");
+
+const roles = require('../../../models/roles');
+const userCrud = new GenericCRUD({model: db.User, where: null});
+const premiumCrud = new GenericCRUD({model: db.PremiumUsers, where: null});
 
 const RABBITMQ_USER = process.env.RABBITMQ_USER || 'guest';
 const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD || 'guest';
@@ -42,36 +47,67 @@ const sendEmailWithRetry = async (mailOptions, retries = 5, delay = 5000) => {
     }
 };
 
+const setupQueues = () => {
+    channel.assertQueue('notificationQueue', { durable: true });
+
+    channel.assertQueue('premiumUserQueue', {
+        durable: true,
+        arguments: {
+            'x-message-ttl': 24 * 60 * 60 * 1000, // 24 saatlik TTL
+            'x-dead-letter-exchange': 'dlxExchange',
+        },
+    });
+
+    channel.assertExchange('dlxExchange', 'direct', { durable: true });
+
+    channel.assertQueue('expiredPremiumQueue', { durable: true });
+    channel.bindQueue('expiredPremiumQueue', 'dlxExchange', '');
+
+    console.log('Kuyruklar ve DLX başarıyla ayarlandı.');
+};
+
 const startQueueListener = () => {
     if (!channel) {
         connectToRabbitMQ();
     }
 
-    const queueName = 'notificationQueue';
-    if (channel) {
-        channel.assertQueue(queueName, { durable: true });
+    setupQueues();
 
-        console.log(`"${queueName}" kuyruğundan gelen mesajlar dinleniyor...`);
+    const queues = ['notificationQueue', 'expiredPremiumQueue'];
 
-        channel.consume(queueName, async (msg) => {
-            if (msg !== null) {
-                const message = JSON.parse(msg.content.toString());
+    queues.forEach((queueName) => {
+        if (channel) {
+            console.log(`"${queueName}" kuyruğundan gelen mesajlar dinleniyor...`);
 
-                if (message.type === 'email') {
-                    await processEmail(message);
+            channel.consume(queueName, async (msg) => {
+                if (msg !== null) {
+                    const message = JSON.parse(msg.content.toString());
+
+                    try {
+                        if (queueName === 'notificationQueue') {
+                            if (message.type === 'email') {
+                                await processEmail(message);
+                            }
+
+                            if (message.type === 'sms') {
+                                await sendSMS(message.to, message.message);
+                                console.log('SMS mesajı alındı:', message);
+                            }
+                        } else if (queueName === 'expiredPremiumQueue') {
+                            await processPremiumUser(message);
+                        }
+
+                        channel.ack(msg);
+                    } catch (error) {
+                        console.error(`${queueName} kuyruğunda hata:`, error);
+                        channel.nack(msg, false, true);
+                    }
                 }
-
-                if (message.type === 'sms') {
-                    await sendSMS(message.to, message.message);
-                    console.log('SMS mesajı alındı:', message);
-                }
-
-                channel.ack(msg);
-            }
-        });
-    } else {
-        console.error('RabbitMQ bağlantısı kurulamamış!');
-    }
+            });
+        } else {
+            console.error('RabbitMQ bağlantısı kurulamamış!');
+        }
+    });
 };
 
 const processEmail = async ({ templateName, variables, to, subject }) => {
@@ -92,6 +128,28 @@ const processEmail = async ({ templateName, variables, to, subject }) => {
     }
 };
 
+const processPremiumUser = async (message) => {
+    try {
+        const { userID } = message;
+
+        const premiumUser = await premiumCrud.findOne({
+            where: { userID },
+            order: [['endDate', 'DESC']],
+        });
+
+        if (premiumUser && premiumUser.endDate <= Date.now()) {
+            await userCrud.update(
+                { where: { userID: userID } },
+                { role: roles.USER }
+            );
+
+            console.log(`Kullanıcı ${userID} premium süresi sona erdi. Rol güncellendi.`);
+        }
+    } catch (error) {
+        console.error('Premium kullanıcı kontrolünde hata:', error);
+    }
+};
+
 const sendSMS = (to, body) => {
     twilioClient.messages
         .create({
@@ -101,11 +159,9 @@ const sendSMS = (to, body) => {
         })
         .then((message) => {
             console.log('SMS gönderildi:', message.sid);
-            console.log('Twilio Yanıtı:', message); // Twilio'dan gelen yanıtı logla
         })
         .catch((error) => {
             console.error('SMS gönderimi hatası:', error);
-            console.error('Twilio Hata Yanıtı:', error.response.body); // Hata detaylarını logla
         });
 };
 
