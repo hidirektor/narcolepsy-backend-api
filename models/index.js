@@ -208,7 +208,6 @@ Order assosiations
 db.User.hasOne(db.Orders, {
     foreignKey: 'userID',
     sourceKey: 'userID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
@@ -220,14 +219,12 @@ db.Orders.belongsTo(db.User, {
 db.Orders.hasOne(db.PremiumUsers, {
     foreignKey: 'orderID',
     sourceKey: 'orderID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
 db.PremiumPackages.hasOne(db.Orders, {
     foreignKey: 'packageID',
     sourceKey: 'packageID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
@@ -244,7 +241,6 @@ db.PremiumUsers.belongsTo(db.Orders, {
 db.User.hasOne(db.PremiumUsers, {
     foreignKey: 'userID',
     sourceKey: 'userID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
@@ -259,7 +255,6 @@ Support Tickets Assosiations
 db.User.hasOne(db.Tickets, {
     foreignKey: 'userID',
     sourceKey: 'userID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
