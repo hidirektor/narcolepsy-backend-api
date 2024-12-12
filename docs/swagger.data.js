@@ -213,6 +213,22 @@ const endpoints = [
     },
     {
         sectionTitle: 'Payment',
+        path: 'payment/check-payment/:userID',
+        method: 'post',
+        summary: 'Check User Payment On Web',
+        description: 'This endpoint for payment callback.',
+        parameters: {
+            userID: 'userID',
+        },
+        responses: {
+            200: { description: 'Your payment has been successfully verified!' },
+            404: { description: 'Your payment already verified.' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/authController.verifyPaymentOnWebAsync',
+    },
+    {
+        sectionTitle: 'Payment',
         path: 'payment/verify-payment/:userID',
         method: 'get',
         summary: 'Verify User Payment On Web',
