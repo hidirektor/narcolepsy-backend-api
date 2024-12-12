@@ -48,18 +48,26 @@ const sendEmailWithRetry = async (mailOptions, retries = 5, delay = 5000) => {
 };
 
 const setupQueues = () => {
-    channel.assertQueue('notificationQueue', { durable: true });
+    channel.deleteQueue('premiumUserQueue', (err, ok) => {
+        if (err) {
+            console.error('Kuyruk silme hatası:', err);
+        } else {
+            console.log('premiumUserQueue kuyruğu silindi.');
+        }
 
-    channel.assertQueue('premiumUserQueue', {
-        durable: true,
-        arguments: {
-            'x-message-ttl': 24 * 60 * 60 * 1000, // 24 saatlik TTL
-            'x-dead-letter-exchange': 'dlxExchange',
-        },
+        channel.assertQueue('premiumUserQueue', {
+            durable: true,
+            arguments: {
+                'x-message-ttl': 86400000,
+                'x-dead-letter-exchange': 'dlxExchange',
+            },
+        });
+
+        console.log('premiumUserQueue kuyruğu başarıyla yeniden oluşturuldu.');
     });
 
+    channel.assertQueue('notificationQueue', { durable: true });
     channel.assertExchange('dlxExchange', 'direct', { durable: true });
-
     channel.assertQueue('expiredPremiumQueue', { durable: true });
     channel.bindQueue('expiredPremiumQueue', 'dlxExchange', '');
 

@@ -108,8 +108,6 @@ class PaymentController {
                 return res.status(400).send('You can only initiate checkout every 5 minutes.');
             }
 
-            await redisClient.set(`cooldown:user-${userID}:lastCheckout`, currentTime, 'EX', 5 * 60);
-
             // Authorization Strings
             const xIyziRnd = new Date().getTime() + '123456789';
 
@@ -144,6 +142,9 @@ class PaymentController {
                         iyzicoToken: response.data.token,
                         iyzicoSignature: response.data.signature
                     }, (transaction));
+
+                    await redisClient.set(`cooldown:user-${userID}:lastCheckout`, currentTime, 'EX', 5 * 60);
+
                     return res.json({success: true, data: response.data});
                 } else {
                     return res.status(response.status).json({success: false, message: 'Unexpected response from Iyzico.'});
