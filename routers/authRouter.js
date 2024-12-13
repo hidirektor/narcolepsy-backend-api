@@ -2,12 +2,12 @@ require('dotenv/config');
 const router = require('express')();
 
 const ControllerFactory = require('../controllers/controllerFactory');
-const {validators, verifyToken} = require('../middleware');
 const authController = ControllerFactory.creating('auth.controller');
 
+const {validators, verifyToken} = require('../middleware');
+const tokenControl = verifyToken.tokenControl;
 const authValidator = validators.authValidator;
 const userValidator = validators.userValidator;
-const tokenControl = verifyToken.tokenControl;
 
 router.post('/sign-up', authValidator.signUp, authController.signUpAsync);
 

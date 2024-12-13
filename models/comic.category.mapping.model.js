@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             categoryID: {
                 type: Sequelize.UUID,
-                unique: true,
+                unique: false,
                 allowNull: false
             },
             comicID: {

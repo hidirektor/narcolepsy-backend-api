@@ -129,7 +129,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Authentication',
-        path: 'auth/verify/:userID',
+        path: 'auth/verify/{userID}',
         method: 'get',
         summary: 'Verify User Email',
         description: 'The unique identifier of the user whose email is being verified.',
@@ -213,7 +213,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Payment',
-        path: 'payment/check-payment/:userID',
+        path: 'payment/check-payment/{userID}',
         method: 'post',
         summary: 'Check User Payment On Web',
         description: 'This endpoint for payment callback.',
@@ -229,7 +229,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Payment',
-        path: 'payment/verify-payment/:userID',
+        path: 'payment/verify-payment/{userID}',
         method: 'get',
         summary: 'Verify User Payment On Web',
         description: 'The unique identifier of the user whose payment is being verified.',
@@ -436,6 +436,146 @@ const endpoints = [
             403: { description: 'Validation error.' },
         },
         controller: 'controllers/providers/fileController.uploadProfilePhotoAsync',
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/get-all',
+        method: 'get',
+        summary: 'List all comic categories',
+        description: 'Retrieves a list of all comic categories. Requires a valid token and one of the following roles: EDITOR, MODERATOR, SYSOP.',
+        responses: {
+            200: {
+                description: 'A list of comic categories',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    categoryID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                    categoryName: { type: 'string', example: 'Action' },
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+        },
+        controller: 'controllers/providers/comic.category.controller.getAll'
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/get/{categoryID}',
+        method: 'get',
+        summary: 'Get a specific comic category',
+        description: 'Retrieves a specific comic category by its unique ID. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
+        parameters: {
+            categoryID: 'categoryID'
+        },
+        responses: {
+            200: {
+                description: 'Comic category detail',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                categoryID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                categoryName: { type: 'string', example: 'Action' },
+                            }
+                        }
+                    }
+                }
+            },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Category not found.' }
+        },
+        controller: 'controllers/providers/comic.category.controller.getAll' // Eğer tekil get fonksiyonunuzun adı farklıysa burada güncelleyin
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/create-category',
+        method: 'post',
+        summary: 'Create a new comic category',
+        description: 'Creates a new comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
+        body: {
+            categoryName: { type: 'string', required: true, description: 'Name of the comic category' },
+        },
+        responses: {
+            201: {
+                description: 'Category created successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                categoryID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                categoryName: { type: 'string', example: 'Adventure' },
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: 'Bad Request: Missing or invalid categoryName' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+        },
+        controller: 'controllers/providers/comic.category.controller.create'
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/edit-category/{categoryID}',
+        method: 'post',
+        summary: 'Edit an existing comic category',
+        description: 'Updates the specified comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
+        parameters: {
+            categoryID: 'categoryID'
+        },
+        body: {
+            categoryName: { type: 'string', required: true, description: 'New name for the comic category' },
+        },
+        responses: {
+            200: {
+                description: 'Category updated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                categoryID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                categoryName: { type: 'string', example: 'Action - Updated' },
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: 'Bad Request: Missing or invalid categoryName' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Category not found.' }
+        },
+        controller: 'controllers/providers/comic.category.controller.update'
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/delete-category/{categoryID}',
+        method: 'delete',
+        summary: 'Delete a comic category',
+        description: 'Deletes the specified comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
+        parameters: {
+            categoryID: 'categoryID'
+        },
+        responses: {
+            204: { description: 'Category deleted successfully' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Category not found.' }
+        },
+        controller: 'controllers/providers/comic.category.controller.remove'
     }
 ];
 

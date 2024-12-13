@@ -25,6 +25,7 @@ app.use('/v1/auth', routers.authRouter);
 app.use('/v1/payment', routers.paymentRouter);
 app.use('/v1/user', routers.profileRouter);
 app.use('/v1/file', routers.fileRouter);
+app.use('/v1/comic-categories', routers.categoryRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');

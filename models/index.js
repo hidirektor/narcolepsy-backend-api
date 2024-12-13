@@ -153,7 +153,6 @@ db.ComicCategoryMapping.belongsTo(db.Comic, {
 db.ComicCategory.hasOne(db.ComicCategoryMapping, {
     foreignKey: 'categoryID',
     sourceKey: 'categoryID',
-    onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
