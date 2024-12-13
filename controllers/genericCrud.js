@@ -79,20 +79,26 @@ class GenericCRUD {
 
 
     async delete(object) {
-        const where = Object.assign(object, this.where);
-        const item = await this.model.findOne({where: where});
-        this.setWhere();
-
-        if (!item) {
-            return {status: false, result: 'Item not found'};
-        }
         try {
-            await item.destroy();
-            return {status: true, result: item};
+            const where = { ...this.where, ...object.where };
+
+            const items = await this.model.findAll({ where });
+
+            if (!items || items.length === 0) {
+                return { status: false, result: 'Items not found' };
+            }
+
+            await this.model.destroy({ where });
+
+            return { status: true, result: items };
         } catch (error) {
-            return {status: false, result: 'Unable to delete item'};
+            console.error("Error deleting items:", error);
+            return { status: false, result: 'Unable to delete items' };
+        } finally {
+            this.setWhere();
         }
     }
+
 }
 
 module.exports = GenericCRUD

@@ -153,7 +153,8 @@ db.ComicCategoryMapping.belongsTo(db.Comic, {
 db.ComicCategory.hasOne(db.ComicCategoryMapping, {
     foreignKey: 'categoryID',
     sourceKey: 'categoryID',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
+    onDelete: 'RESTRICT'
 });
 
 db.ComicCategoryMapping.belongsTo(db.ComicCategory, {
@@ -253,7 +254,7 @@ db.PremiumPackages.hasOne(db.Orders, {
     foreignKey: 'packageID',
     sourceKey: 'packageID',
     onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+    onDelete: 'RESTRICT'
 });
 
 db.Orders.belongsTo(db.PremiumPackages, {

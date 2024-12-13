@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
             orderID: {
                 type: Sequelize.UUID,
                 unique: true,
-                allowNull: true
+                allowNull: false
             },
             startDate: {
                 type: Sequelize.BIGINT,

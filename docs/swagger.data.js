@@ -568,12 +568,92 @@ const endpoints = [
             categoryID: 'categoryID'
         },
         responses: {
-            204: { description: 'Category deleted successfully' },
+            204: {
+                description: 'Category deletion started successfully. Mappings require confirmation for deletion.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: {
+                                    type: 'string',
+                                    example: 'Category deletion started successfully. Mappings require confirmation for deletion.'
+                                },
+                                operationKey: {
+                                    type: 'string',
+                                    example: '5728bf67-575f-48bd-b299-3ea145228a66'
+                                },
+                                afftecedComics: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'integer', example: 4 },
+                                            categoryID: {
+                                                type: 'string',
+                                                example: 'ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4'
+                                            },
+                                            comicID: { type: 'string', example: '546435tgsdfsdf' }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
         controller: 'controllers/providers/comic.category.controller.removeCategoryAsync'
+    },
+    {
+        sectionTitle: 'Comic Categories',
+        path: 'comic-categories/confirm-delete-category',
+        method: 'post',
+        summary: 'Confirm deletion of a comic category',
+        description: 'This endpoint confirms the deletion of a comic category and its related mappings. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
+        body: {
+            operationKey: { type: 'string', required: true, description: 'Unique operation key for the deletion confirmation' },
+        },
+        responses: {
+            200: {
+                description: 'Category deleted successfully.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: {
+                                    type: 'string',
+                                    example: 'Category deleted successfully.'
+                                },
+                                afftecedComics: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'integer', example: 4 },
+                                            categoryID: {
+                                                type: 'string',
+                                                example: 'ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4'
+                                            },
+                                            comicID: { type: 'string', example: '546435tgsdfsdf' }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: 'Invalid or expired operation key' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Invalid token for this operation' },
+            500: { description: 'Internal Server Error' },
+        },
+        controller: 'controllers/providers/comicCategoryController.confirmRemoveCategoryAsync',
     },
     {
         sectionTitle: 'Premium Packages',
@@ -724,13 +804,140 @@ const endpoints = [
             packageID: 'packageID'
         },
         responses: {
-            204: { description: 'Package deleted successfully' },
+            200: {
+                description: 'Premium package deleted or required confirmation.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Premium package deletion requires confirmation. Use the provided operation key to confirm.' },
+                                operationKey: { type: 'string', example: '78e2249c-b9dd-4e72-afef-f0ae6396f891' },
+                                affectedPremiumPackage: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 6 },
+                                        packageID: { type: 'string', example: 'fc224dd0-b26b-4536-b6fe-e3a8a38f8a05' },
+                                        packageName: { type: 'string', example: 'Premium' },
+                                        packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                        packagePrice: { type: 'number', format: 'float', example: 0.2 },
+                                        packageTime: { type: 'integer', example: 30 },
+                                    },
+                                },
+                                deletedPremiumUsers: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            userID: { type: 'string', example: '150cf986-e74e-4e80-b7a0-b22e0e0348b7' },
+                                            userName: { type: 'string', example: 'Halil İbrahim' },
+                                            userSurname: { type: 'string', example: 'Direktör' },
+                                            eMail: { type: 'string', example: 'hidirektor@gmail.com' },
+                                        },
+                                    },
+                                },
+                                affectedOrders: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'integer', example: 3 },
+                                            userID: { type: 'string', example: '150cf986-e74e-4e80-b7a0-b22e0e0348b7' },
+                                            orderID: { type: 'string', example: '547f5c16-4189-448a-96db-f394ae8dc80d' },
+                                            packageID: { type: 'string', example: 'fc224dd0-b26b-4536-b6fe-e3a8a38f8a05' },
+                                            paymentMethod: { type: 'string', example: 'Iyzico' },
+                                            paymentStatus: { type: 'string', example: 'COMPLETED' },
+                                            orderPrice: { type: 'number', format: 'float', example: 0.2 },
+                                            userIP: { type: 'string', example: '192.168.2.2' },
+                                            iyzicoToken: { type: 'string', example: '613b5b2b-0192-4530-a2ef-85a1431b4eea' },
+                                            iyzicoSignature: { type: 'string', example: '6dac12f81c509e5c78387e140201ee6cfc2db30cb081d15bd02ce22b906cdd23' },
+                                            orderDate: { type: 'integer', example: 1734132274 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Premium package not found.' }
         },
         controller: 'controllers/providers/premium.package.controller.removePremiumPackageAsync'
-    }
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/confirm-delete-premium-package',
+        method: 'post',
+        summary: 'Confirm deletion of premium package',
+        description: 'This endpoint confirms the deletion of a premium package and its related mappings. Requires valid token and role (SYSOP).',
+        body: {
+            operationKey: { type: 'string', required: true, description: 'Unique operation key for the deletion confirmation' },
+        },
+        responses: {
+            200: {
+                description: 'Premium package deletion requires confirmation.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Premium package deletion requires confirmation. Use the provided operation key to confirm.' },
+                                affectedPremiumPackage: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 6 },
+                                        packageID: { type: 'string', example: 'fc224dd0-b26b-4536-b6fe-e3a8a38f8a05' },
+                                        packageName: { type: 'string', example: 'Premium' },
+                                        packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                        packagePrice: { type: 'number', format: 'float', example: 0.2 },
+                                        packageTime: { type: 'integer', example: 30 },
+                                    },
+                                },
+                                deletedPremiumUsers: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            userID: { type: 'string', example: '150cf986-e74e-4e80-b7a0-b22e0e0348b7' },
+                                            userName: { type: 'string', example: 'Halil İbrahim' },
+                                            userSurname: { type: 'string', example: 'Direktör' },
+                                            eMail: { type: 'string', example: 'hidirektor@gmail.com' },
+                                        },
+                                    },
+                                },
+                                affectedOrders: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'integer', example: 3 },
+                                            userID: { type: 'string', example: '150cf986-e74e-4e80-b7a0-b22e0e0348b7' },
+                                            orderID: { type: 'string', example: '547f5c16-4189-448a-96db-f394ae8dc80d' },
+                                            packageID: { type: 'string', example: 'fc224dd0-b26b-4536-b6fe-e3a8a38f8a05' },
+                                            paymentMethod: { type: 'string', example: 'Iyzico' },
+                                            paymentStatus: { type: 'string', example: 'COMPLETED' },
+                                            orderPrice: { type: 'number', format: 'float', example: 0.2 },
+                                            userIP: { type: 'string', example: '192.168.2.2' },
+                                            iyzicoToken: { type: 'string', example: '613b5b2b-0192-4530-a2ef-85a1431b4eea' },
+                                            iyzicoSignature: { type: 'string', example: '6dac12f81c509e5c78387e140201ee6cfc2db30cb081d15bd02ce22b906cdd23' },
+                                            orderDate: { type: 'integer', example: 1734132274 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid or expired operation key' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Invalid token for this operation' },
+            500: { description: 'Internal Server Error' },
+        },
+        controller: 'controllers/providers/premium.package.controller.confirmRemovePremiumPackageAsync',
+    },
 ];
 
 module.exports = endpoints;

@@ -63,6 +63,21 @@ class ComicValidator {
 
         next();
     }
+
+    static async confirmDeleteCategory(req, res, next) {
+        try {
+            await joi
+                .object({
+                    operationKey: joi.string()
+                        .max(100)
+                        .required(),
+                })
+                .validateAsync(req.body);
+            next();
+        } catch (err) {
+            res.status(HttpStatusCode.EXPECTATION_FAILED).send(err.message);
+        }
+    }
 }
 
 module.exports = ComicValidator;

@@ -6,7 +6,7 @@ const Authorization = require('../middleware/authorization');
 const ControllerFactory = require('../controllers/controllerFactory');
 const premiumPackagesController = ControllerFactory.creating('premium.packages.controller');
 
-const { SYSOP } = require('../models/roles');
+const { SYSOP, EDITOR, MODERATOR} = require('../models/roles');
 
 const {validators, verifyToken} = require('../middleware');
 const tokenControl = verifyToken.tokenControl;
@@ -49,6 +49,14 @@ router.delete(
     Authorization.authControl([SYSOP]),
     premiumValidator.deletePremiumPackage,
     premiumPackagesController.removePremiumPackageAsync
+);
+
+router.post(
+    '/confirm-delete-premium-package',
+    tokenControl,
+    Authorization.authControl([SYSOP]),
+    premiumValidator.confirmDeletePremiumPackage,
+    premiumPackagesController.confirmRemovePremiumPackageAsync
 );
 
 module.exports = router;

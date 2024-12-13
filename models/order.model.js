@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
             packageID: {
                 type: Sequelize.UUID,
                 unique: false,
-                allowNull: true
+                allowNull: false
             },
             paymentMethod: {
                 type: Sequelize.STRING,

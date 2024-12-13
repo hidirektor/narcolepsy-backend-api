@@ -13,7 +13,6 @@ const tokenControl = verifyToken.tokenControl;
 
 const comicValidator = validators.comicValidator;
 
-// GET /get-all - Tüm kategorileri listeleme
 router.get(
     '/get-all',
     tokenControl,
@@ -22,7 +21,6 @@ router.get(
     comicCategoryController.getAllCategoryAsync
 );
 
-// GET /get/:categoryID - Belirli kategoriyi çekme
 router.get(
     '/get/:categoryID',
     tokenControl,
@@ -31,7 +29,6 @@ router.get(
     comicCategoryController.getCategoryAsync
 );
 
-// POST /create-category - Yeni kategori ekleme
 router.post(
     '/create-category',
     tokenControl,
@@ -40,7 +37,6 @@ router.post(
     comicCategoryController.createCategoryAsync
 );
 
-// POST /edit-category/:categoryID - Mevcut kategori düzenleme
 router.post(
     '/edit-category',
     tokenControl,
@@ -49,13 +45,20 @@ router.post(
     comicCategoryController.updateCategoryAsync
 );
 
-// DELETE /delete-category/:categoryID - Kategori silme
 router.delete(
     '/delete-category/:categoryID',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     comicValidator.deleteCategory,
     comicCategoryController.removeCategoryAsync
+);
+
+router.post(
+    '/confirm-delete-category',
+    tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
+    comicValidator.confirmDeleteCategory,
+    comicCategoryController.confirmRemoveCategoryAsync
 );
 
 module.exports = router;

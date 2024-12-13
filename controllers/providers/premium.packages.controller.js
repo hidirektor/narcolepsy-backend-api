@@ -1,4 +1,5 @@
 const db = require('../../models');
+const { Op } = require('sequelize');
 
 const GenericCRUD = require('../genericCrud');
 const premiumCrud = new GenericCRUD({ model: db.PremiumPackages, where: null });
@@ -8,6 +9,8 @@ const userCrud = new GenericCRUD({ model: db.User, where: null });
 
 const {errorSender} = require('../../utils');
 const HttpStatusCode = require('http-status-codes');
+
+const redisClient = require('../../utils/thirdParty/redis/redisClient');
 
 class PremiumPackageController {
     constructor() {}
@@ -64,30 +67,23 @@ class PremiumPackageController {
 
     async removePremiumPackageAsync(req, res) {
         const { packageID } = req.params;
+        const token = req.headers.authorization?.split(' ')[1];
 
         try {
-            await premiumCrud.delete({ packageID });
-
-            const orders = await ordersCrud.getAll({ where: { packageID } });
-
-            if (orders.length === 0) {
-                return res.status(200).json({
-                    message: 'Premium package deleted successfully. No users were affected by the deletion.',
-                    affectedUsersMappings: []
-                });
-            }
-
+            const orders = await ordersCrud.getAll({ where: { packageID: packageID } });
             const orderIDs = orders.map(order => order.orderID);
-
             const mappings = await premiumUsersCrud.getAll({ where: { orderID: orderIDs } });
 
-            if (mappings.length === 0) {
+            if (orders.length === 0 && mappings.length === 0) {
+                await premiumCrud.delete({ where: { packageID: packageID } });
+
                 return res.status(200).json({
                     message: 'Premium package deleted successfully. No users were affected by the deletion.',
                     affectedUsersMappings: []
                 });
             }
 
+            const affectedPremiumPackage = await premiumCrud.findOne({ where: {packageID: packageID}});
             const userIDs = mappings.map(mapping => mapping.userID);
 
             let affectedUsers = [];
@@ -106,21 +102,90 @@ class PremiumPackageController {
                             eMail: user.eMail,
                         };
                     });
-
-                // Add 'return' here to prevent further execution
-                return res.status(200).json({
-                    message: 'Premium package deleted. The users affected by the deletion are as follows.',
-                    affectedUsersMappings: affectedUsers
-                });
             }
 
-            // This will only be reached if userIDs.length === 0
+            const operationKey = crypto.randomUUID();
+            const redisKey = `operation:remove:premium-package:${operationKey}`;
+
+            await redisClient.set(
+                redisKey,
+                JSON.stringify({ packageID, affectedUsers, token }),
+                'EX',
+                180 // 3 dakika süreyle geçerli
+            );
+
             return res.status(200).json({
-                message: 'Premium package deleted successfully. No users were affected by the deletion.',
-                affectedUsersMappings: []
+                message: 'Premium package deletion requires confirmation. Use the provided operation key to confirm.',
+                operationKey: operationKey,
+                affectedPremiumPackage: affectedPremiumPackage.result,
+                deletedPremiumUsers: affectedUsers,
+                affectedOrders: orders
             });
         } catch (err) {
             console.error('Error deleting premium package:', err);
+            res.status(err.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
+        }
+    }
+
+    async confirmRemovePremiumPackageAsync(req, res) {
+        const { operationKey } = req.body;
+        const token = req.headers.authorization?.split(' ')[1];
+
+        const redisKey = `operation:remove:premium-package:${operationKey}`;
+
+        try {
+            const data = await redisClient.get(redisKey);
+
+            if (!data) {
+                return res.status(400).json({ message: 'Invalid or expired operation key.' });
+            }
+
+            const { packageID, affectedUsers, token: storedToken } = JSON.parse(data);
+
+            if (token !== storedToken) {
+                return res.status(403).json({ message: 'Invalid token for this operation.' });
+            }
+
+            console.log(affectedUsers);
+
+            if (Array.isArray(affectedUsers) && affectedUsers.length > 0) {
+                const userIDs = affectedUsers.map(user => user?.userID).filter(Boolean);
+
+                if (userIDs.length > 0) {
+                    console.log('Deleting premium users with IDs:', userIDs);
+
+                    await premiumUsersCrud.delete({
+                        where: {
+                            userID: {
+                                [Op.in]: userIDs
+                            }
+                        }
+                    });
+                }
+            }
+
+            const affectedOrders = await ordersCrud.getAll({ where: {packageID: packageID}});
+
+            await ordersCrud.delete({
+                where: {
+                    packageID: packageID
+                }
+            });
+
+            const affectedPremiumPackage = await premiumCrud.findOne({ where: {packageID: packageID}});
+
+            await premiumCrud.delete({ packageID });
+
+            await redisClient.del(redisKey);
+
+            return res.status(200).json({
+                message: 'Premium package, associated users, and orders deleted successfully.',
+                affectedPremiumPackage: affectedPremiumPackage.result,
+                deletedPremiumUsers: affectedUsers,
+                affectedOrders: affectedOrders
+            });
+        } catch (err) {
+            console.error('Error confirming premium package deletion:', err);
             res.status(err.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
         }
     }
