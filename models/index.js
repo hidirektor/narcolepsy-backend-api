@@ -221,17 +221,6 @@ db.Orders.hasOne(db.PremiumUsers, {
     onUpdate: 'CASCADE'
 });
 
-db.PremiumPackages.hasOne(db.Orders, {
-    foreignKey: 'packageID',
-    sourceKey: 'packageID',
-    onUpdate: 'CASCADE'
-});
-
-db.Orders.belongsTo(db.PremiumPackages, {
-    foreignKey: 'packageID',
-    targetKey: 'packageID'
-});
-
 db.PremiumUsers.belongsTo(db.Orders, {
     foreignKey: 'orderID',
     targetKey: 'orderID'
@@ -246,6 +235,30 @@ db.User.hasOne(db.PremiumUsers, {
 db.PremiumUsers.belongsTo(db.User, {
     foreignKey: 'userID',
     targetKey: 'userID'
+});
+
+db.Orders.hasOne(db.PremiumUsers, {
+    foreignKey: 'orderID',
+    sourceKey: 'orderID',
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+});
+
+db.PremiumUsers.belongsTo(db.Orders, {
+    foreignKey: 'orderID',
+    targetKey: 'orderID'
+});
+
+db.PremiumPackages.hasOne(db.Orders, {
+    foreignKey: 'packageID',
+    sourceKey: 'packageID',
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+});
+
+db.Orders.belongsTo(db.PremiumPackages, {
+    foreignKey: 'packageID',
+    targetKey: 'packageID'
 });
 
 /*

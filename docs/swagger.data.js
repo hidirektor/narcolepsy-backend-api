@@ -464,7 +464,7 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
-        controller: 'controllers/providers/comic.category.controller.getAll'
+        controller: 'controllers/providers/comic.category.controller.getAllCategoryAsync'
     },
     {
         sectionTitle: 'Comic Categories',
@@ -494,7 +494,7 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
-        controller: 'controllers/providers/comic.category.controller.getAll' // Eğer tekil get fonksiyonunuzun adı farklıysa burada güncelleyin
+        controller: 'controllers/providers/comic.category.controller.getCategoryAsync'
     },
     {
         sectionTitle: 'Comic Categories',
@@ -524,18 +524,16 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
-        controller: 'controllers/providers/comic.category.controller.create'
+        controller: 'controllers/providers/comic.category.controller.createCategoryAsync'
     },
     {
         sectionTitle: 'Comic Categories',
-        path: 'comic-categories/edit-category/{categoryID}',
+        path: 'comic-categories/edit-category',
         method: 'post',
         summary: 'Edit an existing comic category',
         description: 'Updates the specified comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).',
-        parameters: {
-            categoryID: 'categoryID'
-        },
         body: {
+            categoryID: { type: 'string', required: true, description: 'Uniqueu ID for desired comic category' },
             categoryName: { type: 'string', required: true, description: 'New name for the comic category' },
         },
         responses: {
@@ -558,7 +556,7 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
-        controller: 'controllers/providers/comic.category.controller.update'
+        controller: 'controllers/providers/comic.category.controller.updateCategoryAsync'
     },
     {
         sectionTitle: 'Comic Categories',
@@ -575,7 +573,163 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
-        controller: 'controllers/providers/comic.category.controller.remove'
+        controller: 'controllers/providers/comic.category.controller.removeCategoryAsync'
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/get-all',
+        method: 'get',
+        summary: 'List all premium packages',
+        description: 'Retrieves a list of all premium packages. Requires a valid token.',
+        responses: {
+            200: {
+                description: 'A list of premium packages',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    packageID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                    packageName: { type: 'string', example: 'Premium' },
+                                    packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                    packagePrice: { type: 'double', example: '54.99' },
+                                    packageTime: { type: 'integer', example: '30' },
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+        },
+        controller: 'controllers/providers/premium.package.controller.getAllPremiumPackageAsync'
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/get/{packageID}',
+        method: 'get',
+        summary: 'Get a specific premium package',
+        description: 'Retrieves a specific premium package by its unique ID. Requires valid token.',
+        parameters: {
+            packageID: 'packageID'
+        },
+        responses: {
+            200: {
+                description: 'Premium package detail',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                categoryID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                packageName: { type: 'string', example: 'Premium' },
+                                packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                packagePrice: { type: 'double', example: '54.99' },
+                                packageTime: { type: 'integer', example: '30' },
+                            }
+                        }
+                    }
+                }
+            },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Premium package not found.' }
+        },
+        controller: 'controllers/providers/premium.package.controller.getPremiumPackageAsync'
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/create-premium-package',
+        method: 'post',
+        summary: 'Create a new premium package',
+        description: 'Creates a new premium package. Requires valid token and role (SYSOP).',
+        body: {
+            packageName: { type: 'string', required: true, description: 'Name of the premium package' },
+            packageDescription: { type: 'string', required: true, description: 'Description of the premium package' },
+            packagePrice: { type: 'double', required: true, description: 'Price of the premium package' },
+            packageTime: { type: 'integer', required: true, description: 'Time of the premium package' },
+        },
+        responses: {
+            201: {
+                description: 'Premium package created successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                packageID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                packageName: { type: 'string', example: 'Premium' },
+                                packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                packagePrice: { type: 'double', example: '54.99' },
+                                packageTime: { type: 'integer', example: '30' },
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: 'Bad Request: Missing or invalid categoryName' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+        },
+        controller: 'controllers/providers/premium.package.controller.createPremiumPackageAsync'
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/edit-premium-package',
+        method: 'post',
+        summary: 'Edit an existing premium package',
+        description: 'Updates the specified premium package. Requires valid token and role (SYSOP).',
+        body: {
+            packageID: { type: 'string', required: true, description: 'Uniqueu ID for desired premium package' },
+            packageName: { type: 'string', required: true, description: 'New name for the premium package' },
+            packageDescription: { type: 'string', required: true, description: 'New description for the premium package' },
+            packagePrice: { type: 'double', required: true, description: 'New price for the premium package' },
+            packageTime: { type: 'integer', required: true, description: 'New time value for the premium package' },
+        },
+        responses: {
+            200: {
+                description: 'Premium package updated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                packageID: { type: 'string', example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' },
+                                packageName: { type: 'string', example: 'Premium' },
+                                packageDescription: { type: 'string', example: 'HD kullanılabilir.\nUltra HD kullanılabilir.' },
+                                packagePrice: { type: 'double', example: '54.99' },
+                                packageTime: { type: 'integer', example: '30' },
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: 'Bad Request: Missing or invalid packageName, packageDescription, packagePrice, packageTime' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Premium package not found.' }
+        },
+        controller: 'controllers/providers/premium.package.controller.updatePremiumPackageAsync'
+    },
+    {
+        sectionTitle: 'Premium Packages',
+        path: 'premium-packages/delete-premium-package/{packageID}',
+        method: 'delete',
+        summary: 'Delete a premium package',
+        description: 'Deletes the specified premium package. Requires valid token and role (SYSOP).',
+        parameters: {
+            packageID: 'packageID'
+        },
+        responses: {
+            204: { description: 'Package deleted successfully' },
+            401: { description: 'Unauthorized or Invalid Token' },
+            403: { description: 'Forbidden: Your role does not have access to this resource.' },
+            404: { description: 'Premium package not found.' }
+        },
+        controller: 'controllers/providers/premium.package.controller.removePremiumPackageAsync'
     }
 ];
 
