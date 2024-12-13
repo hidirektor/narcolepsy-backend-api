@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             profilePhotoID: {
                 type: Sequelize.STRING,
-                allowNull: false
+                defaultValue: null
             },
             avatarID: {
                 type: Sequelize.STRING,

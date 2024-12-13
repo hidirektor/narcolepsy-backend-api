@@ -404,6 +404,38 @@ const endpoints = [
             403: { description: 'Validation error.' },
         },
         controller: 'controllers/providers/profileController.getProfileAsync',
+    },
+    {
+        sectionTitle: 'File Management',
+        path: 'file/upload-profile-photo',
+        method: 'post',
+        summary: 'Upload user profile photo',
+        description: 'Uploads a profile photo for the specified user, identified either by eMail or by phoneNumber and countryCode. Accepts multipart/form-data.',
+        body: {
+            eMail: { type: 'string', required: false },
+            phoneNumber: { type: 'string', required: false },
+            countryCode: { type: 'string', required: false },
+            profilePhoto: { type: 'file', required: true, description: 'Profile photo image file (multipart/form-data)' }
+        },
+        responses: {
+            200: {
+                description: 'File uploaded successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'File uploaded successfully' },
+                                fileName: { type: 'string', example: 'profilephoto.jpg' }
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'User not found!' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/fileController.uploadProfilePhotoAsync',
     }
 ];
 

@@ -116,7 +116,6 @@ class AuthValidator {
                         .required(),
                     password: joi.string().max(99).required(),
                     birthDate: joi.string().max(99).required(),
-                    profilePhotoID: joi.string().max(99).required(),
                 })
                 .validateAsync(req.body);
             next();
