@@ -2,6 +2,7 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 const CommonValidator = require('./commonValidator');
 const roles = require('../../models/roles');
+const {isValidPhoneNumber} = require("libphonenumber-js");
 
 class UserValidator extends CommonValidator {
     constructor() {

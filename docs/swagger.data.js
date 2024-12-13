@@ -243,6 +243,168 @@ const endpoints = [
         },
         controller: 'controllers/providers/authController.verifyPaymentOnWebAsync',
     },
+    {
+        sectionTitle: 'User Profile',
+        path: 'user/get-profile',
+        method: 'post',
+        summary: 'Retrieve user profile information',
+        description: 'Fetches the detailed profile information of the authenticated user. Ensure the user is authenticated by providing a valid access token.',
+        body: {
+            eMail: { type: 'string', required: true },
+            phoneNumber: { type: 'string', required: false },
+            countryCode: { type: 'string', required: false },
+        },
+        responses: {
+            200: {
+                description: 'Profile retrieve successful',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                userData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        userName: { type: 'string', example: 'Halil İbrahim' },
+                                        userSurname: { type: 'string', example: 'Direktör' },
+                                        eMail: { type: 'string', example: 'hidirektor@gmail.com' },
+                                        nickName: { type: 'string', example: 'hidirektor' },
+                                        phoneNumber: { type: 'string', example: '5556783423' },
+                                        countryCode: { type: 'string', example: '+90' },
+                                        password: { type: 'string', example: '$2a$10$suV//NKJ1kkbSeRc97Not.JRB6GVfirsC7cSPBQxO67Cb6LymPS.a' },
+                                        userType: { type: 'string', example: 'PREMIUM' },
+                                    },
+                                },
+                                profileData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        profilePhotoID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        avatarID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        isActive: { type: 'boolean', example: 'true' },
+                                        birthDate: { type: 'string', example: '1734023795' },
+                                        updateDate: { type: 'string', example: '1734023795' },
+                                    },
+                                },
+                                preferencesData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        profilePhotoID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        language: { type: 'string', example: 'tr' },
+                                        themeColor: { type: 'string', example: 'dark' },
+                                        pushNotification: { type: 'boolean', example: 'true' },
+                                        mailNotification: { type: 'boolean', example: 'true' },
+                                    },
+                                },
+                                verificationData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        mailVerification: { type: 'string', example: '1734023795' },
+                                        phoneVerification: { type: 'string', example: '1734023795' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            401: { description: 'User not found!' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/profileController.getProfileAsync',
+    },
+    {
+        sectionTitle: 'User Profile',
+        path: 'user/update-profile',
+        method: 'post',
+        summary: 'Update user profile information',
+        description: "Allows authenticated users to update their profile details, including personal information, preferences, and other settings. The request body determines which fields to update, and any changes will also update the profile's timestamp. Ensure the user is authenticated by providing a valid access token.",
+        body: {
+            eMail: { type: 'string', required: true },
+            phoneNumber: { type: 'string', required: false },
+            countryCode: { type: 'string', required: false },
+            userName: { type: 'string', required: false },
+            userSurname: { type: 'string', required: false },
+            nickName: { type: 'string', required: false },
+            birthDate: { type: 'string', required: false },
+            language: { type: 'string', required: false },
+            themeColor: { type: 'string', required: false },
+            pushNotification: { type: 'boolean', required: false },
+            mailNotification: { type: 'boolean', required: false },
+        },
+        responses: {
+            200: {
+                description: 'Profile update successful',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                userData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        userName: { type: 'string', example: 'Halil İbrahim' },
+                                        userSurname: { type: 'string', example: 'Direktör' },
+                                        eMail: { type: 'string', example: 'hidirektor@gmail.com' },
+                                        nickName: { type: 'string', example: 'hidirektor' },
+                                        phoneNumber: { type: 'string', example: '5556783423' },
+                                        countryCode: { type: 'string', example: '+90' },
+                                        password: { type: 'string', example: '$2a$10$suV//NKJ1kkbSeRc97Not.JRB6GVfirsC7cSPBQxO67Cb6LymPS.a' },
+                                        userType: { type: 'string', example: 'PREMIUM' },
+                                    },
+                                },
+                                profileData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        profilePhotoID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        avatarID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        isActive: { type: 'boolean', example: 'true' },
+                                        birthDate: { type: 'string', example: '1734023795' },
+                                        updateDate: { type: 'string', example: '1734023795' },
+                                    },
+                                },
+                                preferencesData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        profilePhotoID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        language: { type: 'string', example: 'tr' },
+                                        themeColor: { type: 'string', example: 'dark' },
+                                        pushNotification: { type: 'boolean', example: 'true' },
+                                        mailNotification: { type: 'boolean', example: 'true' },
+                                    },
+                                },
+                                verificationData: {
+                                    type: 'object',
+                                    properties: {
+                                        id: { type: 'integer', example: 1 },
+                                        userID: { type: 'string', example: '7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a' },
+                                        mailVerification: { type: 'string', example: '1734023795' },
+                                        phoneVerification: { type: 'string', example: '1734023795' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            401: { description: 'User not found!' },
+            403: { description: 'Validation error.' },
+        },
+        controller: 'controllers/providers/profileController.getProfileAsync',
+    }
 ];
 
 module.exports = endpoints;
