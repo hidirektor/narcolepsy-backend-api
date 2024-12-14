@@ -6,6 +6,10 @@ class TicketValidator {
 
     static createTicket(req, res, next) {
         const schema = joi.object({
+            eMail: joi.string()
+                .email()
+                .max(100)
+                .required(),
             ticketType: joi.string().valid('SUGGESTION', 'PROBLEM', 'APPLY').required(),
             ticketTitle: joi.string().min(1).max(255).required(),
             ticketDescription: joi.string().min(1).max(2000).required(),

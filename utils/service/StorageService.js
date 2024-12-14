@@ -30,6 +30,34 @@ class StorageService {
             } else {
                 console.log(`Bucket already exists: ${bucketName}`);
             }
+            
+            if (bucketName === this.buckets.tickets) {
+                await this._createFolderIfNotExists(bucketName, 'ticket-attachments/');
+                await this._createFolderIfNotExists(bucketName, 'response-attachments/');
+            }
+        }
+    }
+
+    /**
+     * Bucket içinde belirtilen klasör yoksa oluşturur.
+     * @param {string} bucketName - Bucket adı.
+     * @param {string} folderPath - Klasör yolu.
+     */
+    async _createFolderIfNotExists(bucketName, folderPath) {
+        try {
+            const objectName = `${folderPath}.placeholder`;
+            const exists = await this.minioClient.statObject(bucketName, objectName).catch(() => null);
+
+            if (!exists) {
+                await this.minioClient.putObject(bucketName, objectName, Buffer.from(''), {
+                    'Content-Type': 'application/octet-stream'
+                });
+                console.log(`Folder created: ${folderPath} in bucket: ${bucketName}`);
+            } else {
+                console.log(`Folder already exists: ${folderPath} in bucket: ${bucketName}`);
+            }
+        } catch (error) {
+            console.error(`Error creating folder ${folderPath} in bucket ${bucketName}:`, error);
         }
     }
 

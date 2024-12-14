@@ -44,6 +44,7 @@ db.PremiumUsers = require('./premium.user.model.js')(sequelize, Sequelize);
 db.PremiumPackages = require('./premium.package.model.js')(sequelize, Sequelize);
 
 db.Tickets = require('./support.ticket.model.js')(sequelize, Sequelize);
+db.TicketResponses = require('./support.ticket.response.model.js')(sequelize, Sequelize);
 
 db.FollowedComic = require('./followed.comic.model.js')(sequelize, Sequelize);
 
@@ -298,6 +299,18 @@ db.ComicEpisode.hasOne(db.Tickets, {
 db.Tickets.belongsTo(db.ComicEpisode, {
     foreignKey: 'episodeID',
     targetKey: 'episodeID'
+});
+
+db.Tickets.hasOne(db.TicketResponses, {
+    foreignKey: 'ticketID',
+    sourceKey: 'ticketID',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+});
+
+db.TicketResponses.belongsTo(db.Tickets, {
+    foreignKey: 'ticketID',
+    targetKey: 'ticketID'
 });
 
 /*

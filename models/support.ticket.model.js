@@ -47,22 +47,17 @@ module.exports = (sequelize, Sequelize) => {
                 unique: false,
                 allowNull: true
             },
-            appliedRole: {
-                type: Sequelize.STRING,
-                unique: false,
-                allowNull: true
-            },
             ticketStatus: {
                 type: Sequelize.ENUM,
                 unique: false,
                 values: [ticket_status_types.CREATED, ticket_status_types.ANSWERED, ticket_status_types.CUSTOMER_RESPONSE, ticket_status_types.CLOSED],
                 allowNull: false
             },
-            ticketResponse: {
+            ticketAttachments: {
                 type: Sequelize.STRING,
                 unique: false,
                 allowNull: false
-            },
+            }
         },
         {
             timestamps: false,

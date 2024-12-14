@@ -4,17 +4,29 @@ const { v4: uuidv4 } = require('uuid');
 const GenericCRUD = require('../genericCrud');
 const StorageService = require('../../utils/service/StorageService');
 
-const ticketCrud = new GenericCRUD({ model: db.SupportTickets, where: null });
+const userCrud = new GenericCRUD({ model: db.User, where: null });
+const ticketCrud = new GenericCRUD({ model: db.Tickets, where: null });
 const redisClient = require('../../utils/thirdParty/redis/redisClient');
 const HttpStatusCode = require('http-status-codes');
+const {errorSender} = require("../../utils");
 
 class TicketController {
     constructor() {}
 
     // Destek talebi oluşturma
     async createTicketAsync(req, res) {
-        const { ticketType, ticketTitle, ticketDescription } = req.body;
-        const userID = req.user.id; // Kullanıcı ID'si (token'dan alınır)
+        const { eMail, ticketType, ticketTitle, ticketDescription } = req.body;
+
+        const user = await userCrud.findOne({ where: {eMail: eMail}});
+
+        if (!user.result.userID) {
+            throw errorSender.errorObject(
+                HttpStatusCode.NOT_FOUND,
+                'User not found!'
+            );
+        }
+
+        const userID = user.result.userID;
 
         try {
             const lastCreatedTimestamp = await redisClient.get(`create-ticket:${userID}`);
@@ -58,7 +70,16 @@ class TicketController {
 
     // Kullanıcının destek taleplerini listeleme
     async getMyTicketsAsync(req, res) {
-        const userID = req.user.id;
+        const { eMail } = req.params;
+
+        const user = await userCrud.findOne({ where: {eMail: eMail}});
+
+        if (!user.result.userID) {
+            throw errorSender.errorObject(
+                HttpStatusCode.NOT_FOUND,
+                'User not found!'
+            );
+        }
 
         try {
             const tickets = await ticketCrud.getAll({ where: { userID } });
