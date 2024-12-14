@@ -469,6 +469,123 @@ class TicketController {
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
         }
     }
+
+    async editResponseAsync(req, res) {
+        const { responseID, ticketResponse } = req.body;
+        const userID = req.decode?.userID;
+
+        try {
+            if (!responseID || !ticketResponse) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'responseID and ticketResponse are required.',
+                });
+            }
+
+            const response = await ticketResponseCrud.findOne({ where: { responseID } });
+
+            if (!response || !response.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({
+                    message: 'Response not found',
+                });
+            }
+
+            const responseData = response.result;
+
+            const ticket = await ticketCrud.findOne({ where: { ticketID: responseData.ticketID } });
+
+            if (!ticket || !ticket.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({
+                    message: 'Associated ticket not found',
+                });
+            }
+
+            const ticketData = ticket.result;
+
+            if (ticketData.ticketStatus === 'CLOSED') {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'This response cannot be edited as the associated ticket is closed.',
+                });
+            }
+
+            if (responseData.userID !== userID) {
+                return res.status(HttpStatusCode.FORBIDDEN).json({
+                    message: 'You are not authorized to edit this response.',
+                });
+            }
+
+            responseData.ticketResponse = ticketResponse;
+
+            await responseData.save();
+
+            res.status(HttpStatusCode.OK).json({
+                message: 'Response updated successfully',
+                updatedResponse: {
+                    responseID: responseData.responseID,
+                    ticketResponse: responseData.ticketResponse,
+                },
+            });
+        } catch (error) {
+            console.error('Error editing response:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async editTicketAsync(req, res) {
+        const { ticketID, ticketTitle, ticketDescription } = req.body;
+        const userID = req.decode?.userID;
+        const userType = req.decode?.userType;
+
+        try {
+            if (!ticketID || (!ticketTitle && !ticketDescription)) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'ticketID is required, and at least one of ticketTitle or ticketDescription must be provided.',
+                });
+            }
+
+            const ticket = await ticketCrud.findOne({ where: { ticketID } });
+
+            if (!ticket || !ticket.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({
+                    message: 'Ticket not found',
+                });
+            }
+
+            const ticketData = ticket.result;
+
+            if (ticketData.ticketStatus === 'CLOSED') {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'This ticket is closed and cannot be edited.',
+                });
+            }
+
+            if (['USER', 'PREMIUM'].includes(userType) && ticketData.userID !== userID) {
+                return res.status(HttpStatusCode.FORBIDDEN).json({
+                    message: 'You are not authorized to edit this ticket.',
+                });
+            }
+
+            if (ticketTitle) {
+                ticketData.ticketTitle = ticketTitle;
+            }
+            if (ticketDescription) {
+                ticketData.ticketDescription = ticketDescription;
+            }
+
+            await ticketData.save();
+
+            res.status(HttpStatusCode.OK).json({
+                message: 'Ticket updated successfully',
+                updatedTicket: {
+                    ticketID: ticketData.ticketID,
+                    ticketTitle: ticketData.ticketTitle,
+                    ticketDescription: ticketData.ticketDescription,
+                },
+            });
+        } catch (error) {
+            console.error('Error editing ticket:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
 }
 
 module.exports = TicketController;

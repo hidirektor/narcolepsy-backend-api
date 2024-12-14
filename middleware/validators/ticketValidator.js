@@ -165,6 +165,29 @@ class TicketValidator extends CommonValidator {
             .then(() => next())
             .catch((err) => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
     }
+
+    static editResponse(req, res, next) {
+        const schema = joi.object({
+            responseID: joi.string().guid({ version: 'uuidv4' }).required(),
+            ticketResponse: joi.string().min(1).max(2000).required(),
+        });
+
+        schema.validateAsync(req.body)
+            .then(() => next())
+            .catch((err) => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static editTicket(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).required(),
+            ticketTitle: joi.string().min(1).max(255).optional(),
+            ticketDescription: joi.string().min(1).max(2000).optional(),
+        }).or('ticketTitle', 'ticketDescription');
+
+        schema.validateAsync(req.body)
+            .then(() => next())
+            .catch((err) => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
 }
 
 module.exports = TicketValidator;

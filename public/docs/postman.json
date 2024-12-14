@@ -763,7 +763,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"ticketID\": \"55df2bae-2f9d-4c97-9910-21bacb2796e9\",\r\n    \"ticketResponse\": \"Test 123\"\r\n}\r\n",
+							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"ticketID\": \"a96d0db1-39d7-4965-b936-c61d3ab39952\",\r\n    \"ticketResponse\": \"Test 123\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1158,7 +1158,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete Response",
+					"name": "Delete Support Ticket Response",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1179,6 +1179,72 @@
 							],
 							"path": [
 								"a29e3821-b78a-4b05-beb5-0dc1599bddf0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Support Ticket Response",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"responseID\": \"bac7d37f-1cf9-4f8a-b8a9-a769f74e17a2\",\r\n    \"ticketResponse\": \"Düzenlenmiş response\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}edit-response",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}edit-response"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketID\": \"a96d0db1-39d7-4965-b936-c61d3ab39952\",\r\n    \"ticketTitle\": \"Halil 1234\",\r\n    \"ticketDescription\": \"Sunucu arızası var.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}edit-ticket",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}edit-ticket"
 							]
 						}
 					},

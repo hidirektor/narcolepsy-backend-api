@@ -109,4 +109,18 @@ router.delete(
     ticketController.deleteResponseAsync
 );
 
+router.put(
+    '/edit-response',
+    tokenControl,
+    ticketValidator.editResponse,
+    ticketController.editResponseAsync
+);
+
+router.put(
+    '/edit-ticket',
+    tokenControl,
+    ticketValidator.editTicket,
+    ticketController.editTicketAsync
+);
+
 module.exports = router;

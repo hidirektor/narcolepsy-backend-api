@@ -1692,6 +1692,178 @@ const endpoints = [
             },
         ],
         controller: 'controllers/providers/ticketController.deleteResponseAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/edit-response',
+        method: 'put',
+        summary: 'Edit a ticket response',
+        description: 'Allows users to edit their responses to tickets. Responses cannot be edited if the associated ticket is closed.',
+        body: {
+            responseID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the response to edit.',
+            },
+            ticketResponse: {
+                type: 'string',
+                required: true,
+                description: 'The updated content of the response.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Response updated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Response updated successfully' },
+                                updatedResponse: {
+                                    type: 'object',
+                                    properties: {
+                                        responseID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketResponse: { type: 'string', example: 'Updated response content' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: {
+                description: 'Invalid input or response cannot be edited',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'This response cannot be edited as the associated ticket is closed.' },
+                            },
+                        },
+                    },
+                },
+            },
+            403: { description: 'Unauthorized: User does not own the response' },
+            404: { description: 'Response or associated ticket not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/ticketController.editResponseAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/edit-ticket',
+        method: 'put',
+        summary: 'Edit an existing ticket',
+        description: 'Allows users to edit their own tickets. At least one of "ticketTitle" or "ticketDescription" must be provided. Tickets with "CLOSED" status cannot be edited.',
+        parameters: null,
+        body: {
+            ticketID: {
+                type: 'string',
+                description: 'The UUID of the ticket to edit',
+                required: true,
+                example: '9b3c2345-5a1e-4e6d-96cd-10b821f92f2f',
+            },
+            ticketTitle: {
+                type: 'string',
+                description: 'The new title of the ticket',
+                required: false,
+                example: 'Updated Ticket Title',
+            },
+            ticketDescription: {
+                type: 'string',
+                description: 'The new description of the ticket',
+                required: false,
+                example: 'Updated Ticket Description',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Ticket updated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket updated successfully' },
+                                updatedTicket: {
+                                    type: 'object',
+                                    properties: {
+                                        ticketID: { type: 'string', example: '9b3c2345-5a1e-4e6d-96cd-10b821f92f2f' },
+                                        ticketTitle: { type: 'string', example: 'Updated Ticket Title' },
+                                        ticketDescription: { type: 'string', example: 'Updated Ticket Description' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: {
+                description: 'Validation error or invalid ticket status',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Validation error message or "This ticket is closed and cannot be edited"' },
+                            },
+                        },
+                    },
+                },
+            },
+            403: {
+                description: 'Unauthorized: User is not allowed to edit this ticket',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'You are not authorized to edit this ticket' },
+                            },
+                        },
+                    },
+                },
+            },
+            404: {
+                description: 'Ticket not found',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket not found' },
+                            },
+                        },
+                    },
+                },
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'An error occurred while processing the request' },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/ticketController.editTicketAsync',
     }
 ];
 
