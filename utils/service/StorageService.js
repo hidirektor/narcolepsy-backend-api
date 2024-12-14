@@ -237,6 +237,43 @@ class StorageService {
             throw new Error('Failed to generate ticket image URL.');
         }
     }
+
+    /**
+     * Deletes all objects within a specified folder in a bucket.
+     * @param {string} bucketName - The bucket name.
+     * @param {string} folderPath - The folder path to delete.
+     * @returns {Promise<void>}
+     */
+    async deleteFolder(bucketName, folderPath) {
+        try {
+            const objectsStream = this.minioClient.listObjects(bucketName, folderPath, true);
+            const objectsToDelete = [];
+
+            for await (const obj of objectsStream) {
+                objectsToDelete.push(obj.name);
+            }
+
+            if (objectsToDelete.length > 0) {
+                const deleteChunks = [];
+                const chunkSize = 1000;
+
+                for (let i = 0; i < objectsToDelete.length; i += chunkSize) {
+                    deleteChunks.push(objectsToDelete.slice(i, i + chunkSize));
+                }
+
+                for (const chunk of deleteChunks) {
+                    await this.minioClient.removeObjects(bucketName, chunk);
+                }
+
+                console.log(`Deleted folder: ${folderPath} and its contents in bucket: ${bucketName}`);
+            } else {
+                console.log(`No objects found in folder: ${folderPath}`);
+            }
+        } catch (error) {
+            console.error(`Error deleting folder ${folderPath} in bucket ${bucketName}:`, error);
+            throw new Error('Failed to delete folder.');
+        }
+    }
 }
 
 module.exports = StorageService;

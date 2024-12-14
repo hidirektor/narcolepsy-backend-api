@@ -1131,6 +1131,86 @@ const endpoints = [
             500: { description: 'Internal server error' },
         },
         controller: 'controllers/providers/ticketController.replyTicketWithAttachmentAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/delete-ticket/{ticketID}',
+        method: 'delete',
+        summary: 'Initiate deletion of a ticket',
+        description: 'Allows SYSOP users to initiate ticket deletion. Returns an operation key for confirmation.',
+        parameters: {
+            ticketID: { type: 'string', required: true, description: 'ID of the ticket to be deleted.' }
+        },
+        responses: {
+            200: {
+                description: 'Ticket deletion initiation successful',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket deletion requires confirmation. Use the provided operation key to confirm.' },
+                                operationKey: { type: 'string', example: 'uuid-v4-string' },
+                                ticketData: {
+                                    type: 'object',
+                                    properties: {
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketType: { type: 'string', example: 'SUGGESTION' },
+                                        ticketTitle: { type: 'string', example: 'App Issue' },
+                                        ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                        ticketStatus: { type: 'string', example: 'CREATED' },
+                                    },
+                                },
+                                responseData: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            responseID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketResponse: { type: 'string', example: 'Reply content' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error: Invalid ticket ID or other issues' },
+            403: { description: 'Unauthorized: Only SYSOP users can access this endpoint' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.deleteTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/confirm-delete-ticket',
+        method: 'post',
+        summary: 'Confirm ticket deletion',
+        description: 'Allows SYSOP users to confirm ticket deletion using an operation key. Deletes the ticket and its associated data.',
+        body: {
+            operationKey: { type: 'string', required: true, description: 'Unique operation key received during deletion initiation.' },
+        },
+        responses: {
+            200: {
+                description: 'Ticket and associated data deleted successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket and associated data deleted successfully.' },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid or expired operation key.' },
+            403: { description: 'Unauthorized: Only SYSOP users can access this endpoint' },
+            404: { description: 'Ticket not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.confirmDeleteTicketAsync',
     }
 ];
 

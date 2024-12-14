@@ -191,6 +191,81 @@ class TicketController {
                 .send(error.message);
         }
     }
+
+    async deleteTicketAsync(req, res) {
+        const { ticketID } = req.params;
+
+        try {
+            const findTicket = await ticketCrud.findOne({ where: { ticketID } });
+            if (!findTicket.result.ticketID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'Ticket not found!'
+                );
+            }
+
+            const findResponses = await ticketResponseCrud.getAll({ where: { ticketID } });
+
+            const operationKey = uuidv4();
+            const redisKey = `operation:remove:ticket:${operationKey}`;
+
+            await redisClient.set(
+                redisKey,
+                JSON.stringify({ ticketID }),
+                'EX',
+                180 // 3 minutes expiration
+            );
+
+            res.json({
+                message: 'Ticket deletion requires confirmation. Use the provided operation key to confirm.',
+                operationKey,
+                ticketData: findTicket.result,
+                responseData: findResponses.result || []
+            });
+        } catch (error) {
+            console.error('Error initiating ticket deletion:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
+        }
+    }
+
+    async confirmDeleteTicketAsync(req, res) {
+        const { operationKey } = req.body;
+
+        try {
+            const redisKey = `operation:remove:ticket:${operationKey}`;
+            const data = await redisClient.get(redisKey);
+
+            if (!data) {
+                return res.status(400).json({ message: 'Invalid or expired operation key.' });
+            }
+
+            const { ticketID } = JSON.parse(data);
+            const findTicket = await ticketCrud.findOne({ where: { ticketID } });
+            if (!findTicket.result.ticketID) {
+                return res.status(404).json({ message: 'Ticket not found!' });
+            }
+
+            const responseAttachmentsPath = `response-attachments/${ticketID}/`;
+            const ticketAttachmentsPath = `ticket-attachments/${ticketID}/`;
+
+            await storageService.deleteFolder(storageService.buckets.tickets, ticketAttachmentsPath);
+            await storageService.deleteFolder(storageService.buckets.tickets, responseAttachmentsPath);
+
+            await ticketResponseCrud.delete({ where: { ticketID } });
+            await ticketCrud.delete({ where: { ticketID } });
+
+            await redisClient.del(redisKey);
+
+            res.json({ message: 'Ticket and associated data deleted successfully.' });
+        } catch (error) {
+            console.error('Error confirming ticket deletion:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
+        }
+    }
 }
 
 module.exports = TicketController;

@@ -75,6 +75,26 @@ class TicketValidator extends CommonValidator {
 
         next();
     }
+
+    static deleteTicket(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).required()
+        });
+
+        schema.validateAsync(req.params)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static confirmDeleteTicket(req, res, next) {
+        const schema = joi.object({
+            operationKey: joi.string().guid({ version: 'uuidv4' }).required()
+        });
+
+        schema.validateAsync(req.body)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
 }
 
 module.exports = TicketValidator;
