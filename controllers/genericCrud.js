@@ -33,9 +33,9 @@ class GenericCRUD {
         }
     }
 
-    async getAll() {
-        const items = await this.model.findAll({where: this.where});
-        this.setWhere();
+    async getAll(options = {}) {
+        const { where = {}, logging = false } = options;
+        const items = await this.model.findAll({ where, logging });
         return items;
     }
 

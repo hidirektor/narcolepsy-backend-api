@@ -1211,6 +1211,235 @@ const endpoints = [
             500: { description: 'Internal server error' },
         },
         controller: 'controllers/providers/ticketController.confirmDeleteTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/get-all',
+        method: 'get',
+        summary: 'Fetch all tickets',
+        description: 'Allows SYSOP users to fetch all tickets and their responses. Optionally filter by ticket status. Optional filter for ticket status (e.g., CREATED, ANSWERED, CUSTOMER_RESPONSE).',
+        parameters: {
+            status: {
+                type: 'string',
+                required: false,
+                description: 'Optional filter for ticket status (e.g., CREATED, ANSWERED, CUSTOMER_RESPONSE).',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Tickets fetched successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Tickets fetched successfully' },
+                                tickets: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketType: { type: 'string', example: 'SUGGESTION' },
+                                            ticketTitle: { type: 'string', example: 'App Issue' },
+                                            ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                            ticketStatus: { type: 'string', example: 'CREATED' },
+                                        },
+                                    },
+                                },
+                                responses: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            responseID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketResponse: { type: 'string', example: 'Reply content' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            403: { description: 'Unauthorized: Only SYSOP users can access this endpoint' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.getAllTicketsAsync',
+    },
+
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/get-ticket/{ticketID}',
+        method: 'get',
+        summary: 'Fetch specific ticket and responses',
+        description: 'Fetches a specific ticket and its associated responses by ticket ID.',
+        parameters: {
+            ticketID: { type: 'string', required: true, description: 'The unique ID of the ticket.' },
+        },
+        responses: {
+            200: {
+                description: 'Ticket and responses fetched successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket fetched successfully' },
+                                ticket: {
+                                    type: 'object',
+                                    properties: {
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketType: { type: 'string', example: 'SUGGESTION' },
+                                        ticketTitle: { type: 'string', example: 'App Issue' },
+                                        ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                        ticketStatus: { type: 'string', example: 'CREATED' },
+                                    },
+                                },
+                                responses: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            responseID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketResponse: { type: 'string', example: 'Reply content' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Ticket not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.getTicketByIDAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/get-response/{responseID}',
+        method: 'get',
+        summary: 'Fetch specific response',
+        description: 'Fetches a specific response by its response ID.',
+        parameters: {
+            responseID: { type: 'string', required: true, description: 'The unique ID of the response.' },
+        },
+        responses: {
+            200: {
+                description: 'Response fetched successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Response fetched successfully' },
+                                response: {
+                                    type: 'object',
+                                    properties: {
+                                        responseID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketResponse: { type: 'string', example: 'Reply content' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Response not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.getResponseByIDAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/get-responses/{ticketID}',
+        method: 'get',
+        summary: 'Fetch all responses for a ticket',
+        description: 'Fetches all responses associated with a specific ticket by ticket ID.',
+        parameters: {
+            ticketID: { type: 'string', required: true, description: 'The unique ID of the ticket.' },
+        },
+        responses: {
+            200: {
+                description: 'Responses fetched successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Responses fetched successfully' },
+                                responses: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            responseID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketResponse: { type: 'string', example: 'Reply content' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Ticket not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.getResponsesByTicketIDAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/get-user-ticket/{eMail}',
+        method: 'get',
+        summary: 'Fetch user tickets and responses',
+        description: 'Fetches all tickets and responses for a specific user by their email address.',
+        parameters: {
+            eMail: { type: 'string', required: true, description: 'The email address of the user.' },
+        },
+        responses: {
+            200: {
+                description: 'User tickets and responses fetched successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'User tickets fetched successfully' },
+                                tickets: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketType: { type: 'string', example: 'SUGGESTION' },
+                                            ticketTitle: { type: 'string', example: 'App Issue' },
+                                            ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                            ticketStatus: { type: 'string', example: 'CREATED' },
+                                        },
+                                    },
+                                },
+                                responses: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            responseID: { type: 'string', example: 'uuid-v4-string' },
+                                            ticketResponse: { type: 'string', example: 'Reply content' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'User not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.getUserTicketsAsync',
     }
 ];
 

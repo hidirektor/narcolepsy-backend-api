@@ -3,6 +3,8 @@ const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const GenericCRUD = require('../genericCrud');
 
+const ticketStatusEnum = require('../../models/ticket_status_types');
+
 const StorageService = require('../../utils/service/StorageService');
 const storageService = new StorageService({
     endPoint: process.env.MINIO_ENDPOINT,
@@ -264,6 +266,128 @@ class TicketController {
             res
                 .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
                 .send(error.message);
+        }
+    }
+
+    async getAllTicketsAsync(req, res) {
+        const { status } = req.query;
+
+        try {
+            let condition = {};
+
+            if (status) {
+                if (!Object.values(ticketStatusEnum).includes(status)) {
+                    return res.status(400).json({ message: 'Invalid status value' });
+                }
+                condition = { ticketStatus: status };
+            }
+
+            const tickets = await ticketCrud.getAll({  where: condition });
+            const ticketsResult = Array.isArray(tickets) ? tickets : [];
+            const ticketIDs = ticketsResult.map(ticket => ticket.ticketID);
+
+            const responses = await ticketResponseCrud.getAll({
+                where: { ticketID: { [Op.in]: ticketIDs } }
+            });
+
+            const responsesResult = Array.isArray(responses) ? responses : [];
+
+            res.json({
+                message: 'Tickets fetched successfully',
+                tickets: ticketsResult,
+                responses: responsesResult
+            });
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async getTicketByIDAsync(req, res) {
+        const { ticketID } = req.params;
+
+        try {
+            const ticket = await ticketCrud.findOne({ where: { ticketID } });
+            if (!ticket.result) {
+                throw errorSender.errorObject(HttpStatusCode.NOT_FOUND, 'Ticket not found!');
+            }
+
+            const responses = await ticketResponseCrud.getAll({ where: { ticketID } });
+
+            res.json({
+                message: 'Ticket fetched successfully',
+                ticket: ticket.result,
+                responses: responses.result || []
+            });
+        } catch (error) {
+            console.error('Error fetching ticket:', error);
+            res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async getResponseByIDAsync(req, res) {
+        const { responseID } = req.params;
+
+        try {
+            const response = await ticketResponseCrud.findOne({ where: { responseID } });
+            if (!response.result) {
+                throw errorSender.errorObject(HttpStatusCode.NOT_FOUND, 'Response not found!');
+            }
+
+            res.json({ message: 'Response fetched successfully', response: response.result });
+        } catch (error) {
+            console.error('Error fetching response:', error);
+            res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async getResponsesByTicketIDAsync(req, res) {
+        const { ticketID } = req.params;
+
+        try {
+            const responses = await ticketResponseCrud.getAll({ where: { ticketID } });
+            res.json({ message: 'Responses fetched successfully', responses: responses.result || [] });
+        } catch (error) {
+            console.error('Error fetching responses:', error);
+            res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async getUserTicketsAsync(req, res) {
+        const { eMail } = req.params;
+
+        try {
+            const user = await userCrud.findOne({ where: { eMail } });
+            if (!user.result.userID) {
+                throw errorSender.errorObject(HttpStatusCode.NOT_FOUND, 'User not found!');
+            }
+
+            const tickets = await ticketCrud.getAll({ where: { userID: user.result.userID } });
+            const ticketIDs = [];
+
+            if (Array.isArray(tickets)) {
+                for (const ticket of tickets) {
+                    ticketIDs.push(ticket.ticketID);
+                }
+            } else {
+                console.error('Tickets is not an array:', tickets);
+            }
+
+            console.log(tickets);
+            console.log(ticketIDs);
+
+            const responses = await ticketResponseCrud.getAll({
+                where: { ticketID: { [Op.in]: ticketIDs } }
+            });
+
+            res.json({
+                message: 'User tickets fetched successfully',
+                tickets: tickets,
+                responses: responses.result || [] // Handle undefined or empty result
+            });
+        } catch (error) {
+            console.error('Error fetching user tickets:', error);
+            res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
         }
     }
 }

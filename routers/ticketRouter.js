@@ -59,4 +59,40 @@ router.post(
     ticketController.confirmDeleteTicketAsync
 );
 
+router.get(
+    '/get-all',
+    tokenControl,
+    Authorization.authControl([SYSOP]),
+    ticketValidator.getAllTickets,
+    ticketController.getAllTicketsAsync
+);
+
+router.get(
+    '/get-ticket/:ticketID',
+    tokenControl,
+    ticketValidator.getTicketByID,
+    ticketController.getTicketByIDAsync
+);
+
+router.get(
+    '/get-response/:responseID',
+    tokenControl,
+    ticketValidator.getResponseByID,
+    ticketController.getResponseByIDAsync
+);
+
+router.get(
+    '/get-responses/:ticketID',
+    tokenControl,
+    ticketValidator.getResponsesByTicketID,
+    ticketController.getResponsesByTicketIDAsync
+);
+
+router.get(
+    '/get-user-ticket/:eMail',
+    tokenControl,
+    ticketValidator.getUserTickets,
+    ticketController.getUserTicketsAsync
+);
+
 module.exports = router;

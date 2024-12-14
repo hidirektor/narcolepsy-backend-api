@@ -95,6 +95,56 @@ class TicketValidator extends CommonValidator {
             .then(() => next())
             .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
     }
+
+    static getAllTickets(req, res, next) {
+        const schema = joi.object({
+            status: joi.string().valid('CREATED', 'ANSWERED', 'CUSTOMER_RESPONSE', 'CLOSED').optional()
+        });
+
+        schema.validateAsync(req.query)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static getTicketByID(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).required()
+        });
+
+        schema.validateAsync(req.params)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static getResponseByID(req, res, next) {
+        const schema = joi.object({
+            responseID: joi.string().guid({ version: 'uuidv4' }).required()
+        });
+
+        schema.validateAsync(req.params)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static getResponsesByTicketID(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).required()
+        });
+
+        schema.validateAsync(req.params)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static getUserTickets(req, res, next) {
+        const schema = joi.object({
+            eMail: joi.string().email().required()
+        });
+
+        schema.validateAsync(req.params)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
 }
 
 module.exports = TicketValidator;
