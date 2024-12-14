@@ -1,0 +1,1200 @@
+{
+	"info": {
+		"_postman_id": "1e51ef96-b4a4-4062-8269-b12538a6664a",
+		"name": "NarcoLepsy Back End",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22139323"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"5372398284\",\r\n    \"countryCode\": \"+90\",\r\n    \"password\": \"asdasd\",\r\n    \"rememberMe\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}sign-in",
+							"host": [
+								"{{base_url}}{{auth_url}}sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"Halil İbrahim\",\r\n    \"userSurname\": \"Direktör\",\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"nickName\": \"hidirektor\",\r\n    \"phoneNumber\": \"5372398284\",\r\n    \"countryCode\": \"+90\",\r\n    \"password\": \"asdasd\",\r\n    \"birthDate\": \"991087066\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}sign-up",
+							"host": [
+								"{{base_url}}{{auth_url}}sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIzZjlhOTVmYy0zNTI5LTQ1ZDAtOTZiOC0yNjgxMDY3MzljNGEiLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzM5NTU3MjksImV4cCI6MTczNDA0MjEyOX0.3sCg_wJQwc0Ionq1wfA_gisczJ0Rk5GLEv9vOBY1wGM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"hidirektor\",\r\n    \"oldPassword\": \"asdasd\",\r\n    \"newPassword\": \"asdasd2\",\r\n    \"closeSessions\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}change-password",
+							"host": [
+								"{{base_url}}{{auth_url}}change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"hidirektor\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}send-otp",
+							"host": [
+								"{{base_url}}{{auth_url}}send-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"hidirektor\",\r\n    \"newPassword\": \"asdasd2\",\r\n    \"otpCode\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}reset-password",
+							"host": [
+								"{{base_url}}{{auth_url}}reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OTP Verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"hidirektor\",\r\n    \"otpCode\": \"123567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{auth_url}}verify-otp",
+							"host": [
+								"{{base_url}}{{auth_url}}verify-otp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Start CF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"150cf986-e74e-4e80-b7a0-b22e0e0348b7\",\r\n    \"packageID\": \"fc224dd0-b26b-4536-b6fe-e3a8a38f8a05\",\r\n    \"ipAddress\": \"192.168.2.2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{payment_url}}start-checkout-form",
+							"host": [
+								"{{base_url}}{{payment_url}}start-checkout-form"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Payment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{payment_url}}verify-payment/38c98d35-65d6-4f2f-b3c1-1cac6ddcb01c",
+							"host": [
+								"{{base_url}}{{payment_url}}verify-payment"
+							],
+							"path": [
+								"38c98d35-65d6-4f2f-b3c1-1cac6ddcb01c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{payment_url}}check-payment/38c98d35-65d6-4f2f-b3c1-1cac6ddcb01c",
+							"host": [
+								"{{base_url}}{{payment_url}}check-payment"
+							],
+							"path": [
+								"38c98d35-65d6-4f2f-b3c1-1cac6ddcb01c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIzOGM5OGQzNS02NWQ2LTRmMmYtYjNjMS0xY2FjNmRkY2IwMWMiLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQwODk0NzAsImV4cCI6MTczNDE3NTg3MH0.FmdQvcZPiB-6bjv--ExmZytJQjkWVy_1A6KjLfeQaJU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user_url}}get-profile",
+							"host": [
+								"{{base_url}}{{user_url}}get-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIzOGM5OGQzNS02NWQ2LTRmMmYtYjNjMS0xY2FjNmRkY2IwMWMiLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQwODk0NzAsImV4cCI6MTczNDE3NTg3MH0.FmdQvcZPiB-6bjv--ExmZytJQjkWVy_1A6KjLfeQaJU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"userName\": \"Halil İbrahim\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user_url}}update-profile",
+							"host": [
+								"{{base_url}}{{user_url}}update-profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Management",
+			"item": [
+				{
+					"name": "Upload Profile Photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJkNDRkYzA1NS01MjU1LTQxOTctOWMwYy05YWU0MDlhNmZkYjAiLCJ1c2VyVHlwZSI6IlVTRVIiLCJpYXQiOjE3MzQwOTU0MzksImV4cCI6MTczNDE4MTgzOX0.bF-3pYSV2P3aD_A_G6XFp6wccERqxW249xnTxzTRp-s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "eMail",
+									"value": "hidirektor@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "profilePhoto",
+									"type": "file",
+									"src": "/C:/Users/hidir/OneDrive/Masaüstü/anime-cautious-hero.gif"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{file_url}}upload-profile-photo",
+							"host": [
+								"{{base_url}}{{file_url}}upload-profile-photo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comic Category",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}get-all",
+							"host": [
+								"{{base_url}}{{comic_category_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}get/ca358934-c2e4-45ac-a64b-a7e7ff61be98",
+							"host": [
+								"{{base_url}}{{comic_category_url}}get"
+							],
+							"path": [
+								"ca358934-c2e4-45ac-a64b-a7e7ff61be98"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryName\": \"Macera\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}create-category",
+							"host": [
+								"{{base_url}}{{comic_category_url}}create-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryID\": \"ca358934-c2e4-45ac-a64b-a7e7ff61be98\",\r\n    \"categoryName\": \"Eğlence\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}edit-category",
+							"host": [
+								"{{base_url}}{{comic_category_url}}edit-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}delete-category/ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4",
+							"host": [
+								"{{base_url}}{{comic_category_url}}delete-category"
+							],
+							"path": [
+								"ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delete Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"5728bf67-575f-48bd-b299-3ea145228a66\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_category_url}}confirm-delete-category",
+							"host": [
+								"{{base_url}}{{comic_category_url}}confirm-delete-category"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Premium Packages",
+			"item": [
+				{
+					"name": "Get All Premium Packages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}get-all",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Premium Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}get/4f9c54f7-0a3f-4c38-8f91-c6377cb06dd9",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}get"
+							],
+							"path": [
+								"4f9c54f7-0a3f-4c38-8f91-c6377cb06dd9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Premium Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"packageName\": \"Premium\",\r\n    \"packageDescription\": \"HD kullanılabilir.\\nUltra HD kullanılabilir.\",\r\n    \"packagePrice\": \"0.2\",\r\n    \"packageTime\": \"30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}create-premium-package",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}create-premium-package"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Premium Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"packageID\": \"4f9c54f7-0a3f-4c38-8f91-c6377cb06dd9\",\r\n    \"packageName\": \"Yalın Paket\",\r\n    \"packageDescription\": \"HD kullanılabilir.\\nUltra HD kullanılabilir.\",\r\n    \"packagePrice\": \"54.99\",\r\n    \"packageTime\": \"30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}edit-premium-package",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}edit-premium-package"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Premium Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}delete-premium-package/fc224dd0-b26b-4536-b6fe-e3a8a38f8a05",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}delete-premium-package"
+							],
+							"path": [
+								"fc224dd0-b26b-4536-b6fe-e3a8a38f8a05"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delete Premium Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"1f834f70-8412-45bc-b715-92940e56c657\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{premium_packages_url}}confirm-delete-premium-package",
+							"host": [
+								"{{base_url}}{{premium_packages_url}}confirm-delete-premium-package"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Support Tickets",
+			"item": [
+				{
+					"name": "Create Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQyMDIwOTgsImV4cCI6MTczNDI4ODQ5OH0.GKRC-NRvOQKuHvairhoaS_bsoTJmR7LB9J4qfORuxwE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"ticketType\": \"PROBLEM\",\r\n    \"ticketTitle\": \"Test 123\",\r\n    \"ticketDescription\": \"asdasdasdas\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}create-ticket",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}create-ticket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reply Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQyMDIwOTgsImV4cCI6MTczNDI4ODQ5OH0.GKRC-NRvOQKuHvairhoaS_bsoTJmR7LB9J4qfORuxwE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"ticketID\": \"55df2bae-2f9d-4c97-9910-21bacb2796e9\",\r\n    \"ticketResponse\": \"Test 123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}reply-ticket",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}reply-ticket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Support Ticket with Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQyMDIwOTgsImV4cCI6MTczNDI4ODQ5OH0.GKRC-NRvOQKuHvairhoaS_bsoTJmR7LB9J4qfORuxwE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "eMail",
+									"value": "hidirektor@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "ticketType",
+									"value": "SUGGESTION",
+									"type": "text"
+								},
+								{
+									"key": "ticketTitle",
+									"value": "fasdasdasd",
+									"type": "text"
+								},
+								{
+									"key": "ticketDescription",
+									"value": "asfasdasd",
+									"type": "text"
+								},
+								{
+									"key": "comicID",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "episodeID",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": [
+										"/C:/Users/hidir/OneDrive/Resimler/2629838.jpg",
+										"/C:/Users/hidir/OneDrive/Resimler/2749735.jpg",
+										"/C:/Users/hidir/OneDrive/Resimler/4698663.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}create-ticket/with-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}create-ticket"
+							],
+							"path": [
+								"with-attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reply Support Ticket with Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQyMDIwOTgsImV4cCI6MTczNDI4ODQ5OH0.GKRC-NRvOQKuHvairhoaS_bsoTJmR7LB9J4qfORuxwE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "eMail",
+									"value": "hidirektor@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "ticketID",
+									"value": "5ff19b37-3c51-433f-b7ac-42db8aaf4175",
+									"type": "text"
+								},
+								{
+									"key": "ticketResponse",
+									"value": "fasdasdasd",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": [
+										"/C:/Users/hidir/OneDrive/Resimler/2629838.jpg",
+										"/C:/Users/hidir/OneDrive/Resimler/2749735.jpg",
+										"/C:/Users/hidir/OneDrive/Resimler/4698663.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}reply-ticket/with-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}reply-ticket"
+							],
+							"path": [
+								"with-attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}delete-ticket/55df2bae-2f9d-4c97-9910-21bacb2796e9",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}delete-ticket"
+							],
+							"path": [
+								"55df2bae-2f9d-4c97-9910-21bacb2796e9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delete Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"b85a1aca-03a6-49ad-ae23-1c1e73780757\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}confirm-delete-ticket",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}confirm-delete-ticket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Support Tickets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-all",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Support Tickets by Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-all?status=CLOSED",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-all"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "CLOSED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Support Ticket Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-ticket/a96d0db1-39d7-4965-b936-c61d3ab39952",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-ticket"
+							],
+							"path": [
+								"a96d0db1-39d7-4965-b936-c61d3ab39952"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Support Ticket Response Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-response/a96d0db1-39d7-4965-b936-c61d3ab39952",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-response"
+							],
+							"path": [
+								"a96d0db1-39d7-4965-b936-c61d3ab39952"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Support Ticket Responses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-responses/a96d0db1-39d7-4965-b936-c61d3ab39952",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-responses"
+							],
+							"path": [
+								"a96d0db1-39d7-4965-b936-c61d3ab39952"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Support Tickets by eMail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjA2OTgwLCJleHAiOjE3MzQyOTMzODB9.gnNU1-gO6y8o99SKyQAL6JDXbjEDS74W7YeDQgJRU_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}get-user-ticket/hidirektor@gmail.com",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}get-user-ticket"
+							],
+							"path": [
+								"hidirektor@gmail.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://api.narcolepsy.com.tr/v1/",
+			"type": "string"
+		},
+		{
+			"key": "auth_url",
+			"value": "auth/",
+			"type": "string"
+		},
+		{
+			"key": "payment_url",
+			"value": "payment/",
+			"type": "string"
+		},
+		{
+			"key": "user_url",
+			"value": "user/",
+			"type": "string"
+		},
+		{
+			"key": "file_url",
+			"value": "file/",
+			"type": "string"
+		},
+		{
+			"key": "comic_category_url",
+			"value": "comic-categories/",
+			"type": "string"
+		},
+		{
+			"key": "premium_packages_url",
+			"value": "premium-packages/",
+			"type": "string"
+		},
+		{
+			"key": "support_tickets_url",
+			"value": "support-tickets/",
+			"type": "string"
+		}
+	]
+}

@@ -95,4 +95,18 @@ router.get(
     ticketController.getUserTicketsAsync
 );
 
+router.patch(
+    '/close-ticket/:ticketID',
+    tokenControl,
+    ticketValidator.closeTicket,
+    ticketController.closeTicketAsync
+);
+
+router.delete(
+    '/delete-response/:responseID',
+    tokenControl,
+    ticketValidator.deleteResponse,
+    ticketController.deleteResponseAsync
+);
+
 module.exports = router;

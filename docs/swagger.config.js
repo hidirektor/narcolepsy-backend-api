@@ -7,7 +7,7 @@ const generateSwaggerSpec = () => {
     const sections = {};
 
     endpoints.forEach(endpoint => {
-        const { path, method, summary, description, body, responses, parameters, sectionTitle } = endpoint;
+        const { path, method, summary, description, body, responses, parameters, sectionTitle, security } = endpoint;
 
         if (!paths[path]) paths[path] = {};
 
@@ -60,6 +60,7 @@ const generateSwaggerSpec = () => {
                 return acc;
             }, {}),
             tags: sectionTitle ? [sectionTitle] : [],
+            security: security || undefined, // Include the security field if present
         };
 
         if (sectionTitle) {
@@ -91,6 +92,10 @@ const generateSwaggerSpec = () => {
                 description: 'Main Server',
             },
         ],
+        externalDocs: {
+            description: 'Postman Collection v2.1',
+            url: 'https://api.narcolepsy.com.tr/docs/postman.json',
+        },
         paths,
         tags,
     };

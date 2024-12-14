@@ -1,4 +1,5 @@
 const db = require('../../models');
+const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const GenericCRUD = require('../genericCrud');
@@ -388,6 +389,84 @@ class TicketController {
         } catch (error) {
             console.error('Error fetching user tickets:', error);
             res.status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async closeTicketAsync(req, res) {
+        const { ticketID } = req.params;
+        const token = req.headers['authorization']?.split(' ')[1];
+        const userID = req.decode?.userID;
+        const userType = req.decode?.userType;
+
+        try {
+            const ticket = await ticketCrud.findOne({ where: { ticketID } });
+
+            if (!ticket || !ticket.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Ticket not found' });
+            }
+
+            const ticketData = ticket.result;
+
+            if (ticketData.ticketStatus === 'CLOSED') {
+                return res
+                    .status(HttpStatusCode.BAD_REQUEST)
+                    .json({ message: 'This ticket is already closed' });
+            }
+
+            if (['USER', 'PREMIUM'].includes(userType) && ticketData.userID !== userID) {
+                return res
+                    .status(HttpStatusCode.FORBIDDEN)
+                    .json({ message: 'You are not authorized to close this ticket' });
+            }
+
+            ticketData.ticketStatus = 'CLOSED';
+            await ticketData.save();
+
+            res.status(HttpStatusCode.OK).json({
+                message: 'Ticket closed successfully',
+                ticketID: ticketData.ticketID,
+                updatedStatus: ticketData.ticketStatus,
+            });
+        } catch (error) {
+            console.error('Error closing ticket:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async deleteResponseAsync(req, res) {
+        const { responseID } = req.params;
+        const token = req.headers['authorization']?.split(' ')[1];
+        const userID = req.decode?.userID;
+
+        try {
+            const response = await ticketResponseCrud.findOne({ where: { responseID } });
+
+            if (!response || !response.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Response not found' });
+            }
+
+            const responseData = response.result;
+
+            if (responseData.userID !== userID) {
+                return res
+                    .status(HttpStatusCode.FORBIDDEN)
+                    .json({ message: 'You are not authorized to delete this response' });
+            }
+
+            if (responseData.responseAttachments) {
+                const attachments = JSON.parse(responseData.responseAttachments);
+
+                for (const filePath of attachments) {
+                    await storageService.deleteTicketImage(filePath);
+                }
+            }
+
+            await ticketResponseCrud.delete({ where: { responseID } });
+
+            res.status(HttpStatusCode.OK).json({ message: 'Response deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting response:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
         }
     }
 }

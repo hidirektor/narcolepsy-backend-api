@@ -90,6 +90,11 @@ const endpoints = [
             400: { description: 'Invalid request' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/authController.changePasswordAsync',
     },
     {
@@ -125,6 +130,11 @@ const endpoints = [
             500: { description: 'Error logging out' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/authController.logoutAsync',
     },
     {
@@ -192,24 +202,12 @@ const endpoints = [
             400: { description: 'Failed to initialize checkout.' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/authController.startCheckoutAsync',
-    },
-    {
-        sectionTitle: 'Payment',
-        path: 'payment/verify-payment',
-        method: 'post',
-        summary: 'Verify CF Payment',
-        description: 'It allow to verify CF payment.',
-        body: {
-            token: { type: 'string', required: true },
-            userID: { type: 'string', required: true },
-        },
-        responses: {
-            201: { description: 'Payment verified successfully.' },
-            400: { description: 'Payment failed. Please try again or contact us.' },
-            403: { description: 'Validation error.' },
-        },
-        controller: 'controllers/providers/authController.verifyCheckoutPaymentAsync',
     },
     {
         sectionTitle: 'Payment',
@@ -318,6 +316,11 @@ const endpoints = [
             401: { description: 'User not found!' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/profileController.getProfileAsync',
     },
     {
@@ -403,6 +406,11 @@ const endpoints = [
             401: { description: 'User not found!' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/profileController.getProfileAsync',
     },
     {
@@ -435,6 +443,11 @@ const endpoints = [
             404: { description: 'User not found!' },
             403: { description: 'Validation error.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/fileController.uploadProfilePhotoAsync',
     },
     {
@@ -464,6 +477,11 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comic.category.controller.getAllCategoryAsync'
     },
     {
@@ -494,6 +512,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comic.category.controller.getCategoryAsync'
     },
     {
@@ -524,6 +547,11 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comic.category.controller.createCategoryAsync'
     },
     {
@@ -556,6 +584,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comic.category.controller.updateCategoryAsync'
     },
     {
@@ -606,6 +639,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Category not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comic.category.controller.removeCategoryAsync'
     },
     {
@@ -653,6 +691,11 @@ const endpoints = [
             403: { description: 'Invalid token for this operation' },
             500: { description: 'Internal Server Error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/comicCategoryController.confirmRemoveCategoryAsync',
     },
     {
@@ -685,6 +728,11 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.getAllPremiumPackageAsync'
     },
     {
@@ -718,6 +766,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Premium package not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.getPremiumPackageAsync'
     },
     {
@@ -754,6 +807,11 @@ const endpoints = [
             401: { description: 'Unauthorized or Invalid Token' },
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.createPremiumPackageAsync'
     },
     {
@@ -792,6 +850,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Premium package not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.updatePremiumPackageAsync'
     },
     {
@@ -864,6 +927,11 @@ const endpoints = [
             403: { description: 'Forbidden: Your role does not have access to this resource.' },
             404: { description: 'Premium package not found.' }
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.removePremiumPackageAsync'
     },
     {
@@ -936,6 +1004,11 @@ const endpoints = [
             403: { description: 'Invalid token for this operation' },
             500: { description: 'Internal Server Error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/premium.package.controller.confirmRemovePremiumPackageAsync',
     },
     {
@@ -980,6 +1053,11 @@ const endpoints = [
             400: { description: 'Validation error: Missing fields' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.createTicketAsync',
     },
     {
@@ -1037,6 +1115,11 @@ const endpoints = [
             400: { description: 'Validation error: Missing fields or invalid attachment count' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.createTicketWithAttachmentAsync',
     },
     {
@@ -1077,6 +1160,11 @@ const endpoints = [
             404: { description: 'User or ticket not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.replyTicketAsync',
     },
     {
@@ -1130,6 +1218,11 @@ const endpoints = [
             404: { description: 'User or ticket not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.replyTicketWithAttachmentAsync',
     },
     {
@@ -1180,6 +1273,11 @@ const endpoints = [
             403: { description: 'Unauthorized: Only SYSOP users can access this endpoint' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.deleteTicketAsync',
     },
     {
@@ -1210,6 +1308,11 @@ const endpoints = [
             404: { description: 'Ticket not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.confirmDeleteTicketAsync',
     },
     {
@@ -1265,6 +1368,11 @@ const endpoints = [
             403: { description: 'Unauthorized: Only SYSOP users can access this endpoint' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.getAllTicketsAsync',
     },
 
@@ -1314,6 +1422,11 @@ const endpoints = [
             404: { description: 'Ticket not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.getTicketByIDAsync',
     },
     {
@@ -1350,6 +1463,11 @@ const endpoints = [
             404: { description: 'Response not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.getResponseByIDAsync',
     },
     {
@@ -1388,6 +1506,11 @@ const endpoints = [
             404: { description: 'Ticket not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.getResponsesByTicketIDAsync',
     },
     {
@@ -1439,7 +1562,136 @@ const endpoints = [
             404: { description: 'User not found' },
             500: { description: 'Internal server error' },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
         controller: 'controllers/providers/ticketController.getUserTicketsAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/close-ticket/{ticketID}',
+        method: 'patch',
+        summary: 'Close a ticket',
+        description: 'Allows users to close a ticket. USER and PREMIUM users can only close their own tickets. Returns an error if the ticket is already closed.',
+        parameters: {
+            ticketID: { type: 'string', required: true, description: 'The unique identifier of the ticket to be closed.' },
+        },
+        responses: {
+            200: {
+                description: 'Ticket closed successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket closed successfully' },
+                                ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                updatedStatus: { type: 'string', example: 'CLOSED' },
+                            },
+                        },
+                    },
+                },
+            },
+            400: {
+                description: 'This ticket is already closed',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'This ticket is already closed' },
+                            },
+                        },
+                    },
+                },
+            },
+            403: {
+                description: 'Unauthorized: You cannot close this ticket',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'You are not authorized to close this ticket' },
+                            },
+                        },
+                    },
+                },
+            },
+            404: {
+                description: 'Ticket not found',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket not found' },
+                            },
+                        },
+                    },
+                },
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'An unexpected error occurred' },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
+        controller: 'controllers/providers/ticketController.closeTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/delete-response/{responseID}',
+        method: 'delete',
+        summary: 'Delete a response',
+        description: 'Allows users to delete a response they created. If the response has attachments, they are also deleted from MinIO.',
+        parameters: {
+            responseID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the response to be deleted.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Response deleted successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Response deleted successfully' },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid responseID parameter' },
+            403: { description: 'Unauthorized: You can only delete your own responses' },
+            404: { description: 'Response not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
+        controller: 'controllers/providers/ticketController.deleteResponseAsync',
     }
 ];
 
