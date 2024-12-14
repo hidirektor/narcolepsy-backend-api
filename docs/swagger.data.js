@@ -940,7 +940,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/create-ticket',
+        path: 'support-tickets/create-ticket',
         method: 'post',
         summary: 'Create a support ticket',
         description: 'Allows a user to create a support ticket with a maximum of 3 images. Users can create a new ticket every 10 minutes.',
@@ -980,7 +980,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/my-tickets',
+        path: 'support-tickets/my-tickets',
         method: 'get',
         summary: "List user's support tickets",
         description: 'Fetches the support tickets created by the authenticated user.',
@@ -1009,7 +1009,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/get-all',
+        path: 'support-tickets/get-all',
         method: 'get',
         summary: 'List all support tickets',
         description: 'Fetches all support tickets. Requires SYSOP role.',
@@ -1039,7 +1039,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/get/{ticketID}',
+        path: 'support-tickets/get/{ticketID}',
         method: 'get',
         summary: 'Get support ticket details',
         description: 'Fetches details of a specific support ticket by its ID.',
@@ -1070,7 +1070,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/delete-ticket/{ticketID}',
+        path: 'support-tickets/delete-ticket/{ticketID}',
         method: 'delete',
         summary: 'Delete a support ticket',
         description: 'Deletes a specific support ticket. Requires SYSOP role.',
@@ -1087,7 +1087,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Support Tickets',
-        path: 'tickets/{ticketID}/reply',
+        path: 'support-tickets/{ticketID}/reply',
         method: 'post',
         summary: 'Reply to a support ticket',
         description: 'Allows a user to reply to a support ticket. Can include images.',
