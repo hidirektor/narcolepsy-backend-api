@@ -172,33 +172,17 @@ class StorageService {
     /**
      * Görselleri MinIO'ya yükler.
      * @param {Object} file - Yüklenecek dosya (Multer tarafından sağlanan).
-     * @param {string} ticketID - Destek talebinin ID'si.
-     * @param {string} userID - Kullanıcının ID'si.
-     * @param {number} timestamp - Görselin zaman damgası.
-     * @returns {Promise<string>} - Yüklenen dosyanın yolunu döndürür.
+     * @param {string} bucketPath - Hedef bucket içinde dosyanın yükleneceği klasör yolu.
+     * @returns {Promise<string>} - Yüklenen dosyanın tam yolunu döndürür.
      */
-    async uploadTicketImage(file, ticketID, userID, timestamp) {
+    async uploadTicketImage(file, bucketPath) {
         try {
-            // Bucket içindeki hedef klasör ve dosya adı
-            const folderPath = `${ticketID}/${userID}-${timestamp}`;
-            const fileName = `${folderPath}/${uuidv4()}${path.extname(file.originalname)}`;
-
+            const fileName = `${bucketPath}${uuidv4()}${path.extname(file.originalname)}`;
             const metaData = {
-                'Content-Type': file.mimetype,
-                'X-Amz-Meta-TicketID': ticketID,
-                'X-Amz-Meta-UserID': userID,
-                'X-Amz-Meta-Timestamp': timestamp.toString()
+                'Content-Type': file.mimetype
             };
 
-            // Dosyayı yükleme
-            await this.minioClient.putObject(
-                this.buckets.tickets,
-                fileName,
-                file.buffer,
-                file.size,
-                metaData
-            );
-
+            await this.minioClient.putObject(this.buckets.tickets, fileName, file.buffer, file.size, metaData);
             return fileName;
         } catch (error) {
             console.error('Error uploading ticket image:', error);

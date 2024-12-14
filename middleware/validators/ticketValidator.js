@@ -1,89 +1,76 @@
 const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
+const CommonValidator = require("./commonValidator");
 
-class TicketValidator {
-    constructor() {}
+class TicketValidator extends CommonValidator {
+    constructor() {
+        super();
+    }
 
     static createTicket(req, res, next) {
         const schema = joi.object({
-            eMail: joi.string()
-                .email()
-                .max(100)
-                .required(),
+            eMail: joi.string().email().required(),
             ticketType: joi.string().valid('SUGGESTION', 'PROBLEM', 'APPLY').required(),
             ticketTitle: joi.string().min(1).max(255).required(),
             ticketDescription: joi.string().min(1).max(2000).required(),
+            comicID: joi.string().min(1).max(2000).optional(),
+            episodeID: joi.string().min(1).max(2000).optional(),
         });
 
         schema.validateAsync(req.body)
             .then(() => next())
-            .catch(err => {
-                res.status(HttpStatusCode.BAD_REQUEST).send(err.message);
-            });
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
     }
 
-    static getMyTickets(req, res, next) {
-        return next();
-    }
+    static createTicketWithAttachment(req, res, next) {
+        const { eMail, ticketType, ticketTitle, ticketDescription } = req.body;
 
-    static getAllTickets(req, res, next) {
-        return next();
-    }
-
-    static getTicketDetails(req, res, next) {
-        const schema = joi.object({
-            ticketID: joi.string().guid({ version: 'uuidv4' }).required(),
-        });
-
-        const { error } = schema.validate(req.params);
-
-        if (error) {
-            return res
-                .status(HttpStatusCode.BAD_REQUEST)
-                .send(error.message);
+        if (!eMail || !ticketType || !ticketTitle || !ticketDescription) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('Missing required fields');
         }
 
-        next();
-    }
+        if (!req.files || req.files.length < 1 || req.files.length > 3) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('You must upload between 1 and 3 attachments');
+        }
 
-    static deleteTicket(req, res, next) {
-        const schema = joi.object({
-            ticketID: joi.string().guid({ version: 'uuidv4' }).required(),
-        });
+        const fileNames = req.files.map(file => file.originalname);
+        const hasDuplicates = new Set(fileNames).size !== fileNames.length;
 
-        const { error } = schema.validate(req.params);
-
-        if (error) {
-            return res
-                .status(HttpStatusCode.BAD_REQUEST)
-                .send(error.message);
+        if (hasDuplicates) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('Duplicate file names are not allowed');
         }
 
         next();
     }
 
     static replyTicket(req, res, next) {
-        const paramsSchema = joi.object({
+        const schema = joi.object({
+            eMail: joi.string().email().required(),
             ticketID: joi.string().guid({ version: 'uuidv4' }).required(),
+            ticketResponse: joi.string().min(1).max(2000).required()
         });
 
-        const bodySchema = joi.object({
-            ticketResponse: joi.string().min(1).max(2000).required(),
-        });
+        schema.validateAsync(req.body)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
 
-        const paramsValidation = paramsSchema.validate(req.params);
-        const bodyValidation = bodySchema.validate(req.body);
+    static replyTicketWithAttachment(req, res, next) {
+        const { eMail, ticketID, ticketResponse } = req.body;
 
-        if (paramsValidation.error) {
-            return res
-                .status(HttpStatusCode.BAD_REQUEST)
-                .send(paramsValidation.error.message);
+        if (!eMail || !ticketID || !ticketResponse) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('Missing required fields');
         }
 
-        if (bodyValidation.error) {
-            return res
-                .status(HttpStatusCode.BAD_REQUEST)
-                .send(bodyValidation.error.message);
+        if (!req.files || req.files.length < 1 || req.files.length > 3) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('You must upload between 1 and 3 attachments');
+        }
+
+        const fileNames = req.files.map(file => file.originalname);
+        const hasDuplicates = new Set(fileNames).size !== fileNames.length;
+
+        if (hasDuplicates) {
+            return res.status(HttpStatusCode.BAD_REQUEST).send('Duplicate file names are not allowed');
         }
 
         next();

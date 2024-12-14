@@ -32,9 +32,9 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
             },
             responseAttachments: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT('long'),
                 unique: false,
-                allowNull: false
+                allowNull: true
             }
         },
         {

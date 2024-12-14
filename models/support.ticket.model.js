@@ -54,9 +54,9 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
             },
             ticketAttachments: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT('long'),
                 unique: false,
-                allowNull: false
+                allowNull: true
             }
         },
         {

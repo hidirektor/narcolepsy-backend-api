@@ -1,15 +1,17 @@
 require('dotenv/config');
 const router = require('express')();
+const multer = require('multer');
+const upload = multer();
 
 const ControllerFactory = require('../controllers/controllerFactory');
+const {validators, verifyToken} = require('../middleware');
 const ticketController = ControllerFactory.creating('support.ticket.controller');
 
-const { validators, verifyToken, authorization } = require('../middleware');
-const tokenControl = verifyToken.tokenControl;
-const authControl = authorization.authControl;
 const ticketValidator = validators.ticketValidator;
+const tokenControl = verifyToken.tokenControl;
 
-// Destek talebi oluşturma
+const Authorization = require('../middleware/authorization');
+
 router.post(
     '/create-ticket',
     tokenControl,
@@ -17,42 +19,27 @@ router.post(
     ticketController.createTicketAsync
 );
 
-// Kullanıcının destek taleplerini listeleme
-router.get(
-    '/my-tickets',
-    tokenControl,
-    ticketController.getMyTicketsAsync
-);
-
-// Tüm destek taleplerini listeleme (SYSOP)
-router.get(
-    '/get-all',
-    tokenControl,
-    authControl(['SYSOP']),
-    ticketController.getAllTicketsAsync
-);
-
-// Destek talebi detaylarını görüntüleme
-router.get(
-    '/get/:ticketID',
-    tokenControl,
-    ticketController.getTicketDetailsAsync
-);
-
-// Destek talebi silme (SYSOP)
-router.delete(
-    '/delete-ticket/:ticketID',
-    tokenControl,
-    authControl(['SYSOP']),
-    ticketController.deleteTicketAsync
-);
-
-// Destek talebine yanıt verme
 router.post(
-    '/:ticketID/reply',
+    '/create-ticket/with-attachment',
+    tokenControl,
+    upload.array('attachments', 3),
+    ticketValidator.createTicketWithAttachment,
+    ticketController.createTicketWithAttachmentAsync
+);
+
+router.post(
+    '/reply-ticket',
     tokenControl,
     ticketValidator.replyTicket,
     ticketController.replyTicketAsync
+);
+
+router.post(
+    '/reply-ticket/with-attachment',
+    tokenControl,
+    upload.array('attachments', 3),
+    ticketValidator.replyTicketWithAttachment,
+    ticketController.replyTicketWithAttachmentAsync
 );
 
 module.exports = router;

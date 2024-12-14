@@ -939,191 +939,198 @@ const endpoints = [
         controller: 'controllers/providers/premium.package.controller.confirmRemovePremiumPackageAsync',
     },
     {
-        sectionTitle: 'Support Tickets',
+        sectionTitle: 'Support Tickets Management',
         path: 'support-tickets/create-ticket',
         method: 'post',
-        summary: 'Create a support ticket',
-        description: 'Allows a user to create a support ticket with a maximum of 3 images. Users can create a new ticket every 10 minutes.',
+        summary: 'Create a ticket',
+        description: 'Allows users to create a ticket without attachments.',
         body: {
-            ticketType: { type: 'string', required: true, description: 'Type of the ticket (SUGGESTION, PROBLEM, APPLY)' },
-            ticketTitle: { type: 'string', required: true, description: 'Title of the support ticket' },
-            ticketDescription: { type: 'string', required: true, description: 'Description of the support ticket' },
+            eMail: { type: 'string', required: true },
+            ticketType: { type: 'string', required: true, enum: ['SUGGESTION', 'PROBLEM', 'APPLY'] },
+            ticketTitle: { type: 'string', required: true },
+            ticketDescription: { type: 'string', required: true },
+            comicID: { type: 'string', required: false },
+            episodeID: { type: 'string', required: false },
+        },
+        responses: {
+            200: {
+                description: 'Ticket created successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket created successfully' },
+                                ticketData: {
+                                    type: 'object',
+                                    properties: {
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        userID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketType: { type: 'string', example: 'SUGGESTION' },
+                                        ticketTitle: { type: 'string', example: 'App Issue' },
+                                        ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                        ticketStatus: { type: 'string', example: 'CREATED' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error: Missing fields' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.createTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/create-ticket/with-attachment',
+        method: 'post',
+        summary: 'Create a ticket with attachments',
+        description: 'Allows users to create a ticket with one or more attachments (max 3).',
+        body: {
+            eMail: { type: 'string', required: true },
+            ticketType: { type: 'string', required: true, enum: ['SUGGESTION', 'PROBLEM', 'APPLY'] },
+            ticketTitle: { type: 'string', required: true },
+            ticketDescription: { type: 'string', required: true },
+            comicID: { type: 'string', required: false },
+            episodeID: { type: 'string', required: false },
+        },
+        files: {
+            attachments: {
+                type: 'array',
+                items: { type: 'file' },
+                maxItems: 3,
+                required: true,
+                description: 'Attachments for the ticket.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Ticket created successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Ticket created with attachments' },
+                                ticketData: {
+                                    type: 'object',
+                                    properties: {
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        userID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketType: { type: 'string', example: 'SUGGESTION' },
+                                        ticketTitle: { type: 'string', example: 'App Issue' },
+                                        ticketDescription: { type: 'string', example: 'Detailed description of the issue' },
+                                        ticketStatus: { type: 'string', example: 'CREATED' },
+                                        ticketAttachments: {
+                                            type: 'array',
+                                            items: { type: 'string', example: 'path/to/attachment.jpg' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error: Missing fields or invalid attachment count' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.createTicketWithAttachmentAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/reply-ticket',
+        method: 'post',
+        summary: 'Reply to a ticket',
+        description: 'Allows users to reply to an existing ticket without attachments.',
+        body: {
+            eMail: { type: 'string', required: true },
+            ticketID: { type: 'string', required: true },
+            ticketResponse: { type: 'string', required: true },
+        },
+        responses: {
+            200: {
+                description: 'Reply added successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Reply added successfully' },
+                                responseData: {
+                                    type: 'object',
+                                    properties: {
+                                        responseID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        userID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketResponse: { type: 'string', example: 'Reply content' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error: Missing fields' },
+            404: { description: 'User or ticket not found' },
+            500: { description: 'Internal server error' },
+        },
+        controller: 'controllers/providers/ticketController.replyTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/reply-ticket/with-attachment',
+        method: 'post',
+        summary: 'Reply to a ticket with attachments',
+        description: 'Allows users to reply to an existing ticket and upload attachments.',
+        body: {
+            eMail: { type: 'string', required: true },
+            ticketID: { type: 'string', required: true },
+            ticketResponse: { type: 'string', required: true },
+        },
+        files: {
+            attachments: {
+                type: 'array',
+                items: { type: 'file' },
+                maxItems: 3,
+                required: true,
+                description: 'Attachments for the ticket reply.',
+            },
         },
         responses: {
             201: {
-                description: 'Support ticket created successfully.',
+                description: 'Reply added successfully',
                 content: {
                     'application/json': {
                         schema: {
                             type: 'object',
                             properties: {
-                                message: { type: 'string', example: 'Support ticket created successfully.' },
-                                ticket: {
+                                message: { type: 'string', example: 'Reply added with attachments' },
+                                responseData: {
                                     type: 'object',
                                     properties: {
-                                        ticketID: { type: 'string', example: 'abc123' },
-                                        ticketType: { type: 'string', example: 'PROBLEM' },
-                                        ticketTitle: { type: 'string', example: 'Issue with payment' },
-                                        ticketDescription: { type: 'string', example: 'Details of the problem.' }
+                                        responseID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketID: { type: 'string', example: 'uuid-v4-string' },
+                                        userID: { type: 'string', example: 'uuid-v4-string' },
+                                        ticketResponse: { type: 'string', example: 'Reply content' },
+                                        responseAttachments: {
+                                            type: 'array',
+                                            items: { type: 'string', example: 'path/to/attachment.jpg' },
+                                        },
                                     },
                                 },
-                                uploadedImages: { type: 'array', items: { type: 'string', example: 'image/path.jpg' } },
                             },
                         },
                     },
                 },
             },
-            429: { description: 'Too many requests. Wait before creating another ticket.' },
-            500: { description: 'Internal Server Error.' },
+            400: { description: 'Validation error: Missing fields or invalid attachment count' },
+            404: { description: 'User or ticket not found' },
+            500: { description: 'Internal server error' },
         },
-        controller: 'controllers/tickets/createTicketAsync',
-    },
-    {
-        sectionTitle: 'Support Tickets',
-        path: 'support-tickets/my-tickets',
-        method: 'get',
-        summary: "List user's support tickets",
-        description: 'Fetches the support tickets created by the authenticated user.',
-        responses: {
-            200: {
-                description: "List of user's support tickets.",
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'array',
-                            items: {
-                                type: 'object',
-                                properties: {
-                                    ticketID: { type: 'string', example: 'abc123' },
-                                    ticketTitle: { type: 'string', example: 'Issue with payment' },
-                                    ticketStatus: { type: 'string', example: 'CREATED' }
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            500: { description: 'Internal Server Error.' },
-        },
-        controller: 'controllers/tickets/getMyTicketsAsync',
-    },
-    {
-        sectionTitle: 'Support Tickets',
-        path: 'support-tickets/get-all',
-        method: 'get',
-        summary: 'List all support tickets',
-        description: 'Fetches all support tickets. Requires SYSOP role.',
-        responses: {
-            200: {
-                description: 'List of all support tickets.',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'array',
-                            items: {
-                                type: 'object',
-                                properties: {
-                                    ticketID: { type: 'string', example: 'abc123' },
-                                    ticketTitle: { type: 'string', example: 'Issue with payment' },
-                                    ticketStatus: { type: 'string', example: 'CREATED' }
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            403: { description: 'Forbidden. Only SYSOP role allowed.' },
-            500: { description: 'Internal Server Error.' },
-        },
-        controller: 'controllers/tickets/getAllTicketsAsync',
-    },
-    {
-        sectionTitle: 'Support Tickets',
-        path: 'support-tickets/get/{ticketID}',
-        method: 'get',
-        summary: 'Get support ticket details',
-        description: 'Fetches details of a specific support ticket by its ID.',
-        parameters: {
-            ticketID: 'ticketID',
-        },
-        responses: {
-            200: {
-                description: 'Details of the support ticket.',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'object',
-                            properties: {
-                                ticketID: { type: 'string', example: 'abc123' },
-                                ticketTitle: { type: 'string', example: 'Issue with payment' },
-                                ticketDescription: { type: 'string', example: 'Details of the problem.' },
-                                ticketStatus: { type: 'string', example: 'CREATED' }
-                            },
-                        },
-                    },
-                },
-            },
-            404: { description: 'Ticket not found.' },
-            500: { description: 'Internal Server Error.' },
-        },
-        controller: 'controllers/tickets/getTicketDetailsAsync',
-    },
-    {
-        sectionTitle: 'Support Tickets',
-        path: 'support-tickets/delete-ticket/{ticketID}',
-        method: 'delete',
-        summary: 'Delete a support ticket',
-        description: 'Deletes a specific support ticket. Requires SYSOP role.',
-        parameters: {
-            ticketID: 'ticketID',
-        },
-        responses: {
-            200: { description: 'Ticket deleted successfully.' },
-            404: { description: 'Ticket not found.' },
-            403: { description: 'Forbidden. Only SYSOP role allowed.' },
-            500: { description: 'Internal Server Error.' },
-        },
-        controller: 'controllers/tickets/deleteTicketAsync',
-    },
-    {
-        sectionTitle: 'Support Tickets',
-        path: 'support-tickets/{ticketID}/reply',
-        method: 'post',
-        summary: 'Reply to a support ticket',
-        description: 'Allows a user to reply to a support ticket. Can include images.',
-        parameters: {
-            ticketID: 'ticketID',
-        },
-        body: {
-            ticketResponse: { type: 'string', required: true, description: 'Response to the support ticket' },
-        },
-        responses: {
-            200: {
-                description: 'Ticket replied successfully.',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'object',
-                            properties: {
-                                message: { type: 'string', example: 'Ticket replied successfully.' },
-                                ticket: {
-                                    type: 'object',
-                                    properties: {
-                                        ticketID: { type: 'string', example: 'abc123' },
-                                        ticketResponse: { type: 'string', example: 'We are looking into the issue.' },
-                                        ticketStatus: { type: 'string', example: 'ANSWERED' }
-                                    },
-                                },
-                                uploadedImages: { type: 'array', items: { type: 'string', example: 'image/path.jpg' } },
-                            },
-                        },
-                    },
-                },
-            },
-            404: { description: 'Ticket not found.' },
-            500: { description: 'Internal Server Error.' },
-        },
-        controller: 'controllers/tickets/replyTicketAsync',
+        controller: 'controllers/providers/ticketController.replyTicketWithAttachmentAsync',
     }
 ];
 

@@ -2,10 +2,19 @@ const db = require('../../models');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const GenericCRUD = require('../genericCrud');
+
 const StorageService = require('../../utils/service/StorageService');
+const storageService = new StorageService({
+    endPoint: process.env.MINIO_ENDPOINT,
+    port: +process.env.MINIO_PORT,
+    useSSL: false,
+    accessKey: process.env.MINIO_ACCESS_KEY,
+    secretKey: process.env.MINIO_SECRET_KEY
+});
 
 const userCrud = new GenericCRUD({ model: db.User, where: null });
 const ticketCrud = new GenericCRUD({ model: db.Tickets, where: null });
+const ticketResponseCrud = new GenericCRUD({ model: db.TicketResponses, where: null });
 const redisClient = require('../../utils/thirdParty/redis/redisClient');
 const HttpStatusCode = require('http-status-codes');
 const {errorSender} = require("../../utils");
@@ -13,171 +22,173 @@ const {errorSender} = require("../../utils");
 class TicketController {
     constructor() {}
 
-    // Destek talebi oluşturma
     async createTicketAsync(req, res) {
-        const { eMail, ticketType, ticketTitle, ticketDescription } = req.body;
-
-        const user = await userCrud.findOne({ where: {eMail: eMail}});
-
-        if (!user.result.userID) {
-            throw errorSender.errorObject(
-                HttpStatusCode.NOT_FOUND,
-                'User not found!'
-            );
-        }
-
-        const userID = user.result.userID;
+        const { eMail, ticketType, ticketTitle, ticketDescription, comicID, episodeID } = req.body;
 
         try {
-            const lastCreatedTimestamp = await redisClient.get(`create-ticket:${userID}`);
-            const currentTimestamp = Date.now();
-
-            if (lastCreatedTimestamp && currentTimestamp - lastCreatedTimestamp < 10 * 60 * 1000) {
-                return res.status(429).json({ message: 'You can only create one ticket every 10 minutes.' });
+            const findUser = await userCrud.findOne({ where: { eMail } });
+            if (!findUser.result.userID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'User not found!'
+                );
             }
 
             const ticketID = uuidv4();
-            const images = req.files || [];
-            const imagePaths = [];
-
-            for (const file of images) {
-                const timestamp = Date.now();
-                const imagePath = await StorageService.uploadTicketImage(file, ticketID, userID, timestamp);
-                imagePaths.push(imagePath);
-            }
-
-            const newTicket = await ticketCrud.create({
+            const ticket = await ticketCrud.create({
+                userID: findUser.result.userID,
+                ticketID,
                 ticketType,
                 ticketTitle,
                 ticketDescription,
-                ticketID,
-                userID,
+                comicID: comicID || null,
+                episodeID: episodeID || null,
                 ticketStatus: 'CREATED',
+                ticketAttachments: null
             });
 
-            await redisClient.set(`create-ticket:${userID}`, currentTimestamp, 'EX', 10 * 60);
+            const bucketName = storageService.buckets.tickets;
+            await storageService._createFolderIfNotExists(bucketName, `ticket-attachments/${ticketID}/`);
+            await storageService._createFolderIfNotExists(bucketName, `response-attachments/${ticketID}/`);
 
-            res.status(201).json({
-                message: 'Support ticket created successfully.',
-                ticket: newTicket.result,
-                uploadedImages: imagePaths
+            res.json({ message: 'Ticket created successfully', ticketData: ticket });
+        } catch (error) {
+            console.error('Error creating ticket:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
+        }
+    }
+
+    async createTicketWithAttachmentAsync(req, res) {
+        const { eMail, ticketType, ticketTitle, ticketDescription, comicID, episodeID } = req.body;
+
+        try {
+            const findUser = await userCrud.findOne({ where: { eMail } });
+            if (!findUser.result.userID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'User not found!'
+                );
+            }
+
+            const ticketID = uuidv4();
+            const bucketPath = `ticket-attachments/${ticketID}/${findUser.result.userID}-${Math.floor(Date.now() / 1000)}/`;
+            await storageService._createFolderIfNotExists(storageService.buckets.tickets, bucketPath);
+
+            const uploadedAttachments = [];
+            for (const file of req.files) {
+                const uploadedFilePath = await storageService.uploadTicketImage(file, bucketPath);
+                uploadedAttachments.push(uploadedFilePath);
+            }
+
+            const ticket = await ticketCrud.create({
+                userID: findUser.result.userID,
+                ticketID,
+                ticketType,
+                ticketTitle,
+                ticketDescription,
+                comicID: comicID || null,
+                episodeID: episodeID || null,
+                ticketStatus: 'CREATED',
+                ticketAttachments: JSON.stringify(uploadedAttachments)
             });
-        } catch (err) {
-            console.error('Error creating ticket:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
+
+            res.json({ message: 'Ticket created with attachments', ticketData: ticket, ticketAttachments: uploadedAttachments });
+        } catch (error) {
+            console.error('Error creating ticket with attachments:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
         }
     }
 
-    // Kullanıcının destek taleplerini listeleme
-    async getMyTicketsAsync(req, res) {
-        const { eMail } = req.params;
-
-        const user = await userCrud.findOne({ where: {eMail: eMail}});
-
-        if (!user.result.userID) {
-            throw errorSender.errorObject(
-                HttpStatusCode.NOT_FOUND,
-                'User not found!'
-            );
-        }
-
-        try {
-            const tickets = await ticketCrud.getAll({ where: { userID } });
-            res.json(tickets);
-        } catch (err) {
-            console.error('Error fetching user tickets:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
-        }
-    }
-
-    // Tüm destek taleplerini listeleme (SYSOP)
-    async getAllTicketsAsync(req, res) {
-        try {
-            const tickets = await ticketCrud.getAll();
-            res.json(tickets);
-        } catch (err) {
-            console.error('Error fetching all tickets:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
-        }
-    }
-
-    // Destek talebi detaylarını görüntüleme
-    async getTicketDetailsAsync(req, res) {
-        const { ticketID } = req.params;
-
-        try {
-            const ticket = await ticketCrud.findOne({ where: { ticketID } });
-
-            if (!ticket.status) {
-                return res.status(404).json({ message: 'Ticket not found.' });
-            }
-
-            res.json(ticket.result);
-        } catch (err) {
-            console.error('Error fetching ticket details:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
-        }
-    }
-
-    // Destek talebi silme (SYSOP)
-    async deleteTicketAsync(req, res) {
-        const { ticketID } = req.params;
-
-        try {
-            const ticket = await ticketCrud.findOne({ where: { ticketID } });
-
-            if (!ticket.status) {
-                return res.status(404).json({ message: 'Ticket not found.' });
-            }
-
-            // Görselleri silme
-            const imageFolderPath = `${ticketID}/`;
-            await StorageService.deleteFolder('ticket_types', imageFolderPath);
-
-            await ticketCrud.delete({ where: { ticketID } });
-
-            res.status(200).json({ message: 'Ticket deleted successfully.' });
-        } catch (err) {
-            console.error('Error deleting ticket:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
-        }
-    }
-
-    // Destek talebine yanıt verme
     async replyTicketAsync(req, res) {
-        const { ticketID } = req.params;
-        const { ticketResponse } = req.body;
-        const userID = req.user.id; // Yanıtlayan kişinin ID'si
+        const { eMail, ticketID, ticketResponse } = req.body;
 
         try {
-            const ticket = await ticketCrud.findOne({ where: { ticketID } });
-
-            if (!ticket.status) {
-                return res.status(404).json({ message: 'Ticket not found.' });
+            const findUser = await userCrud.findOne({ where: { eMail } });
+            if (!findUser.result.userID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'User not found!'
+                );
             }
 
-            const images = req.files || [];
-            const imagePaths = [];
-
-            for (const file of images) {
-                const timestamp = Date.now();
-                const imagePath = await StorageService.uploadTicketImage(file, ticketID, userID, timestamp);
-                imagePaths.push(imagePath);
+            const findTicket = await ticketCrud.findOne({ where: { ticketID } });
+            if (!findTicket.result.ticketID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'Ticket not found!'
+                );
             }
 
-            ticket.result.ticketResponse = ticketResponse;
-            ticket.result.ticketStatus = 'ANSWERED';
-
-            await ticket.result.save();
-
-            res.status(200).json({
-                message: 'Ticket replied successfully.',
-                ticket: ticket.result,
-                uploadedImages: imagePaths
+            await ticketResponseCrud.create({
+                responseID: uuidv4(),
+                ticketID: findTicket.result.ticketID,
+                userID: findUser.result.userID,
+                ticketResponse,
+                responseAttachments: null
             });
-        } catch (err) {
-            console.error('Error replying to ticket:', err);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message || 'Internal Server Error');
+
+            findTicket.result.ticketStatus = ['USER', 'PREMIUM'].includes(findUser.result.userType) ? 'CUSTOMER_RESPONSE' : 'ANSWERED';
+            await findTicket.result.save();
+
+            res.json({ message: 'Reply added successfully' });
+        } catch (error) {
+            console.error('Error replying to ticket:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
+        }
+    }
+
+    async replyTicketWithAttachmentAsync(req, res) {
+        const { eMail, ticketID, ticketResponse } = req.body;
+
+        try {
+            const findUser = await userCrud.findOne({ where: { eMail } });
+            if (!findUser.result.userID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'User not found!'
+                );
+            }
+
+            const findTicket = await ticketCrud.findOne({ where: { ticketID } });
+            if (!findTicket.result.ticketID) {
+                throw errorSender.errorObject(
+                    HttpStatusCode.NOT_FOUND,
+                    'Ticket not found!'
+                );
+            }
+
+            const bucketPath = `response-attachments/${ticketID}/${findUser.result.userID}-${Math.floor(Date.now() / 1000)}/`;
+            await storageService._createFolderIfNotExists(storageService.buckets.tickets, bucketPath);
+
+            const uploadedAttachments = [];
+            for (const file of req.files) {
+                const uploadedFilePath = await storageService.uploadTicketImage(file, bucketPath);
+                uploadedAttachments.push(uploadedFilePath);
+            }
+
+            const response = await ticketResponseCrud.create({
+                responseID: uuidv4(),
+                ticketID,
+                userID: findUser.result.userID,
+                ticketResponse,
+                responseAttachments: JSON.stringify(uploadedAttachments)
+            });
+
+            findTicket.result.ticketStatus = ['USER', 'PREMIUM'].includes(findUser.result.userType) ? 'CUSTOMER_RESPONSE' : 'ANSWERED';
+            await findTicket.result.save();
+
+            res.status(201).json({ message: 'Reply added with attachments', responseData: response.result, responseAttachments: uploadedAttachments });
+        } catch (error) {
+            console.error('Error replying to ticket with attachments:', error);
+            res
+                .status(error.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
         }
     }
 }
