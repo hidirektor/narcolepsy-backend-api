@@ -1129,6 +1129,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Close Support Ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}close-ticket/5ff19b37-3c51-433f-b7ac-42db8aaf4175",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}close-ticket"
+							],
+							"path": [
+								"5ff19b37-3c51-433f-b7ac-42db8aaf4175"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Response",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}delete-response/a29e3821-b78a-4b05-beb5-0dc1599bddf0",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}delete-response"
+							],
+							"path": [
+								"a29e3821-b78a-4b05-beb5-0dc1599bddf0"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

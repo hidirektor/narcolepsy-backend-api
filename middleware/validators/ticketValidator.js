@@ -148,7 +148,7 @@ class TicketValidator extends CommonValidator {
 
     static closeTicket(req, res, next) {
         const schema = joi.object({
-            ticketID: joi.string().guid({ version: 'uuidv4' }).required(), // Ensures ticketID is a valid UUID v4
+            ticketID: joi.string().guid({ version: 'uuidv4' }).required(),
         });
 
         schema.validateAsync(req.params)
