@@ -11,7 +11,8 @@ class StorageService {
         this.minioClient = new Minio.Client(minioConfig);
         this.buckets = {
             profiles: 'narcolepsy-backend-profiles',
-            comics: 'narcolepsy-backend-comics'
+            comics: 'narcolepsy-backend-comics',
+            tickets: 'narcolepsy-backend-support-tickets'
         };
 
         this._ensureBucketsExist().catch(err => {
@@ -138,6 +139,91 @@ class StorageService {
         await this.minioClient.putObject(this.buckets.comics, targetFileName, file.buffer, metaData);
 
         return targetFileName;
+    }
+
+    /**
+     * Görselleri MinIO'ya yükler.
+     * @param {Object} file - Yüklenecek dosya (Multer tarafından sağlanan).
+     * @param {string} ticketID - Destek talebinin ID'si.
+     * @param {string} userID - Kullanıcının ID'si.
+     * @param {number} timestamp - Görselin zaman damgası.
+     * @returns {Promise<string>} - Yüklenen dosyanın yolunu döndürür.
+     */
+    async uploadTicketImage(file, ticketID, userID, timestamp) {
+        try {
+            // Bucket içindeki hedef klasör ve dosya adı
+            const folderPath = `${ticketID}/${userID}-${timestamp}`;
+            const fileName = `${folderPath}/${uuidv4()}${path.extname(file.originalname)}`;
+
+            const metaData = {
+                'Content-Type': file.mimetype,
+                'X-Amz-Meta-TicketID': ticketID,
+                'X-Amz-Meta-UserID': userID,
+                'X-Amz-Meta-Timestamp': timestamp.toString()
+            };
+
+            // Dosyayı yükleme
+            await this.minioClient.putObject(
+                this.buckets.tickets,
+                fileName,
+                file.buffer,
+                file.size,
+                metaData
+            );
+
+            return fileName;
+        } catch (error) {
+            console.error('Error uploading ticket image:', error);
+            throw new Error('Failed to upload ticket image.');
+        }
+    }
+
+    /**
+     * Görseli siler.
+     * @param {string} filePath - Görselin bucket içindeki yolu.
+     */
+    async deleteTicketImage(filePath) {
+        try {
+            await this.minioClient.removeObject(this.buckets.tickets, filePath);
+        } catch (error) {
+            console.error('Error deleting ticket image:', error);
+            throw new Error('Failed to delete ticket image.');
+        }
+    }
+
+    /**
+     * Görseli indirir.
+     * @param {string} filePath - Görselin bucket içindeki yolu.
+     * @returns {Promise<Buffer>} - Görselin içeriğini döndürür.
+     */
+    async downloadTicketImage(filePath) {
+        try {
+            const stream = await this.minioClient.getObject(this.buckets.tickets, filePath);
+            const chunks = [];
+            return new Promise((resolve, reject) => {
+                stream.on('data', chunk => chunks.push(chunk));
+                stream.on('end', () => resolve(Buffer.concat(chunks)));
+                stream.on('error', reject);
+            });
+        } catch (error) {
+            console.error('Error downloading ticket image:', error);
+            throw new Error('Failed to download ticket image.');
+        }
+    }
+
+    /**
+     * Görselin görüntülenmesi için bir önceden imzalanmış URL oluşturur.
+     * @param {string} filePath - Görselin bucket içindeki yolu.
+     * @returns {Promise<string>} - Görselin URL'sini döndürür.
+     */
+    async getTicketImageURL(filePath) {
+        try {
+            const url = await this.minioClient.presignedGetObject(this.buckets.tickets, filePath);
+            return url;
+        } catch (error) {
+            console.error('Error generating ticket image URL:', error);
+            throw new Error('Failed to generate ticket image URL.');
+        }
     }
 }
 
