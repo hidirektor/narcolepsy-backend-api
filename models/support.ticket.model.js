@@ -1,5 +1,5 @@
-const ticket_status_types = require('./ticket_status_types');
 const ticket_types = require('./ticket_types');
+const ticket_status_types = require('./ticket_status_types');
 
 module.exports = (sequelize, Sequelize) => {
     const Tickets = sequelize.define(
@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
             ticketType: {
                 type: Sequelize.ENUM,
                 unique: false,
-                values: [ticket_status_types.SUGGESTION, ticket_status_types.PROBLEM, ticket_status_types.APPLY],
+                values: [ticket_types.SUGGESTION, ticket_types.PROBLEM, ticket_types.APPLY],
                 allowNull: false
             },
             ticketTitle: {
@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
             ticketStatus: {
                 type: Sequelize.ENUM,
                 unique: false,
-                values: [ticket_types.CREATED, ticket_types.ANSWERED, ticket_types.CUSTOMER_RESPONSE, ticket_types.CLOSED],
+                values: [ticket_status_types.CREATED, ticket_status_types.ANSWERED, ticket_status_types.CUSTOMER_RESPONSE, ticket_status_types.CLOSED],
                 allowNull: false
             },
             ticketResponse: {
