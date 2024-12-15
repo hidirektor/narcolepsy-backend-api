@@ -63,8 +63,6 @@ class EpisodeController {
             const pdfBuffer = fs.readFileSync(localPdfPath);
             await storageService.minioClient.putObject(storageService.buckets.comics, pdfPath, pdfBuffer);
 
-            console.log(pageCount);
-
             fs.unlinkSync(localPdfPath);
 
             const episode = await episodeCrud.create({
