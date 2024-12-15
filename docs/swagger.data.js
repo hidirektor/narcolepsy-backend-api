@@ -2325,7 +2325,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Management',
-        path: 'comics/change-banner',
+        path: 'comics/change-comic-banner',
         method: 'post',
         summary: 'Change comic banner',
         description: 'Allows users to update the banner image of an existing comic.',

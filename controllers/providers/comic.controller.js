@@ -4,6 +4,7 @@ const redisClient = require('../../utils/thirdParty/redis/redisClient');
 const { errorSender } = require('../../utils');
 const HttpStatusCode = require('http-status-codes');
 const crypto = require('crypto');
+const moment = require('moment');
 const { v4: uuidv4 } = require('uuid');
 
 const storageService = new (require('../../utils/service/StorageService'))({
@@ -19,6 +20,7 @@ const comicDetailsCrud = new GenericCRUD({ model: db.ComicDetails });
 const comicSeasonsCrud = new GenericCRUD({ model: db.ComicSeason });
 const comicEpisodesCrud = new GenericCRUD({ model: db.ComicEpisode });
 const followedComicsCrud = new GenericCRUD({ model: db.FollowedComic });
+const comicCategoryCrud = new GenericCRUD({ model: db.ComicCategory });
 const comicCategoryMappingCrud = new GenericCRUD({ model: db.ComicCategoryMapping });
 
 class ComicController {
@@ -31,7 +33,7 @@ class ComicController {
                 comicDescription,
                 comicDescriptionTitle,
                 sourceCountry,
-                publishDate,
+                publishDate, // DD.MM.YYYY formatında geliyor
                 comicStatus,
                 comicLanguage,
                 comicAuthor,
@@ -40,23 +42,28 @@ class ComicController {
                 comicArtist,
             } = req.body;
 
-            // Upload comic banner to MinIO
-            const comicID = db.Sequelize.UUIDV4();
-            const bannerPath = `comics/${comicID}/banner-${Date.now()}-${req.file.originalname}`;
-            await storageService.uploadFile(req.file, 'comics', bannerPath);
+            // Tarih formatını `YYYY-MM-DD`'ye dönüştür
+            const [day, month, year] = publishDate.split('.');
+            const formattedPublishDate = `${year}-${month}-${day}`;
 
-            // Create Comic record
+            // UUID oluştur
+            const comicID = uuidv4();
+
+            // Comic Banner'ı MinIO'ya yükle
+            const bannerPath = await storageService.uploadComicBanner(req.file, comicID);
+
+            // Comic kaydını oluştur
             const comic = await comicCrud.create({
                 comicID,
                 comicName,
                 comicDescription,
-                comicDescriptionTitle: comicDescriptionTitle || null,
+                comicDescriptionTitle,
                 sourceCountry,
-                publishDate,
+                publishDate: formattedPublishDate, // Dönüştürülmüş tarih
                 comicBannerID: bannerPath,
             });
 
-            // Create ComicDetails record
+            // ComicDetails kaydını oluştur
             await comicDetailsCrud.create({
                 comicID,
                 comicStatus,
@@ -75,38 +82,50 @@ class ComicController {
     }
 
     async changeComicBannerAsync(req, res) {
-        const { comicID } = req.body;
-
         try {
-            if (!req.file) {
-                throw errorSender.errorObject(HttpStatusCode.BAD_REQUEST, 'Comic banner is required.');
+            const { comicID } = req.body;
+
+            if (!comicID) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'comicID is required.' });
             }
 
             const comic = await comicCrud.findOne({ where: { comicID } });
-
-            if (!comic.status) {
-                throw errorSender.errorObject(HttpStatusCode.NOT_FOUND, 'Comic not found');
+            if (!comic || !comic.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Comic not found.' });
             }
 
-            const existingComic = comic.result;
-
-            if (existingComic.comicBannerID) {
-                await storageService.deleteFile(storageService.buckets.comics, existingComic.comicBannerID);
+            if (!req.file) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'A new comic banner file is required.' });
             }
 
-            const bucketPath = `comics/${comicID}/`;
-            await storageService._createFolderIfNotExists(storageService.buckets.comics, bucketPath);
-            const uploadedFileName = await storageService.uploadFile(req.file, 'comic', { comicID });
+            const newBannerPath = await storageService.uploadComicBanner(req.file, comicID);
 
-            await comicCrud.update({ where: { comicID } }, { comicBannerID: uploadedFileName });
+            const oldBannerPath = comic.result.comicBannerID;
+            if (oldBannerPath) {
+                try {
+                    await storageService.deleteFile(
+                        storageService.buckets.comics,
+                        oldBannerPath
+                    );
+                    console.log('Old banner deleted successfully:', oldBannerPath);
+                } catch (error) {
+                    console.error('Failed to delete old banner:', error.message);
+                }
+            }
 
-            res.status(200).json({
-                message: 'Comic banner updated successfully',
-                comicID,
-                comicBannerID: uploadedFileName,
-            });
+            const updatedComic = await comicCrud.update(
+                { where: { comicID } },
+                { comicBannerID: newBannerPath }
+            );
+
+            if (!updatedComic.status) {
+                throw new Error('Failed to update comicBannerID in database.');
+            }
+
+            res.status(200).json({ message: 'Comic banner updated successfully', newBannerPath });
         } catch (error) {
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message || 'Internal Server Error');
+            console.error('Error updating comic banner:', error.message);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });
         }
     }
 
@@ -206,34 +225,31 @@ class ComicController {
                 throw errorSender.errorObject(HttpStatusCode.NOT_FOUND, 'Comic not found.');
             }
 
-            // Build update payload for Comic
-            const comicUpdatePayload = {};
-            if (comicName !== undefined) comicUpdatePayload.comicName = comicName;
-            if (comicDescription !== undefined) comicUpdatePayload.comicDescription = comicDescription;
-            if (comicDescriptionTitle !== undefined) comicUpdatePayload.comicDescriptionTitle = comicDescriptionTitle;
-            if (sourceCountry !== undefined) comicUpdatePayload.sourceCountry = sourceCountry;
-            if (publishDate !== undefined) comicUpdatePayload.publishDate = publishDate;
+            const formattedPublishDate = publishDate
+                ? moment(publishDate, 'DD.MM.YYYY').format('YYYY-MM-DD')
+                : null;
 
-            // Update Comic
-            if (Object.keys(comicUpdatePayload).length > 0) {
-                await comicCrud.update({ where: { comicID } }, comicUpdatePayload);
-            }
+            await comicCrud.update({ where: { comicID } }, {
+                comicName,
+                comicDescription,
+                comicDescriptionTitle,
+                sourceCountry,
+                publishDate: formattedPublishDate,
+            });
 
-            // Build update payload for ComicDetails
-            const comicDetailsUpdatePayload = {};
-            if (comicStatus !== undefined) comicDetailsUpdatePayload.comicStatus = comicStatus;
-            if (comicLanguage !== undefined) comicDetailsUpdatePayload.comicLanguage = comicLanguage;
-            if (comicAuthor !== undefined) comicDetailsUpdatePayload.comicAuthor = comicAuthor;
-            if (comicEditor !== undefined) comicDetailsUpdatePayload.comicEditor = comicEditor;
-            if (comicCompany !== undefined) comicDetailsUpdatePayload.comicCompany = comicCompany;
-            if (comicArtist !== undefined) comicDetailsUpdatePayload.comicArtist = comicArtist;
+            await comicDetailsCrud.update({ where: { comicID } }, {
+                comicStatus,
+                comicLanguage,
+                comicAuthor: comicAuthor || null,
+                comicEditor: comicEditor || null,
+                comicCompany: comicCompany || null,
+                comicArtist: comicArtist || null,
+            });
 
-            // Update ComicDetails
-            if (Object.keys(comicDetailsUpdatePayload).length > 0) {
-                await comicDetailsCrud.update({ where: { comicID } }, comicDetailsUpdatePayload);
-            }
+            const updatedComic = await comicCrud.findOne({ where: {comicID}});
+            const updatedComicDetails = await comicDetailsCrud.findOne({ where: {comicID}});
 
-            res.json({ message: 'Comic updated successfully' });
+            res.json({ message: 'Comic updated successfully', comic: updatedComic.result, comicDetails: updatedComicDetails.result });
         } catch (error) {
             console.error('Error editing comic:', error);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });
@@ -243,7 +259,23 @@ class ComicController {
     async getAllAsync(req, res) {
         try {
             const comics = await comicCrud.getAll();
-            res.status(200).json(comics);
+
+            if (!comics || comics.length === 0) {
+                return res.status(200).json([]);
+            }
+
+            const comicWithDetails = await Promise.all(
+                comics.map(async (comic) => {
+                    const comicDetails = await comicDetailsCrud.findOne({ where: { comicID: comic.comicID } });
+
+                    return {
+                        comic: comic,
+                        comicDetails: comicDetails?.result || null, // Include comicDetails if found
+                    };
+                })
+            );
+
+            res.status(200).json(comicWithDetails);
         } catch (error) {
             console.error('Error fetching comics:', error);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send('Failed to fetch comics.');
@@ -255,7 +287,8 @@ class ComicController {
 
         try {
             const comic = await comicCrud.findOne({ where: { comicID } });
-            res.status(200).json(comic);
+            const comicDetails = await comicDetailsCrud.findOne({ where: { comicID } });
+            res.status(200).json({comic: comic.result, comicDetails: comicDetails.result});
         } catch (error) {
             console.error('Error fetching comic:', error);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send('Failed to fetch comic.');
@@ -266,12 +299,37 @@ class ComicController {
         const { categoryName } = req.params;
 
         try {
-            const comics = await comicCategoryMappingCrud.getAll({
-                include: [{ model: db.Comic, as: 'comic' }],
-                where: { categoryName },
-            });
+            const category = await comicCategoryCrud.findOne({ where: { categoryName } });
 
-            res.status(200).json(comics);
+            if (!category.result) {
+                return res
+                    .status(HttpStatusCode.NOT_FOUND)
+                    .json({ message: `Category '${categoryName}' not found.` });
+            }
+
+            const categoryID = category.result.categoryID;
+
+            const mappings = await comicCategoryMappingCrud.getAll({ where: { categoryID } });
+
+            if (!mappings || mappings.length === 0) {
+                return res
+                    .status(HttpStatusCode.NOT_FOUND)
+                    .json({ message: `No comics found for category '${categoryName}'.` });
+            }
+
+            const comicsWithDetails = await Promise.all(
+                mappings.map(async (mapping) => {
+                    const comic = await comicCrud.findOne({ where: { comicID: mapping.comicID } });
+                    const comicDetails = await comicDetailsCrud.findOne({ where: { comicID: mapping.comicID } });
+
+                    return {
+                        comic: comic?.result || null,
+                        comicDetails: comicDetails?.result || null,
+                    };
+                })
+            );
+
+            res.status(200).json(comicsWithDetails);
         } catch (error) {
             console.error('Error fetching comics by category:', error);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send('Failed to fetch comics.');

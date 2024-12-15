@@ -101,8 +101,15 @@ class StorageService {
         });
     }
 
-    async deleteFile(bucketName, fileName) {
-        await this.minioClient.removeObject(bucketName, fileName);
+    async deleteFile(bucketName, filePath) {
+        try {
+            console.log(`Deleting file from bucket: ${bucketName}, filePath: ${filePath}`);
+            await this.minioClient.removeObject(bucketName, filePath);
+            console.log(`File deleted successfully: ${filePath}`);
+        } catch (error) {
+            console.error(`Error deleting file: ${filePath}`, error.message);
+            throw new Error('Failed to delete file from storage.');
+        }
     }
 
     async viewFile(bucketName, fileName) {
@@ -268,6 +275,40 @@ class StorageService {
         } catch (error) {
             console.error(`Error deleting folder ${folderPath} in bucket ${bucketName}:`, error);
             throw new Error('Failed to delete folder.');
+        }
+    }
+
+    /**
+     * Upload a comic banner to a specific folder within the comics bucket.
+     * @param {Object} file - The file object (from multer).
+     * @param {string} comicID - The comic ID to create a folder for.
+     * @returns {Promise<string>} - The path of the uploaded banner.
+     */
+    async uploadComicBanner(file, comicID) {
+        try {
+            const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/heic', 'image/png'];
+            if (!allowedMimeTypes.includes(file.mimetype)) {
+                throw new Error('Invalid file type. Only JPEG, JPG, HEIC, and PNG formats are allowed.');
+            }
+
+            const uniqueFileName = `${uuidv4()}.png`;
+            const folderPath = `comics/${comicID}/`;
+            const targetFilePath = `${folderPath}${uniqueFileName}`;
+
+            const buffer = await sharp(file.buffer)
+                .png()
+                .toBuffer();
+
+            const metaData = {
+                'Content-Type': 'image/png',
+            };
+
+            await this.minioClient.putObject(this.buckets.comics, targetFilePath, buffer, metaData);
+
+            return targetFilePath;
+        } catch (error) {
+            console.error('Error uploading comic banner:', error);
+            throw new Error('Failed to upload comic banner.');
         }
     }
 }

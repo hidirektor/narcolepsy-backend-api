@@ -31,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
             },
             publishDate: {
-                type: Sequelize.BIGINT,
+                type: Sequelize.DATE,
                 unique: false,
                 allowNull: false
             },
