@@ -1,6 +1,5 @@
 const db = require('../../models');
 
-const ComicSeason = db.ComicSeason;
 const GenericCRUD = require('../genericCrud');
 const seasonCrud = new GenericCRUD({ model: db.ComicSeason, where: null });
 const redisClient = require('../../utils/thirdParty/redis/redisClient');
@@ -37,19 +36,22 @@ class SeasonController {
         const { seasonID, seasonName, seasonOrder } = req.body;
 
         try {
-            const season = await seasonCrud.findOne({ where: { seasonID } });
+            const season = await seasonCrud.findOne({ where: { seasonID: seasonID } });
 
-            if (!season.result) {
+            if (!season.result.seasonID) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Season not found.' });
             }
 
-            const updatedSeason = await seasonCrud.update({
-                where: { seasonID },
-                data: {
-                    seasonName: seasonName || season.result.seasonName,
-                    seasonOrder: seasonOrder || season.result.seasonOrder
-                }
-            });
+            if(seasonOrder) {
+                season.result.seasonOrder = seasonOrder;
+            }
+
+            if(seasonName) {
+                season.result.seasonName = seasonName;
+            }
+            await season.result.save();
+
+            const updatedSeason = await seasonCrud.findOne({ where: { seasonID: seasonID } });
 
             res.status(HttpStatusCode.OK).json({
                 message: 'Season updated successfully.',
@@ -67,7 +69,7 @@ class SeasonController {
 
             res.status(HttpStatusCode.OK).json({
                 message: 'Seasons fetched successfully.',
-                seasons: seasons.result || []
+                seasons: seasons || []
             });
         } catch (error) {
             console.error('Error fetching all seasons:', error);
@@ -154,7 +156,7 @@ class SeasonController {
 
             res.status(HttpStatusCode.OK).json({
                 message: 'Seasons fetched successfully by comic.',
-                seasons: seasons.result || []
+                seasons: seasons || []
             });
         } catch (error) {
             console.error('Error fetching seasons by comic ID:', error);

@@ -529,6 +529,215 @@
 			]
 		},
 		{
+			"name": "Comic Season",
+			"item": [
+				{
+					"name": "Create Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comicID\": \"150cf986-e74e-4e80-b7a0-b22e0e0348b7\",\r\n    \"seasonName\": \"1. Sezon\",\r\n    \"seasonOrder\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}create-season",
+							"host": [
+								"{{base_url}}{{comic_season_url}}create-season"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seasonID\": \"5bb6e686-f80e-43f0-8a5b-44b722941ccb\",\r\n    \"seasonName\": \"2. Sezon\",\r\n    \"seasonOrder\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}edit-season",
+							"host": [
+								"{{base_url}}{{comic_season_url}}edit-season"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Seasons",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}get-all",
+							"host": [
+								"{{base_url}}{{comic_season_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Season by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}get/5bb6e686-f80e-43f0-8a5b-44b722941ccb",
+							"host": [
+								"{{base_url}}{{comic_season_url}}get"
+							],
+							"path": [
+								"5bb6e686-f80e-43f0-8a5b-44b722941ccb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Seasons by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}get-seasons-by-comic/150cf986-e74e-4e80-b7a0-b22e0e0348b7",
+							"host": [
+								"{{base_url}}{{comic_season_url}}get-seasons-by-comic"
+							],
+							"path": [
+								"150cf986-e74e-4e80-b7a0-b22e0e0348b7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}delete-season/5bb6e686-f80e-43f0-8a5b-44b722941ccb",
+							"host": [
+								"{{base_url}}{{comic_season_url}}delete-season"
+							],
+							"path": [
+								"5bb6e686-f80e-43f0-8a5b-44b722941ccb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Season Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"3d8699c0-373c-4eca-9ccc-3a2cf82694ba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_season_url}}confirm-delete-season",
+							"host": [
+								"{{base_url}}{{comic_season_url}}confirm-delete-season"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Premium Packages",
 			"item": [
 				{
@@ -1458,6 +1667,11 @@
 		{
 			"key": "support_tickets_url",
 			"value": "support-tickets/",
+			"type": "string"
+		},
+		{
+			"key": "comic_season_url",
+			"value": "comic-seasons/",
 			"type": "string"
 		}
 	]
