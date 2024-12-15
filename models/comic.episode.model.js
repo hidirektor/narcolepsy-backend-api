@@ -9,6 +9,12 @@ module.exports = (sequelize, Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true
             },
+            episodeID: {
+                type: Sequelize.UUID,
+                defaultValue: Sequelize.UUIDV4,
+                unique: true,
+                allowNull: false
+            },
             comicID: {
                 type: Sequelize.UUID,
                 unique: false,
@@ -16,17 +22,6 @@ module.exports = (sequelize, Sequelize) => {
             },
             seasonID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
-            },
-            episodeID: {
-                type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
-                unique: true,
-                allowNull: false
-            },
-            comicLanguage: {
-                type: Sequelize.STRING,
                 unique: false,
                 allowNull: false
             },
@@ -55,11 +50,6 @@ module.exports = (sequelize, Sequelize) => {
                 unique: true,
                 allowNull: false
             },
-            episodePublishDate: {
-                type: Sequelize.BIGINT,
-                unique: false,
-                allowNull: false
-            },
             episodePageCount: {
                 type: Sequelize.INTEGER,
                 unique: false,
@@ -69,6 +59,12 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 unique: true,
                 allowNull: false
+            },
+            episodePublishDate: {
+                type: Sequelize.BIGINT,
+                unique: false,
+                allowNull: false,
+                defaultValue: Math.floor(Date.now() / 1000)
             },
         },
         {
