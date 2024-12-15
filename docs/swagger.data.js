@@ -2579,8 +2579,6 @@ const endpoints = [
             episodePrice: { type: 'number', format: 'double', required: true, description: 'The price of the episode.' },
             episodeName: { type: 'string', required: true, description: 'The name of the episode.' },
             episodePublisher: { type: 'string', required: true, description: 'Email of the publisher, used to find the userID.' },
-        },
-        files: {
             episodeBanner: { type: 'file', required: true, description: 'The banner image for the episode.' },
             episodeImages: { type: 'array', items: { type: 'file' }, required: true, description: 'Images for the episode, converted to a PDF.' },
         },

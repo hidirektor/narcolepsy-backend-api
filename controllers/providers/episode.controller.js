@@ -1,7 +1,7 @@
 const db = require('../../models');
-const GenericCRUD = require('../genericCrud');
 const { errorSender } = require('../../utils');
 const HttpStatusCode = require('http-status-codes');
+const { v4: uuidv4 } = require('uuid');
 
 const storageService = new (require('../../utils/service/StorageService'))({
     endPoint: process.env.MINIO_ENDPOINT,
@@ -13,6 +13,7 @@ const storageService = new (require('../../utils/service/StorageService'))({
 const { generatePdf } = require('../../utils/pdfGenerator');
 const fs = require('fs');
 
+const GenericCRUD = require('../genericCrud');
 const episodeCrud = new GenericCRUD({ model: db.ComicEpisode });
 const userCrud = new GenericCRUD({ model: db.User });
 
