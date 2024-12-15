@@ -139,6 +139,18 @@ db.ComicEpisode.belongsTo(db.ComicSeason, {
     targetKey: 'seasonID'
 });
 
+db.User.hasOne(db.ComicEpisode, {
+    foreignKey: 'userID',
+    sourceKey: 'userID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.ComicEpisode.belongsTo(db.User, {
+    foreignKey: 'userID',
+    targetKey: 'userID'
+});
+
 db.Comic.hasOne(db.ComicCategoryMapping, {
     foreignKey: 'comicID',
     sourceKey: 'comicID',
