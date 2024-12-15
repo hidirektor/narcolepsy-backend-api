@@ -11,13 +11,13 @@ const { EDITOR, MODERATOR, SYSOP } = require('../models/roles');
 const {validators, verifyToken} = require('../middleware');
 const tokenControl = verifyToken.tokenControl;
 
-const comicValidator = validators.comicValidator;
+const categoryValidator = validators.categoryValidator;
 
 router.get(
     '/get-all',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.getAllCategory,
+    categoryValidator.getAllCategory,
     comicCategoryController.getAllCategoryAsync
 );
 
@@ -25,7 +25,7 @@ router.get(
     '/get/:categoryID',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.getCategory,
+    categoryValidator.getCategory,
     comicCategoryController.getCategoryAsync
 );
 
@@ -33,7 +33,7 @@ router.post(
     '/create-category',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.createCategory,
+    categoryValidator.createCategory,
     comicCategoryController.createCategoryAsync
 );
 
@@ -41,7 +41,7 @@ router.post(
     '/edit-category',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.updateCategory,
+    categoryValidator.updateCategory,
     comicCategoryController.updateCategoryAsync
 );
 
@@ -49,7 +49,7 @@ router.delete(
     '/delete-category/:categoryID',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.deleteCategory,
+    categoryValidator.deleteCategory,
     comicCategoryController.removeCategoryAsync
 );
 
@@ -57,7 +57,7 @@ router.post(
     '/confirm-delete-category',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    comicValidator.confirmDeleteCategory,
+    categoryValidator.confirmDeleteCategory,
     comicCategoryController.confirmRemoveCategoryAsync
 );
 

@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: true
             },
             comicDescription: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT('long'),
                 unique: false,
                 allowNull: false
             },

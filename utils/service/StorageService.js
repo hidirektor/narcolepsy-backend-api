@@ -27,8 +27,6 @@ class StorageService {
             if (!exists) {
                 await this.minioClient.makeBucket(bucketName);
                 console.log(`Bucket created: ${bucketName}`);
-            } else {
-                console.log(`Bucket already exists: ${bucketName}`);
             }
             
             if (bucketName === this.buckets.tickets) {
@@ -53,8 +51,6 @@ class StorageService {
                     'Content-Type': 'application/octet-stream'
                 });
                 console.log(`Folder created: ${folderPath} in bucket: ${bucketName}`);
-            } else {
-                console.log(`Folder already exists: ${folderPath} in bucket: ${bucketName}`);
             }
         } catch (error) {
             console.error(`Error creating folder ${folderPath} in bucket ${bucketName}:`, error);
