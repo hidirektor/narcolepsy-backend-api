@@ -10,8 +10,9 @@ const storageService = new (require('../../utils/service/StorageService'))({
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY,
 });
-const { generatePdf } = require('../../utils/pdfGenerator');
+const PdfGenerator = require('../../utils/pdfGenerator');
 const fs = require('fs');
+const sharp = require('sharp');
 
 const GenericCRUD = require('../genericCrud');
 const episodeCrud = new GenericCRUD({ model: db.ComicEpisode });
@@ -32,31 +33,40 @@ class EpisodeController {
                 episodePublisher,
             } = req.body;
 
-            // Validate publisher
             const user = await userCrud.findOne({ where: { eMail: episodePublisher } });
             if (!user.result) {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Invalid episodePublisher email.' });
             }
             const publisherID = user.result.userID;
 
-            // Upload banner
             if (!req.files.episodeBanner || req.files.episodeBanner.length !== 1) {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Episode banner is required.' });
             }
-            const bannerPath = await storageService.uploadComicBanner(req.files.episodeBanner[0], comicID);
-
-            // Generate PDF from images
             if (!req.files.episodeImages || req.files.episodeImages.length === 0) {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Episode images are required to create the PDF.' });
             }
-            const pdfPath = `comics/${comicID}/${episodeOrder}/episode-${uuidv4()}.pdf`;
-            const pageCount = await generatePdf(req.files.episodeImages, pdfPath);
 
-            // Upload PDF to MinIO
-            const pdfUrl = await storageService.uploadFileToMinio(pdfPath, 'comics');
-
-            // Save episode
             const episodeID = uuidv4();
+            const folderPath = `comics/${comicID}/${episodeOrder}/`;
+            const bannerPath = `${folderPath}banner-${episodeID}.png`;
+            const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
+
+            const bannerBuffer = await sharp(req.files.episodeBanner[0].buffer)
+                .png()
+                .toBuffer();
+
+            await storageService.minioClient.putObject(storageService.buckets.comics, bannerPath, bannerBuffer);
+
+            const localPdfPath = `/tmp/${uuidv4()}.pdf`;
+            const pageCount = await PdfGenerator.generatePdf(req.files.episodeImages, localPdfPath);
+
+            const pdfBuffer = fs.readFileSync(localPdfPath);
+            await storageService.minioClient.putObject(storageService.buckets.comics, pdfPath, pdfBuffer);
+
+            console.log(pageCount);
+
+            fs.unlinkSync(localPdfPath);
+
             const episode = await episodeCrud.create({
                 episodeID,
                 comicID,
@@ -66,11 +76,10 @@ class EpisodeController {
                 episodeName,
                 episodePublisher: publisherID,
                 episodeBannerID: bannerPath,
-                episodeFileID: pdfUrl,
+                episodeFileID: pdfPath,
                 episodePageCount: pageCount,
             });
 
-            fs.unlinkSync(pdfPath); // Clean up locally stored PDF
             res.status(201).json({ message: 'Episode created successfully', episode });
         } catch (error) {
             console.error('Error creating episode:', error);

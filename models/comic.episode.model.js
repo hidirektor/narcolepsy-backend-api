@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
             seasonID: {
                 type: Sequelize.UUID,
                 unique: false,
-                allowNull: false
+                allowNull: true
             },
             episodeOrder: {
                 type: Sequelize.INTEGER,

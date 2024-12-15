@@ -3,7 +3,9 @@ const fs = require('fs');
 
 class PdfGenerator {
     /**
-     * Generates a PDF document from an array of images.
+     * Generates a single PDF document from an array of images.
+     * Ensures images are added without distortion, with a fixed width of 800 pixels.
+     * Handles large images properly, creating only one PDF file.
      * @param {Array} images - Array of image objects, each containing a buffer and originalname.
      * @param {string} outputPath - The path where the generated PDF will be saved.
      * @returns {Promise<number>} - Resolves with the number of pages in the generated PDF.
@@ -13,6 +15,7 @@ class PdfGenerator {
             try {
                 const doc = new PDFDocument({ autoFirstPage: false });
                 const stream = fs.createWriteStream(outputPath);
+                let pageCount = 0;
 
                 doc.pipe(stream);
 
@@ -20,13 +23,23 @@ class PdfGenerator {
 
                 images.forEach((image) => {
                     const buffer = image.buffer;
-                    doc.addPage().image(buffer, { fit: [500, 750], align: 'center', valign: 'center' });
+
+                    const tempImg = doc.openImage(buffer);
+                    const aspectRatio = tempImg.height / tempImg.width;
+                    const pdfWidth = 800;
+                    const pdfHeight = pdfWidth * aspectRatio;
+
+                    doc.addPage({ size: [pdfWidth, pdfHeight] }).image(buffer, 0, 0, {
+                        width: pdfWidth,
+                        height: pdfHeight,
+                    });
+
+                    pageCount++;
                 });
 
                 doc.end();
 
                 stream.on('finish', () => {
-                    const pageCount = doc.bufferedPageRange().count;
                     resolve(pageCount);
                 });
 
