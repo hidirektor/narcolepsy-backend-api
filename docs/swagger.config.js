@@ -7,24 +7,39 @@ const generateSwaggerSpec = () => {
     const sections = {};
 
     endpoints.forEach(endpoint => {
-        const { path, method, summary, description, body, responses, parameters, sectionTitle, security } = endpoint;
+        const { path, method, summary, description, body, responses, parameters, sectionTitle, security, consumes } = endpoint;
 
         if (!paths[path]) paths[path] = {};
+
+        const isMultipart = consumes && consumes.includes('multipart/form-data');
 
         paths[path][method.toLowerCase()] = {
             summary,
             description,
-            parameters: parameters
-                ? Object.entries(parameters).map(([name, details]) => ({
-                    name,
-                    in: 'path',
-                    required: details.required || false,
-                    schema: {
+            consumes: consumes || ['application/json'],
+            parameters: [
+                ...(parameters
+                    ? Object.entries(parameters).map(([name, details]) => ({
+                        name,
+                        in: 'path',
+                        required: details.required || false,
+                        schema: {
+                            type: details.type,
+                        },
+                    }))
+                    : []),
+                ...(isMultipart && body
+                    ? Object.entries(body).map(([name, details]) => ({
+                        name,
+                        in: 'formData',
+                        required: details.required || false,
                         type: details.type,
-                    },
-                }))
-                : undefined,
-            requestBody: body
+                        format: details.format || undefined,
+                        description: details.description || undefined,
+                    }))
+                    : []),
+            ],
+            requestBody: !isMultipart && body
                 ? {
                     content: {
                         'application/json': {

@@ -423,7 +423,7 @@ const endpoints = [
             eMail: { type: 'string', required: false },
             phoneNumber: { type: 'string', required: false },
             countryCode: { type: 'string', required: false },
-            profilePhoto: { type: 'file', required: true, description: 'Profile photo image file (multipart/form-data)' }
+            profilePhoto: { type: 'file', required: true, description: 'Profile photo image file (multipart/form-data)' },
         },
         responses: {
             200: {
@@ -1073,15 +1073,14 @@ const endpoints = [
             ticketDescription: { type: 'string', required: true },
             comicID: { type: 'string', required: false },
             episodeID: { type: 'string', required: false },
-        },
-        files: {
             attachments: {
-                type: 'array',
-                items: { type: 'file' },
-                maxItems: 3,
+                type: "array",
                 required: true,
-                description: 'Attachments for the ticket.',
-            },
+                items: {
+                    type: "file"
+                },
+                description: "Attachments for the ticket (max 3 files)"
+            }
         },
         responses: {
             200: {
@@ -1177,15 +1176,14 @@ const endpoints = [
             eMail: { type: 'string', required: true },
             ticketID: { type: 'string', required: true },
             ticketResponse: { type: 'string', required: true },
-        },
-        files: {
             attachments: {
-                type: 'array',
-                items: { type: 'file' },
-                maxItems: 3,
+                type: "array",
                 required: true,
-                description: 'Attachments for the ticket reply.',
-            },
+                items: {
+                    type: "file"
+                },
+                description: "Attachments for the ticket (max 3 files)"
+            }
         },
         responses: {
             201: {
@@ -1375,7 +1373,6 @@ const endpoints = [
         ],
         controller: 'controllers/providers/ticketController.getAllTicketsAsync',
     },
-
     {
         sectionTitle: 'Support Tickets Management',
         path: 'support-tickets/get-ticket/{ticketID}',
@@ -1869,7 +1866,7 @@ const endpoints = [
         sectionTitle: 'Support Tickets Management',
         path: 'support-tickets/delete-attachment',
         method: 'delete',
-        summary: 'Delete an attachment from a ticket or response',
+        summary: "Delete an attachment from a ticket or response",
         description: 'Allows users to delete an attachment from either a ticket or a response.',
         body: {
             ticketID: {
@@ -1934,6 +1931,14 @@ const endpoints = [
                 required: false,
                 description: 'The unique identifier of the response. Required if adding to a response.',
             },
+            attachments: {
+                type: "array",
+                required: true,
+                items: {
+                    type: "file"
+                },
+                description: "Attachments for the ticket (max 3 files)"
+            }
         },
         responses: {
             200: {
@@ -2284,44 +2289,49 @@ const endpoints = [
         controller: 'controllers/seasonController.getSeasonsByComicAsync',
     },
     {
-        "sectionTitle": "Comic Management",
-        "path": "comics/create-comic",
-        "method": "post",
-        "summary": "Create a new comic",
-        "description": "Create a new comic along with its details and upload a banner image to MinIO storage.",
-        "body": {
-            "comicName": { "type": "string", "required": true, "description": "The name of the comic." },
-            "comicDescription": { "type": "string", "required": true, "description": "A detailed description of the comic." },
-            "comicDescriptionTitle": { "type": "string", "required": false, "description": "An optional short description title." },
-            "sourceCountry": { "type": "string", "required": true, "description": "The country of origin for the comic." },
-            "publishDate": { "type": "string", "required": true, "description": "The publication date in string format." },
-            "comicStatus": { "type": "string", "required": true, "description": "The status of the comic ('CONTINUE', 'MID_FINAL', 'FINAL')." },
-            "comicLanguage": { "type": "string", "required": true, "description": "The language of the comic." },
-            "comicAuthor": { "type": "string", "required": false, "description": "The author of the comic." },
-            "comicEditor": { "type": "string", "required": false, "description": "The editor of the comic." },
-            "comicCompany": { "type": "string", "required": false, "description": "The company publishing the comic." },
-            "comicArtist": { "type": "string", "required": false, "description": "The artist of the comic." }
+        sectionTitle: "Comic Management",
+        path: "comics/create-comic",
+        method: "post",
+        summary: "Create a new comic",
+        description: "Create a new comic along with its details and upload a banner image to MinIO storage.",
+        body: {
+            comicName: { "type": "string", "required": true, "description": "The name of the comic." },
+            comicDescription: { "type": "string", "required": true, "description": "A detailed description of the comic." },
+            comicDescriptionTitle: { "type": "string", "required": false, "description": "An optional short description title." },
+            sourceCountry: { "type": "string", "required": true, "description": "The country of origin for the comic." },
+            publishDate: { "type": "string", "required": true, "description": "The publication date in string format." },
+            comicStatus: { "type": "string", "required": true, "description": "The status of the comic ('CONTINUE', 'MID_FINAL', 'FINAL')." },
+            comicLanguage: { "type": "string", "required": true, "description": "The language of the comic." },
+            comicAuthor: { "type": "string", "required": false, "description": "The author of the comic." },
+            comicEditor: { "type": "string", "required": false, "description": "The editor of the comic." },
+            comicCompany: { "type": "string", "required": false, "description": "The company publishing the comic." },
+            comicArtist: { "type": "string", "required": false, "description": "The artist of the comic." },
+            comicBanner: {
+                type: "file",
+                required: true,
+                description: "The new banner image file for the comic."
+            }
         },
-        "responses": {
-            "201": {
-                "description": "Comic created successfully.",
-                "content": {
+        responses: {
+            201: {
+                description: "Comic created successfully.",
+                content: {
                     "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": { "type": "string", "example": "Comic created successfully." },
-                                "comic": { "type": "object" }
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: { "type": "string", "example": "Comic created successfully." },
+                                comic: { "type": "object" }
                             }
                         }
                     }
                 }
             },
-            "400": { "description": "Invalid input data or missing file." },
-            "500": { "description": "Internal server error." }
+            400: { "description": "Invalid input data or missing file." },
+            500: { "description": "Internal server error." }
         },
-        "security": [{ "BearerAuth": [] }],
-        "controller": "controllers/comicController.createComic"
+        security: [{ "BearerAuth": [] }],
+        controller: "controllers/comicController.createComic"
     },
     {
         sectionTitle: 'Comic Management',
@@ -2335,6 +2345,11 @@ const endpoints = [
                 required: true,
                 description: 'The unique identifier of the comic.',
             },
+            comicBanner: {
+                type: "file",
+                required: true,
+                description: "The new banner image file for the comic."
+            }
         },
         responses: {
             200: {
