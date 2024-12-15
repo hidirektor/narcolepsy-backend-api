@@ -123,4 +123,19 @@ router.put(
     ticketController.editTicketAsync
 );
 
+router.post(
+    '/add-attachment',
+    tokenControl,
+    upload.array('attachments', 3),
+    ticketValidator.addAttachment,
+    ticketController.addAttachmentAsync
+);
+
+router.delete(
+    '/delete-attachment',
+    tokenControl,
+    ticketValidator.deleteAttachment,
+    ticketController.deleteAttachmentAsync
+);
+
 module.exports = router;

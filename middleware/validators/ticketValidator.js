@@ -188,6 +188,34 @@ class TicketValidator extends CommonValidator {
             .then(() => next())
             .catch((err) => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
     }
+
+    static addAttachment(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).optional(),
+            responseID: joi.string().guid({ version: 'uuidv4' }).optional(),
+        }).xor('ticketID', 'responseID');
+
+        schema.validateAsync(req.body)
+            .then(() => {
+                if (!req.files || req.files.length === 0) {
+                    throw new Error('At least one file must be uploaded.');
+                }
+                next();
+            })
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
+
+    static deleteAttachment(req, res, next) {
+        const schema = joi.object({
+            ticketID: joi.string().guid({ version: 'uuidv4' }).optional(),
+            responseID: joi.string().guid({ version: 'uuidv4' }).optional(),
+            fileName: joi.string().required(),
+        }).xor('ticketID', 'responseID');
+
+        schema.validateAsync(req.body)
+            .then(() => next())
+            .catch(err => res.status(HttpStatusCode.BAD_REQUEST).send(err.message));
+    }
 }
 
 module.exports = TicketValidator;

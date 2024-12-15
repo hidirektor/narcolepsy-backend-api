@@ -1864,6 +1864,105 @@ const endpoints = [
             },
         ],
         controller: 'controllers/ticketController.editTicketAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/delete-attachment',
+        method: 'delete',
+        summary: 'Delete an attachment from a ticket or response',
+        description: 'Allows users to delete an attachment from either a ticket or a response.',
+        body: {
+            ticketID: {
+                type: 'string',
+                required: false,
+                description: 'The unique identifier of the ticket. Required if deleting from a ticket.',
+            },
+            responseID: {
+                type: 'string',
+                required: false,
+                description: 'The unique identifier of the response. Required if deleting from a response.',
+            },
+            fileName: {
+                type: 'string',
+                required: true,
+                description: 'The name of the file to delete.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Attachment deleted successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Attachment removed successfully from the ticket.' },
+                                updatedAttachments: {
+                                    type: 'array',
+                                    items: { type: 'string', example: 'updated-file-name.png' },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid input' },
+            404: { description: 'Ticket, response, or file not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/ticketController.deleteAttachmentAsync',
+    },
+    {
+        sectionTitle: 'Support Tickets Management',
+        path: 'support-tickets/add-attachment',
+        method: 'post',
+        summary: 'Add attachments to a ticket or response',
+        description: 'Allows users to add attachments to either a ticket or a response. Maximum of 3 attachments are allowed.',
+        body: {
+            ticketID: {
+                type: 'string',
+                required: false,
+                description: 'The unique identifier of the ticket. Required if adding to a ticket.',
+            },
+            responseID: {
+                type: 'string',
+                required: false,
+                description: 'The unique identifier of the response. Required if adding to a response.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Attachments added successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Attachments added successfully to the ticket.' },
+                                updatedAttachments: {
+                                    type: 'array',
+                                    items: { type: 'string', example: 'new-file-name.png' },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid input or too many attachments' },
+            404: { description: 'Ticket or response not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/ticketController.addAttachmentAsync',
     }
 ];
 

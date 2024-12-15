@@ -889,9 +889,9 @@
 									"key": "attachments",
 									"type": "file",
 									"src": [
-										"/C:/Users/hidir/OneDrive/Resimler/2629838.jpg",
-										"/C:/Users/hidir/OneDrive/Resimler/2749735.jpg",
-										"/C:/Users/hidir/OneDrive/Resimler/4698663.jpg"
+										"VqvAu7Rvr/2629838.jpg",
+										"VqvAu7Rvr/2749735.jpg",
+										"VqvAu7Rvr/4698663.jpg"
 									]
 								}
 							]
@@ -1245,6 +1245,150 @@
 							"raw": "{{base_url}}{{support_tickets_url}}edit-ticket",
 							"host": [
 								"{{base_url}}{{support_tickets_url}}edit-ticket"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Support Ticket Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketID\": \"5ff19b37-3c51-433f-b7ac-42db8aaf4175\",\r\n    \"fileName\": \"ticket-attachments/5ff19b37-3c51-433f-b7ac-42db8aaf4175/150cf986-e74e-4e80-b7a0-b22e0e0348b7-1734210307/cd44216d-ead4-494f-a287-e9266c021867.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}delete-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}delete-attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Support Ticket Response Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"responseID\": \"d5316e15-93cf-4df4-8249-7c060a9630b8\",\r\n    \"fileName\": \"response-attachments/5ff19b37-3c51-433f-b7ac-42db8aaf4175/150cf986-e74e-4e80-b7a0-b22e0e0348b7-1734220523/2b3fe6ce-8809-41d6-b50e-f58818b442f8.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}delete-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}delete-attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Support Ticket Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ticketID",
+									"value": "5ff19b37-3c51-433f-b7ac-42db8aaf4175",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": "SCA6yWAQ9/4698663.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}add-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}add-attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Support Ticket Response Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MjE2MDc3LCJleHAiOjE3MzQzMDI0Nzd9.EVjJn3gxbyUxOAsS9Uqmgg-FRQh5cwTLzTw9Obf6mkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "responseID",
+									"value": "d5316e15-93cf-4df4-8249-7c060a9630b8",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": "2ELXBqyiG/1959353.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{support_tickets_url}}add-attachment",
+							"host": [
+								"{{base_url}}{{support_tickets_url}}add-attachment"
 							]
 						}
 					},

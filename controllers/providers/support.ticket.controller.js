@@ -586,6 +586,196 @@ class TicketController {
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
         }
     }
+
+    async addAttachmentAsync(req, res) {
+        const { ticketID, responseID } = req.body;
+        const userID = req.decode?.userID;
+
+        try {
+            if (ticketID) {
+                const ticket = await ticketCrud.findOne({ where: { ticketID } });
+
+                if (!ticket || !ticket.result) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Ticket not found.' });
+                }
+
+                const ticketData = ticket.result;
+
+                if (ticketData.userID !== userID) {
+                    return res.status(HttpStatusCode.FORBIDDEN).json({
+                        message: 'You are not authorized to add attachments to this ticket.',
+                    });
+                }
+
+                if (
+                    ticketData.ticketAttachments &&
+                    JSON.parse(ticketData.ticketAttachments).length + req.files.length > 3
+                ) {
+                    return res.status(HttpStatusCode.BAD_REQUEST).json({
+                        message: 'You cannot upload more than 3 attachments for a ticket.',
+                    });
+                }
+
+                const uploadedAttachments = [];
+                for (const file of req.files) {
+                    const uploadedFilePath = await storageService.uploadTicketImage(
+                        file,
+                        `ticket-attachments/${ticketID}/${userID}-${Math.floor(Date.now() / 1000)}/`
+                    );
+                    uploadedAttachments.push(uploadedFilePath);
+                }
+
+                ticketData.ticketAttachments = JSON.stringify([
+                    ...(JSON.parse(ticketData.ticketAttachments || '[]')),
+                    ...uploadedAttachments,
+                ]);
+
+                await ticketData.save();
+
+                res.status(HttpStatusCode.OK).json({
+                    message: 'Attachments added successfully to the ticket.',
+                    updatedAttachments: JSON.parse(ticketData.ticketAttachments),
+                });
+            } else if (responseID) {
+                const response = await ticketResponseCrud.findOne({ where: { responseID } });
+
+                if (!response || !response.result) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Response not found.' });
+                }
+
+                const responseData = response.result;
+
+                if (responseData.userID !== userID) {
+                    return res.status(HttpStatusCode.FORBIDDEN).json({
+                        message: 'You are not authorized to add attachments to this response.',
+                    });
+                }
+
+                if (
+                    responseData.responseAttachments &&
+                    JSON.parse(responseData.responseAttachments).length + req.files.length > 3
+                ) {
+                    return res.status(HttpStatusCode.BAD_REQUEST).json({
+                        message: 'You cannot upload more than 3 attachments for a response.',
+                    });
+                }
+
+                const uploadedAttachments = [];
+                for (const file of req.files) {
+                    const uploadedFilePath = await storageService.uploadTicketImage(
+                        file,
+                        `response-attachments/${responseID}/${userID}-${Math.floor(Date.now() / 1000)}/`
+                    );
+                    uploadedAttachments.push(uploadedFilePath);
+                }
+
+                responseData.responseAttachments = JSON.stringify([
+                    ...(JSON.parse(responseData.responseAttachments || '[]')),
+                    ...uploadedAttachments,
+                ]);
+
+                await responseData.save();
+
+                res.status(HttpStatusCode.OK).json({
+                    message: 'Attachments added successfully to the response.',
+                    updatedAttachments: JSON.parse(responseData.responseAttachments),
+                });
+            } else {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'Either ticketID or responseID is required.',
+                });
+            }
+        } catch (error) {
+            console.error('Error adding attachment:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
+
+    async deleteAttachmentAsync(req, res) {
+        const { ticketID, responseID, fileName } = req.body;
+        const userID = req.decode?.userID;
+
+        try {
+            if (ticketID) {
+                const ticket = await ticketCrud.findOne({ where: { ticketID } });
+
+                if (!ticket || !ticket.result) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Ticket not found.' });
+                }
+
+                const ticketData = ticket.result;
+
+                if (ticketData.userID !== userID) {
+                    return res.status(HttpStatusCode.FORBIDDEN).json({
+                        message: 'You are not authorized to delete attachments from this ticket.',
+                    });
+                }
+
+                const attachments = JSON.parse(ticketData.ticketAttachments || '[]');
+                if (!attachments.includes(fileName)) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({
+                        message: 'Attachment not found in the ticket.',
+                    });
+                }
+
+                const updatedAttachments = attachments.filter(
+                    (attachment) => attachment !== fileName
+                );
+
+                ticketData.ticketAttachments = JSON.stringify(updatedAttachments);
+
+                await ticketData.save();
+                await storageService.deleteTicketImage(fileName);
+
+                res.status(HttpStatusCode.OK).json({
+                    message: 'Attachment removed successfully from the ticket.',
+                    updatedAttachments,
+                });
+            } else if (responseID) {
+                const response = await ticketResponseCrud.findOne({ where: { responseID } });
+
+                if (!response || !response.result) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Response not found.' });
+                }
+
+                const responseData = response.result;
+
+                if (responseData.userID !== userID) {
+                    return res.status(HttpStatusCode.FORBIDDEN).json({
+                        message: 'You are not authorized to delete attachments from this response.',
+                    });
+                }
+
+                const attachments = JSON.parse(responseData.responseAttachments || '[]');
+                if (!attachments.includes(fileName)) {
+                    return res.status(HttpStatusCode.NOT_FOUND).json({
+                        message: 'Attachment not found in the response.',
+                    });
+                }
+
+                const updatedAttachments = attachments.filter(
+                    (attachment) => attachment !== fileName
+                );
+
+                responseData.responseAttachments = JSON.stringify(updatedAttachments);
+
+                await responseData.save();
+                await storageService.deleteTicketImage(fileName);
+
+                res.status(HttpStatusCode.OK).json({
+                    message: 'Attachment removed successfully from the response.',
+                    updatedAttachments,
+                });
+            } else {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    message: 'Either ticketID or responseID is required.',
+                });
+            }
+        } catch (error) {
+            console.error('Error deleting attachment:', error);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+        }
+    }
 }
 
 module.exports = TicketController;
