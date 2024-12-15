@@ -451,14 +451,14 @@ const endpoints = [
         controller: 'controllers/providers/fileController.uploadProfilePhotoAsync',
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/get-all',
         method: 'get',
-        summary: 'List all comic categories',
-        description: 'Retrieves a list of all comic categories. Requires a valid token and one of the following roles: EDITOR, MODERATOR, SYSOP.',
+        summary: 'List all Comic Category Management',
+        description: 'Retrieves a list of all Comic Category Management. Requires a valid token and one of the following roles: EDITOR, MODERATOR, SYSOP.',
         responses: {
             200: {
-                description: 'A list of comic categories',
+                description: 'A list of Comic Category Management',
                 content: {
                     'application/json': {
                         schema: {
@@ -485,7 +485,7 @@ const endpoints = [
         controller: 'controllers/providers/comic.category.controller.getAllCategoryAsync'
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/get/{categoryID}',
         method: 'get',
         summary: 'Get a specific comic category',
@@ -520,7 +520,7 @@ const endpoints = [
         controller: 'controllers/providers/comic.category.controller.getCategoryAsync'
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/create-category',
         method: 'post',
         summary: 'Create a new comic category',
@@ -555,7 +555,7 @@ const endpoints = [
         controller: 'controllers/providers/comic.category.controller.createCategoryAsync'
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/edit-category',
         method: 'post',
         summary: 'Edit an existing comic category',
@@ -592,7 +592,7 @@ const endpoints = [
         controller: 'controllers/providers/comic.category.controller.updateCategoryAsync'
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/delete-category/{categoryID}',
         method: 'delete',
         summary: 'Delete a comic category',
@@ -647,7 +647,7 @@ const endpoints = [
         controller: 'controllers/providers/comic.category.controller.removeCategoryAsync'
     },
     {
-        sectionTitle: 'Comic Categories',
+        sectionTitle: 'Comic Category Management',
         path: 'comic-categories/confirm-delete-category',
         method: 'post',
         summary: 'Confirm deletion of a comic category',
@@ -1963,6 +1963,325 @@ const endpoints = [
             },
         ],
         controller: 'controllers/ticketController.addAttachmentAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/create-season',
+        method: 'post',
+        summary: 'Create a new season',
+        description: 'Allows users to create a new season for a comic.',
+        body: {
+            comicID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the comic.',
+            },
+            seasonName: {
+                type: 'string',
+                required: true,
+                description: 'The name of the season.',
+            },
+            seasonOrder: {
+                type: 'integer',
+                required: true,
+                description: 'The display order of the season.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Season created successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Season created successfully.' },
+                                seasonData: {
+                                    type: 'object',
+                                    properties: {
+                                        seasonID: { type: 'string', example: 'uuid-value' },
+                                        seasonName: { type: 'string', example: 'Season 1' },
+                                        seasonOrder: { type: 'integer', example: 1 },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid input data' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.createSeasonAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/edit-season',
+        method: 'put',
+        summary: 'Edit an existing season',
+        description: 'Allows users to update the details of an existing season.',
+        body: {
+            seasonID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the season to edit.',
+            },
+            seasonName: {
+                type: 'string',
+                required: false,
+                description: 'The new name of the season.',
+            },
+            seasonOrder: {
+                type: 'integer',
+                required: false,
+                description: 'The new display order of the season.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Season updated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Season updated successfully.' },
+                                updatedSeason: {
+                                    type: 'object',
+                                    properties: {
+                                        seasonID: { type: 'string', example: 'uuid-value' },
+                                        seasonName: { type: 'string', example: 'Updated Season Name' },
+                                        seasonOrder: { type: 'integer', example: 2 },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid input data' },
+            404: { description: 'Season not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.editSeasonAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/get-all',
+        method: 'get',
+        summary: 'Get all seasons',
+        description: 'Fetches a list of all seasons available.',
+        responses: {
+            200: {
+                description: 'List of seasons retrieved successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Seasons retrieved successfully.' },
+                                seasons: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            seasonID: { type: 'string', example: 'uuid-value' },
+                                            seasonName: { type: 'string', example: 'Season 1' },
+                                            seasonOrder: { type: 'integer', example: 1 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.getAllSeasonsAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/get/:seasonID',
+        method: 'get',
+        summary: 'Get a specific season by ID',
+        description: 'Fetches the details of a season by its unique identifier.',
+        parameters: {
+            seasonID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the season.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Season details retrieved successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Season retrieved successfully.' },
+                                season: {
+                                    type: 'object',
+                                    properties: {
+                                        seasonID: { type: 'string', example: 'uuid-value' },
+                                        seasonName: { type: 'string', example: 'Season 1' },
+                                        seasonOrder: { type: 'integer', example: 1 },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Season not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.getSeasonByIDAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/delete-season/:seasonID',
+        method: 'delete',
+        summary: 'Delete a season',
+        description: 'Allows users to delete a season by its unique identifier.',
+        parameters: {
+            seasonID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the season to delete.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Season deletion initiated successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Season deletion initiated. Use operation key to confirm.' },
+                                operationKey: { type: 'string', example: 'uuid-value' },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Season not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.deleteSeasonAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/confirm-delete-season',
+        method: 'post',
+        summary: 'Confirm season deletion',
+        description: 'Confirms the deletion of a season using an operation key.',
+        body: {
+            operationKey: {
+                type: 'string',
+                required: true,
+                description: 'The unique operation key for confirming the deletion.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Season deleted successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Season deleted successfully.' },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Invalid or expired operation key' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.confirmDeleteSeasonAsync',
+    },
+    {
+        sectionTitle: 'Comic Season Management',
+        path: 'comic-seasons/get-seasons-by-comic/:comicID',
+        method: 'get',
+        summary: 'Get all seasons by comic ID',
+        description: 'Fetches all seasons related to a specific comic.',
+        parameters: {
+            comicID: {
+                type: 'string',
+                required: true,
+                description: 'The unique identifier of the comic.',
+            },
+        },
+        responses: {
+            200: {
+                description: 'Seasons retrieved successfully',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Seasons retrieved successfully.' },
+                                seasons: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            seasonID: { type: 'string', example: 'uuid-value' },
+                                            seasonName: { type: 'string', example: 'Season 1' },
+                                            seasonOrder: { type: 'integer', example: 1 },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            404: { description: 'Comic not found' },
+            500: { description: 'Internal server error' },
+        },
+        security: [
+            {
+                BearerAuth: [],
+            },
+        ],
+        controller: 'controllers/seasonController.getSeasonsByComicAsync',
     }
 ];
 

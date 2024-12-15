@@ -28,6 +28,7 @@ app.use('/v1/file', routers.fileRouter);
 app.use('/v1/comic-categories', routers.categoryRouter);
 app.use('/v1/premium-packages', routers.premiumRouter);
 app.use('/v1/support-tickets', routers.ticketRouter);
+app.use('/v1/comic-seasons', routers.seasonRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');
