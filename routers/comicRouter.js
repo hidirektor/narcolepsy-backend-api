@@ -7,11 +7,15 @@ const ControllerFactory = require('../controllers/controllerFactory');
 const comicController = ControllerFactory.creating('comic.controller');
 
 const { validators, verifyToken } = require('../middleware');
+const Authorization = require("../middleware/authorization");
+const {EDITOR, MODERATOR, SYSOP} = require("../models/roles");
 const tokenControl = verifyToken.tokenControl;
 const comicValidator = validators.comicValidator;
 
 router.post(
     '/create-comic',
+    tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     upload.single('comicBanner'),
     comicValidator.createComic,
     comicController.createComicAsync
@@ -19,6 +23,8 @@ router.post(
 
 router.post(
     '/change-comic-banner',
+    tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     upload.single('comicBanner'),
     comicValidator.changeBanner,
     comicController.changeComicBannerAsync
@@ -27,6 +33,7 @@ router.post(
 router.delete(
     '/delete-comic/:comicID',
     tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     comicValidator.deleteComic,
     comicController.deleteComicAsync
 );
@@ -34,6 +41,7 @@ router.delete(
 router.post(
     '/confirm-delete-comic',
     tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     comicValidator.confirmDeleteComic,
     comicController.confirmDeleteComicAsync
 );
@@ -41,6 +49,7 @@ router.post(
 router.put(
     '/edit-comic',
     tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     comicValidator.editComic,
     comicController.editComicAsync
 );
@@ -48,6 +57,7 @@ router.put(
 router.get(
     '/get-all',
     tokenControl,
+    Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
     comicController.getAllAsync
 );
 

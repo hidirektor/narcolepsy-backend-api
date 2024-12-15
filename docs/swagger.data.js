@@ -2122,7 +2122,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Season Management',
-        path: 'comic-seasons/get/:seasonID',
+        path: 'comic-seasons/get/{seasonID}',
         method: 'get',
         summary: 'Get a specific season by ID',
         description: 'Fetches the details of a season by its unique identifier.',
@@ -2167,7 +2167,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Season Management',
-        path: 'comic-seasons/delete-season/:seasonID',
+        path: 'comic-seasons/delete-season/{seasonID}',
         method: 'delete',
         summary: 'Delete a season',
         description: 'Allows users to delete a season by its unique identifier.',
@@ -2242,7 +2242,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Season Management',
-        path: 'comic-seasons/get-seasons-by-comic/:comicID',
+        path: 'comic-seasons/get-seasons-by-comic/{comicID}',
         method: 'get',
         summary: 'Get all seasons by comic ID',
         description: 'Fetches all seasons related to a specific comic.',
@@ -2375,7 +2375,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Management',
-        path: 'comics/delete-comic/:comicID',
+        path: 'comics/delete-comic/{comicID}',
         method: 'delete',
         summary: 'Delete a comic',
         description: 'Deletes a comic and its associated data. Requires confirmation if dependencies exist.',
@@ -2408,99 +2408,99 @@ const endpoints = [
         controller: 'controllers/comicController.confirmDeleteComic',
     },
     {
-        "sectionTitle": "Comic Management",
-        "path": "comics/edit-comic",
-        "method": "put",
-        "summary": "Edit an existing comic",
-        "description": "Allows users to update the details of an existing comic. Only the fields provided in the request body will be updated.",
-        "body": {
-            "comicID": {
-                "type": "string",
-                "required": true,
-                "description": "The unique identifier of the comic to be updated."
+        sectionTitle: "Comic Management",
+        path: "comics/edit-comic",
+        method: "put",
+        summary: "Edit an existing comic",
+        description: "Allows users to update the details of an existing comic. Only the fields provided in the request body will be updated.",
+        body: {
+            comicID: {
+                type: "string",
+                required: true,
+                description: "The unique identifier of the comic to be updated."
             },
-            "comicName": {
-                "type": "string",
-                "required": false,
-                "description": "The new name of the comic."
+            comicName: {
+                type: "string",
+                required: false,
+                description: "The new name of the comic."
             },
-            "comicDescription": {
-                "type": "string",
-                "required": false,
-                "description": "The new detailed description of the comic."
+            comicDescription: {
+                type: "string",
+                required: false,
+                description: "The new detailed description of the comic."
             },
-            "comicDescriptionTitle": {
-                "type": "string",
-                "required": false,
-                "description": "The new short description title for the comic."
+            comicDescriptionTitle: {
+                type: "string",
+                required: false,
+                description: "The new short description title for the comic."
             },
-            "sourceCountry": {
-                "type": "string",
-                "required": false,
-                "description": "The updated country of origin for the comic."
+            sourceCountry: {
+                type: "string",
+                required: false,
+                description: "The updated country of origin for the comic."
             },
-            "publishDate": {
-                "type": "string",
-                "required": false,
-                "description": "The new publication date as a string."
+            publishDate: {
+                type: "string",
+                required: false,
+                description: "The new publication date as a string."
             },
-            "comicStatus": {
-                "type": "string",
-                "required": false,
-                "description": "The updated status of the comic ('CONTINUE', 'MID_FINAL', 'FINAL')."
+            comicStatus: {
+                type: "string",
+                required: false,
+                description: "The updated status of the comic ('CONTINUE', 'MID_FINAL', 'FINAL')."
             },
-            "comicLanguage": {
-                "type": "string",
-                "required": false,
-                "description": "The updated language of the comic."
+            comicLanguage: {
+                type: "string",
+                required: false,
+                description: "The updated language of the comic."
             },
-            "comicAuthor": {
-                "type": "string",
-                "required": false,
-                "description": "The updated author of the comic."
+            comicAuthor: {
+                type: "string",
+                required: false,
+                description: "The updated author of the comic."
             },
-            "comicEditor": {
-                "type": "string",
-                "required": false,
-                "description": "The updated editor of the comic."
+            comicEditor: {
+                type: "string",
+                required: false,
+                description: "The updated editor of the comic."
             },
-            "comicCompany": {
-                "type": "string",
-                "required": false,
-                "description": "The updated company publishing the comic."
+            comicCompany: {
+                type: "string",
+                required: false,
+                description: "The updated company publishing the comic."
             },
-            "comicArtist": {
-                "type": "string",
-                "required": false,
-                "description": "The updated artist of the comic."
+            comicArtist: {
+                type: "string",
+                required: false,
+                description: "The updated artist of the comic."
             }
         },
-        "responses": {
-            "200": {
-                "description": "Comic updated successfully.",
-                "content": {
+        responses: {
+            200: {
+                description: "Comic updated successfully.",
+                content: {
                     "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": { "type": "string", "example": "Comic updated successfully." }
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: { "type": "string", "example": "Comic updated successfully." }
                             }
                         }
                     }
                 }
             },
-            "400": {
-                "description": "Invalid input data."
+            400: {
+                description: "Invalid input data."
             },
-            "404": {
-                "description": "Comic not found."
+            404: {
+                description: "Comic not found."
             },
-            "500": {
-                "description": "Internal server error."
+            500: {
+                description: "Internal server error."
             }
         },
-        "security": [{ "BearerAuth": [] }],
-        "controller": "controllers/comicController.editComic"
+        security: [{ "BearerAuth": [] }],
+        controller: "controllers/comicController.editComic"
     },
     {
         sectionTitle: 'Comic Management',
@@ -2517,7 +2517,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Management',
-        path: 'comics/get/:comicID',
+        path: 'comics/get/{comicID}',
         method: 'get',
         summary: 'Get a comic by ID',
         description: 'Retrieves a specific comic by its unique identifier.',
@@ -2534,7 +2534,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Management',
-        path: 'comics/get-by-category/:categoryName',
+        path: 'comics/get-by-category/{categoryName}',
         method: 'get',
         summary: 'Get comics by category',
         description: 'Retrieves comics that belong to a specific category.',
@@ -2551,7 +2551,7 @@ const endpoints = [
     },
     {
         sectionTitle: 'Comic Management',
-        path: 'comics/get-by-episode/:episodeID',
+        path: 'comics/get-by-episode/{episodeID}',
         method: 'get',
         summary: 'Get a comic by episode ID',
         description: 'Retrieves the comic associated with a specific episode.',
@@ -2565,6 +2565,197 @@ const endpoints = [
         },
         security: [{ BearerAuth: [] }],
         controller: 'controllers/comicController.getByEpisode',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/create-episode',
+        method: 'post',
+        summary: 'Create a new episode',
+        description: 'Creates a new episode with a banner and multiple images converted into a PDF.',
+        body: {
+            comicID: { type: 'string', required: true, description: 'The unique identifier of the comic.' },
+            seasonID: { type: 'string', required: false, description: 'The unique identifier of the season.' },
+            episodeOrder: { type: 'integer', required: true, description: 'The order of the episode, must be greater than 0.' },
+            episodePrice: { type: 'number', format: 'double', required: true, description: 'The price of the episode.' },
+            episodeName: { type: 'string', required: true, description: 'The name of the episode.' },
+            episodePublisher: { type: 'string', required: true, description: 'Email of the publisher, used to find the userID.' },
+        },
+        files: {
+            episodeBanner: { type: 'file', required: true, description: 'The banner image for the episode.' },
+            episodeImages: { type: 'array', items: { type: 'file' }, required: true, description: 'Images for the episode, converted to a PDF.' },
+        },
+        responses: {
+            201: { description: 'Episode created successfully.' },
+            400: { description: 'Validation error or missing required data.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.createEpisodeAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/change-episode-pdf',
+        method: 'post',
+        summary: 'Change episode PDF',
+        description: 'Updates the PDF for an existing episode, deleting the old one.',
+        body: {
+            episodeID: { type: 'string', required: true, description: 'The unique identifier of the episode.' },
+        },
+        files: {
+            episodeImages: { type: 'array', items: { type: 'file' }, required: true, description: 'Images for the updated episode, converted to a new PDF.' },
+        },
+        responses: {
+            200: { description: 'Episode PDF updated successfully.' },
+            400: { description: 'Validation error or missing required data.' },
+            404: { description: 'Episode not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.changeEpisodePdfAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/edit-episode',
+        method: 'put',
+        summary: 'Edit episode details',
+        description: 'Updates the details of an existing episode, excluding files.',
+        body: {
+            episodeID: { type: 'string', required: true, description: 'The unique identifier of the episode.' },
+            comicID: { type: 'string', required: false, description: 'The unique identifier of the comic.' },
+            seasonID: { type: 'string', required: false, description: 'The unique identifier of the season.' },
+            episodeOrder: { type: 'integer', required: false, description: 'The order of the episode.' },
+            episodePrice: { type: 'number', format: 'double', required: false, description: 'The price of the episode.' },
+            episodeName: { type: 'string', required: false, description: 'The name of the episode.' },
+            episodePublisher: { type: 'string', required: false, description: 'Email of the publisher, used to find the userID.' },
+        },
+        responses: {
+            200: { description: 'Episode details updated successfully.' },
+            400: { description: 'Validation error or missing required data.' },
+            404: { description: 'Episode not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.editEpisodeAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/change-episode-banner',
+        method: 'post',
+        summary: 'Change episode banner',
+        description: 'Updates the banner image for an existing episode.',
+        body: {
+            episodeID: { type: 'string', required: true, description: 'The unique identifier of the episode.' },
+        },
+        files: {
+            episodeBanner: { type: 'file', required: true, description: 'The new banner image for the episode.' },
+        },
+        responses: {
+            200: { description: 'Episode banner updated successfully.' },
+            400: { description: 'Validation error or missing required data.' },
+            404: { description: 'Episode not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.changeEpisodeBannerAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/delete-episode/{episodeID}',
+        method: 'delete',
+        summary: 'Delete an episode',
+        description: 'Deletes an episode if it has no dependencies, otherwise requires confirmation.',
+        parameters: {
+            episodeID: { type: 'string', required: true, description: 'The unique identifier of the episode.' },
+        },
+        responses: {
+            200: { description: 'Episode deleted successfully.' },
+            400: { description: 'Episode has dependencies and requires confirmation.' },
+            404: { description: 'Episode not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.deleteEpisodeAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/confirm-delete-episode',
+        method: 'post',
+        summary: 'Confirm delete episode',
+        description: 'Confirms the deletion of an episode with dependencies after user confirmation.',
+        body: {
+            operationKey: { type: 'string', required: true, description: 'The operation key for confirming deletion.' },
+        },
+        responses: {
+            200: { description: 'Episode and dependencies deleted successfully.' },
+            400: { description: 'Invalid or expired operation key.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.confirmDeleteEpisodeAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/get-all',
+        method: 'get',
+        summary: 'Get all episodes',
+        description: 'Retrieves all episodes.',
+        responses: {
+            200: { description: 'Episodes fetched successfully.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.getAllEpisodesAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/get-by-season/{seasonID}',
+        method: 'get',
+        summary: 'Get episodes by season',
+        description: 'Retrieves episodes belonging to a specific season.',
+        parameters: {
+            seasonID: { type: 'string', required: true, description: 'The unique identifier of the season.' },
+        },
+        responses: {
+            200: { description: 'Episodes fetched successfully.' },
+            404: { description: 'No episodes found for the specified season.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.getBySeasonAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/get-by-comic/{comicID}',
+        method: 'get',
+        summary: 'Get episodes by comic',
+        description: 'Retrieves episodes belonging to a specific comic.',
+        parameters: {
+            comicID: { type: 'string', required: true, description: 'The unique identifier of the comic.' },
+        },
+        responses: {
+            200: { description: 'Episodes fetched successfully.' },
+            404: { description: 'No episodes found for the specified comic.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.getByComicAsync',
+    },
+    {
+        sectionTitle: 'Comic Episode Management',
+        path: 'comic-episodes/get/{episodeID}',
+        method: 'get',
+        summary: 'Get episode by ID',
+        description: 'Retrieves the details of an episode by its unique identifier.',
+        parameters: {
+            episodeID: { type: 'string', required: true, description: 'The unique identifier of the episode.' },
+        },
+        responses: {
+            200: { description: 'Episode fetched successfully.' },
+            404: { description: 'Episode not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ BearerAuth: [] }],
+        controller: 'controllers/episodeController.getEpisodeByIdAsync',
     }
 ];
 

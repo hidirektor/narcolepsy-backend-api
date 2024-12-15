@@ -30,6 +30,7 @@ app.use('/v1/premium-packages', routers.premiumRouter);
 app.use('/v1/support-tickets', routers.ticketRouter);
 app.use('/v1/comic-seasons', routers.seasonRouter);
 app.use('/v1/comics', routers.comicRouter);
+app.use('/v1/comic-episodes', routers.episodeRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');
