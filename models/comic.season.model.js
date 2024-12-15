@@ -25,6 +25,11 @@ module.exports = (sequelize, Sequelize) => {
                 unique: false,
                 allowNull: false
             },
+            seasonOrder: {
+                type: Sequelize.INTEGER,
+                unique: false,
+                allowNull: false
+            },
         },
         {
             timestamps: false,
