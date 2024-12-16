@@ -52,17 +52,23 @@ class EpisodeController {
             const bannerPath = `${folderPath}banner-${episodeID}.png`;
             const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
 
-            const bannerBuffer = await sharp(req.files.episodeBanner[0].buffer)
-                .png()
-                .toBuffer();
-
-            await storageService.minioClient.putObject(storageService.buckets.comics, bannerPath, bannerBuffer);
+            await storageService.uploadFileToBucket(
+                storageService.buckets.comics,
+                bannerPath,
+                req.files.episodeBanner[0].buffer,
+                'image/png'
+            );
 
             const localPdfPath = `/tmp/${uuidv4()}.pdf`;
             const pageCount = await PdfGenerator.generatePdf(req.files.episodeImages, localPdfPath);
 
             const pdfBuffer = fs.readFileSync(localPdfPath);
-            await storageService.minioClient.putObject(storageService.buckets.comics, pdfPath, pdfBuffer);
+            await storageService.uploadFileToBucket(
+                storageService.buckets.comics,
+                pdfPath,
+                pdfBuffer,
+                'application/pdf'
+            );
 
             fs.unlinkSync(localPdfPath);
 
@@ -91,7 +97,7 @@ class EpisodeController {
             const { episodeID } = req.body;
 
             const episode = await episodeCrud.findOne({ where: { episodeID } });
-            if (!episode) {
+            if (!episode.result) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Episode not found.' });
             }
 
@@ -99,29 +105,27 @@ class EpisodeController {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Episode images are required to create the PDF.' });
             }
 
-            const folderPath = `comics/${episode.comicID}/${episode.episodeOrder}/`;
+            const folderPath = `comics/${episode.result.comicID}/${episode.result.episodeOrder}/`;
             const newPdfPath = `${folderPath}episode-${episodeID}-${uuidv4()}.pdf`;
 
-            const localPdfPath = `/tmp/${uuidv4()}.pdf`;
+            const localPdfPath = `/tmp/${uuidv4()}.pdf`; // Temporary local file
             const pageCount = await PdfGenerator.generatePdf(req.files.episodeImages, localPdfPath);
 
             const pdfBuffer = fs.readFileSync(localPdfPath);
-            await storageService.minioClient.putObject(storageService.buckets.comics, newPdfPath, pdfBuffer);
+
+            const updatedPdfPath = await storageService.changeComicPDF(
+                storageService.buckets.comics,
+                episode.result.episodeFileID,
+                pdfBuffer,
+                newPdfPath
+            );
 
             fs.unlinkSync(localPdfPath);
-
-            if (episode.episodeFileID) {
-                try {
-                    await storageService.deleteFile(storageService.buckets.comics, episode.episodeFileID);
-                } catch (error) {
-                    console.error(`Failed to delete old PDF: ${episode.episodeFileID}`, error.message);
-                }
-            }
 
             await episodeCrud.update(
                 { where: { episodeID } },
                 {
-                    episodeFileID: newPdfPath,
+                    episodeFileID: updatedPdfPath,
                     episodePageCount: pageCount,
                 }
             );
@@ -223,7 +227,7 @@ class EpisodeController {
             }
 
             const episode = await episodeCrud.findOne({ where: { episodeID } });
-            if (!episode || !episode.result) {
+            if (!episode.result) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Episode not found.' });
             }
 
@@ -231,31 +235,21 @@ class EpisodeController {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'A new episode banner file is required.' });
             }
 
-            const oldBannerPath = episode.result.episodeBannerID;
-
-            if (oldBannerPath) {
-                try {
-                    await storageService.deleteFile(storageService.buckets.comics, oldBannerPath);
-                    console.log('Old banner deleted successfully:', oldBannerPath);
-                } catch (error) {
-                    console.error('Failed to delete old banner:', error.message);
-                    return res
-                        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
-                        .json({ message: 'Failed to delete old banner.', error: error.message });
-                }
-            }
-
             const folderPath = `comics/${episode.result.comicID}/${episode.result.episodeOrder}/`;
             const newBannerPath = `${folderPath}banner-${episodeID}-${uuidv4()}.png`;
 
-            const bannerBuffer = await sharp(req.file.buffer)
-                .png()
-                .toBuffer();
-            await storageService.minioClient.putObject(storageService.buckets.comics, newBannerPath, bannerBuffer);
+            const bannerBuffer = await sharp(req.file.buffer).png().toBuffer();
 
-            await episodeCrud.update({ where: { episodeID } }, { episodeBannerID: newBannerPath });
+            const updatedBannerPath = await storageService.changeComicBanner(
+                storageService.buckets.comics,
+                episode.result.episodeBannerID,
+                bannerBuffer,
+                newBannerPath
+            );
 
-            res.status(200).json({ message: 'Episode banner updated successfully', newBannerPath });
+            await episodeCrud.update({ where: { episodeID } }, { episodeBannerID: updatedBannerPath });
+
+            res.status(200).json({ message: 'Episode banner updated successfully', updatedBannerPath });
         } catch (error) {
             console.error('Error updating episode banner:', error.message);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });

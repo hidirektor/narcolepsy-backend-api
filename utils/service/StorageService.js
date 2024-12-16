@@ -28,7 +28,7 @@ class StorageService {
                 await this.minioClient.makeBucket(bucketName);
                 console.log(`Bucket created: ${bucketName}`);
             }
-            
+
             if (bucketName === this.buckets.tickets) {
                 await this._createFolderIfNotExists(bucketName, 'ticket-attachments/');
                 await this._createFolderIfNotExists(bucketName, 'response-attachments/');
@@ -65,7 +65,7 @@ class StorageService {
      * @param {Object} callbacks - Optional callbacks { onSuccess: Function, onFail: Function }
      * @returns {Promise<string>} - The fileName of the uploaded file.
      */
-    async uploadFile(file, fileType, userData, { onSuccess, onFail } = {}) {
+    async uploadFile(file, fileType, userData, {onSuccess, onFail} = {}) {
         try {
             let fileName;
             if (fileType === 'profilePhoto') {
@@ -116,7 +116,7 @@ class StorageService {
         return this.minioClient.presignedGetObject(bucketName, fileName);
     }
 
-    async _uploadProfilePhoto(file, { eMail, phoneNumber, countryCode, userRole }) {
+    async _uploadProfilePhoto(file, {eMail, phoneNumber, countryCode, userRole}) {
         if (file.mimetype === 'image/gif') {
             if (userRole !== roles.PREMIUM) {
                 throw new Error('Only PREMIUM users can upload GIFs.');
@@ -309,6 +309,79 @@ class StorageService {
         } catch (error) {
             console.error('Error uploading comic banner:', error);
             throw new Error('Failed to upload comic banner.');
+        }
+    }
+
+    /**
+     * Change an existing comic banner by deleting the old one and uploading the new one.
+     * @param {string} bucketName - The bucket name.
+     * @param {string} oldPath - The path of the old banner.
+     * @param {Buffer} newBuffer - The buffer of the new banner file.
+     * @param {string} newPath - The path of the new banner.
+     * @returns {Promise<string>} - The path of the newly uploaded banner.
+     */
+    async changeComicBanner(bucketName, oldPath, newBuffer, newPath) {
+        try {
+            if (oldPath) {
+                await this.deleteFile(bucketName, oldPath);
+                console.log(`Old banner deleted: ${oldPath}`);
+            }
+
+            const metaData = {'Content-Type': 'image/png'};
+            await this.minioClient.putObject(bucketName, newPath, newBuffer, metaData);
+
+            console.log(`New banner uploaded: ${newPath}`);
+            return newPath;
+        } catch (error) {
+            console.error('Error changing comic banner:', error.message);
+            throw new Error('Failed to change comic banner.');
+        }
+    }
+
+    /**
+     * Change an existing comic PDF by deleting the old one and uploading the new one.
+     * @param {string} bucketName - The bucket name.
+     * @param {string} oldPath - The path of the old PDF.
+     * @param {Buffer} newBuffer - The buffer of the new PDF file.
+     * @param {string} newPath - The path of the new PDF.
+     * @returns {Promise<string>} - The path of the newly uploaded PDF.
+     */
+    async changeComicPDF(bucketName, oldPath, newBuffer, newPath) {
+        try {
+            if (oldPath) {
+                await this.deleteFile(bucketName, oldPath);
+                console.log(`Old PDF deleted: ${oldPath}`);
+            }
+
+            const metaData = {'Content-Type': 'application/pdf'};
+            await this.minioClient.putObject(bucketName, newPath, newBuffer, metaData);
+
+            console.log(`New PDF uploaded: ${newPath}`);
+            return newPath;
+        } catch (error) {
+            console.error('Error changing comic PDF:', error.message);
+            throw new Error('Failed to change comic PDF.');
+        }
+    }
+
+    /**
+     * Upload a file to a specific bucket and path.
+     * @param {string} bucketName - The bucket name where the file will be stored.
+     * @param {string} filePath - The path (including filename) where the file will be saved in the bucket.
+     * @param {Buffer} fileBuffer - The buffer of the file to upload.
+     * @param {string} contentType - The MIME type of the file.
+     * @returns {Promise<string>} - The full path of the uploaded file.
+     */
+    async uploadFileToBucket(bucketName, filePath, fileBuffer, contentType) {
+        try {
+            const metaData = { 'Content-Type': contentType };
+            await this.minioClient.putObject(bucketName, filePath, fileBuffer, metaData);
+
+            console.log(`File uploaded successfully: ${filePath}`);
+            return filePath;
+        } catch (error) {
+            console.error('Error uploading file to bucket:', error.message);
+            throw new Error('Failed to upload file to storage bucket.');
         }
     }
 }
