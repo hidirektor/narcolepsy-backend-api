@@ -2,6 +2,7 @@ const db = require('../../models');
 const { errorSender } = require('../../utils');
 const HttpStatusCode = require('http-status-codes');
 const { v4: uuidv4 } = require('uuid');
+const redisClient = require('../../utils/thirdParty/redis/redisClient');
 
 const storageService = new (require('../../utils/service/StorageService'))({
     endPoint: process.env.MINIO_ENDPOINT,
@@ -88,32 +89,44 @@ class EpisodeController {
     async changeEpisodePdfAsync(req, res) {
         try {
             const { episodeID } = req.body;
+
             const episode = await episodeCrud.findOne({ where: { episodeID } });
-            if (!episode.result) {
+            if (!episode) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Episode not found.' });
             }
 
-            // Generate new PDF
             if (!req.files.episodeImages || req.files.episodeImages.length === 0) {
-                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Episode images are required.' });
+                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Episode images are required to create the PDF.' });
             }
-            const pdfPath = `comics/${episode.result.comicID}/${episode.result.episodeOrder}/episode-${uuidv4()}.pdf`;
-            const pageCount = await generatePdf(req.files.episodeImages, pdfPath);
 
-            // Upload new PDF
-            const newPdfUrl = await storageService.uploadFileToMinio(pdfPath, 'comics');
+            const folderPath = `comics/${episode.comicID}/${episode.episodeOrder}/`;
+            const newPdfPath = `${folderPath}episode-${episodeID}-${uuidv4()}.pdf`;
 
-            // Delete old PDF
-            await storageService.deleteFile(storageService.buckets.comics, episode.result.episodeFileID);
+            const localPdfPath = `/tmp/${uuidv4()}.pdf`;
+            const pageCount = await PdfGenerator.generatePdf(req.files.episodeImages, localPdfPath);
 
-            // Update episode
-            await episodeCrud.update({ where: { episodeID } }, {
-                episodeFileID: newPdfUrl,
-                episodePageCount: pageCount,
-            });
+            const pdfBuffer = fs.readFileSync(localPdfPath);
+            await storageService.minioClient.putObject(storageService.buckets.comics, newPdfPath, pdfBuffer);
 
-            fs.unlinkSync(pdfPath); // Clean up locally stored PDF
-            res.status(200).json({ message: 'Episode PDF updated successfully' });
+            fs.unlinkSync(localPdfPath);
+
+            if (episode.episodeFileID) {
+                try {
+                    await storageService.deleteFile(storageService.buckets.comics, episode.episodeFileID);
+                } catch (error) {
+                    console.error(`Failed to delete old PDF: ${episode.episodeFileID}`, error.message);
+                }
+            }
+
+            await episodeCrud.update(
+                { where: { episodeID } },
+                {
+                    episodeFileID: newPdfPath,
+                    episodePageCount: pageCount,
+                }
+            );
+
+            res.status(200).json({ message: 'Episode PDF updated successfully', pageCount });
         } catch (error) {
             console.error('Error updating episode PDF:', error);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });
@@ -142,11 +155,54 @@ class EpisodeController {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Invalid episodePublisher email.' });
             }
 
+            const currentComicID = episode.result.comicID;
+            const resolvedComicID = comicID || currentComicID;
+
+            const oldEpisodeOrder = episode.result.episodeOrder;
+            if (parseInt(episodeOrder) !== oldEpisodeOrder) {
+                const oldFolderPath = `comics/${resolvedComicID}/${oldEpisodeOrder}/`;
+                const newFolderPath = `comics/${resolvedComicID}/${episodeOrder}/`;
+
+                try {
+                    const oldBannerPath = episode.result.episodeBannerID;
+                    const newBannerPath = `${newFolderPath}banner-${episodeID}.png`;
+
+                    await storageService.minioClient.copyObject(
+                        storageService.buckets.comics,
+                        newBannerPath,
+                        `${storageService.buckets.comics}/${oldBannerPath}`
+                    );
+                    await storageService.deleteFile(storageService.buckets.comics, oldBannerPath);
+
+                    const oldPdfPath = episode.result.episodeFileID;
+                    const newPdfPath = `${newFolderPath}episode-${episodeID}.pdf`;
+
+                    await storageService.minioClient.copyObject(
+                        storageService.buckets.comics,
+                        newPdfPath,
+                        `${storageService.buckets.comics}/${oldPdfPath}`
+                    );
+                    await storageService.deleteFile(storageService.buckets.comics, oldPdfPath);
+
+                    await episodeCrud.update({ where: { episodeID } }, {
+                        episodeBannerID: newBannerPath,
+                        episodeFileID: newPdfPath,
+                    });
+
+                    await storageService.deleteFolder(storageService.buckets.comics, oldFolderPath);
+                } catch (error) {
+                    console.error('Error moving files to new folder:', error.message);
+                    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                        message: 'Failed to move files to the new episodeOrder folder.',
+                    });
+                }
+            }
+
             await episodeCrud.update({ where: { episodeID } }, {
                 comicID,
                 seasonID,
-                episodeOrder,
-                episodePrice,
+                episodeOrder: parseInt(episodeOrder),
+                episodePrice: parseFloat(episodePrice),
                 episodeName,
                 episodePublisher: user.result.userID,
             });
@@ -167,7 +223,7 @@ class EpisodeController {
             }
 
             const episode = await episodeCrud.findOne({ where: { episodeID } });
-            if (!episode.result) {
+            if (!episode || !episode.result) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Episode not found.' });
             }
 
@@ -175,17 +231,27 @@ class EpisodeController {
                 return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'A new episode banner file is required.' });
             }
 
-            const newBannerPath = await storageService.uploadComicBanner(req.file, episode.result.comicID);
-
             const oldBannerPath = episode.result.episodeBannerID;
+
             if (oldBannerPath) {
                 try {
                     await storageService.deleteFile(storageService.buckets.comics, oldBannerPath);
                     console.log('Old banner deleted successfully:', oldBannerPath);
                 } catch (error) {
                     console.error('Failed to delete old banner:', error.message);
+                    return res
+                        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+                        .json({ message: 'Failed to delete old banner.', error: error.message });
                 }
             }
+
+            const folderPath = `comics/${episode.result.comicID}/${episode.result.episodeOrder}/`;
+            const newBannerPath = `${folderPath}banner-${episodeID}-${uuidv4()}.png`;
+
+            const bannerBuffer = await sharp(req.file.buffer)
+                .png()
+                .toBuffer();
+            await storageService.minioClient.putObject(storageService.buckets.comics, newBannerPath, bannerBuffer);
 
             await episodeCrud.update({ where: { episodeID } }, { episodeBannerID: newBannerPath });
 
@@ -221,9 +287,8 @@ class EpisodeController {
                 });
             }
 
+            await storageService.deleteFolder(storageService.buckets.comics, `comics/${episode.result.comicID}/${episode.result.episodeOrder}`);
             await episodeCrud.delete({ where: { episodeID } });
-            await storageService.deleteFile(storageService.buckets.comics, episode.result.episodeBannerID);
-            await storageService.deleteFile(storageService.buckets.comics, episode.result.episodeFileID);
 
             res.status(200).json({ message: 'Episode deleted successfully.' });
         } catch (error) {
@@ -248,8 +313,7 @@ class EpisodeController {
             const episode = await episodeCrud.findOne({ where: { episodeID } });
 
             if (episode.result) {
-                await storageService.deleteFile(storageService.buckets.comics, episode.result.episodeBannerID);
-                await storageService.deleteFile(storageService.buckets.comics, episode.result.episodeFileID);
+                await storageService.deleteFolder(storageService.buckets.comics, `comics/${episode.result.comicID}/${episode.result.episodeOrder}`);
                 await episodeCrud.delete({ where: { episodeID } });
             }
 
@@ -291,11 +355,11 @@ class EpisodeController {
             const { comicID } = req.params;
             const episodes = await episodeCrud.getAll({ where: { comicID } });
 
-            if (!episodes.result || episodes.result.length === 0) {
+            if (!episodes || episodes.length === 0) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'No episodes found for the given comic.' });
             }
 
-            res.status(200).json(episodes.result);
+            res.status(200).json(episodes);
         } catch (error) {
             console.error('Error fetching episodes by comic:', error.message);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch episodes.' });
@@ -307,11 +371,11 @@ class EpisodeController {
             const { episodeID } = req.params;
             const episode = await episodeCrud.findOne({ where: { episodeID } });
 
-            if (!episode.result) {
+            if (!episode) {
                 return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Episode not found.' });
             }
 
-            res.status(200).json(episode.result);
+            res.status(200).json(episode);
         } catch (error) {
             console.error('Error fetching episode:', error.message);
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch episode.' });

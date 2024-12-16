@@ -25,7 +25,7 @@ router.post(
     '/change-episode-pdf',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),
-    upload.array('episodeImages'),
+    upload.fields([{ name: 'episodeBanner', maxCount: 1 }, { name: 'episodeImages' }]),
     episodeValidator.changeEpisodePdf,
     episodeController.changeEpisodePdfAsync
 );
@@ -84,7 +84,7 @@ router.get(
 );
 
 router.get(
-    'get/:episodeID',
+    '/get/:episodeID',
     tokenControl,
     episodeValidator.getEpisodeById,
     episodeController.getEpisodeByIdAsync

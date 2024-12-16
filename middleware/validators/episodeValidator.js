@@ -173,9 +173,7 @@ class EpisodeValidator {
 
     static async getEpisodeById(req, res, next) {
         try {
-            await joi
-                .object({ episodeID: joi.string().uuid().required() })
-                .validateAsync(req.params);
+            await joi.object({ episodeID: joi.string().uuid().required() }).validateAsync(req.params);
             next();
         } catch (error) {
             res.status(HttpStatusCode.BAD_REQUEST).json({ message: error.message });

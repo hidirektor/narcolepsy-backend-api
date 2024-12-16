@@ -529,6 +529,337 @@
 			]
 		},
 		{
+			"name": "Comic",
+			"item": [
+				{
+					"name": "Create Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comicName",
+									"value": "Solo Levelling",
+									"type": "text"
+								},
+								{
+									"key": "comicDescriptionTitle",
+									"value": "Manga Hakkında",
+									"type": "text"
+								},
+								{
+									"key": "comicDescription",
+									"value": "Solo Leveling, Chugong tarafından yazılmış bir Güney Kore web roman serisidir. Seri, 25 Temmuz 2016 tarihinden bu yana Kakao'nun dijital çizgi roman ve kurgu platformu KakaoPage'de yayınlanmakta olup bunun dışında 4 Kasım 2016'dan bu yana D&C Media tarafından Papyrus baskısı altında yayınlanmaktadır.",
+									"type": "text"
+								},
+								{
+									"key": "sourceCountry",
+									"value": "Güney Kore",
+									"type": "text"
+								},
+								{
+									"key": "publishDate",
+									"value": "25.07.2016",
+									"type": "text"
+								},
+								{
+									"key": "comicStatus",
+									"value": "CONTINUE",
+									"type": "text"
+								},
+								{
+									"key": "comicLanguage",
+									"value": "Türkçe",
+									"type": "text"
+								},
+								{
+									"key": "comicBanner",
+									"type": "file",
+									"src": "postman-cloud:///1ef43cd1-dbac-41f0-8c50-fe4e73dbd2d8"
+								},
+								{
+									"key": "comicAuthor",
+									"value": "D&C Media",
+									"type": "text"
+								},
+								{
+									"key": "comicEditor",
+									"value": "Chugong",
+									"type": "text"
+								},
+								{
+									"key": "comicCompany",
+									"value": "D&C Media",
+									"type": "text"
+								},
+								{
+									"key": "comicArtist",
+									"value": "Chugong",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}create-comic",
+							"host": [
+								"{{base_url}}{{comics_url}}create-comic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Comic Banner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comicID",
+									"value": "a83d6de3-003a-438e-9591-ed53c42a0dd3",
+									"type": "text"
+								},
+								{
+									"key": "comicBanner",
+									"type": "file",
+									"src": "postman-cloud:///1ef43cd1-dbac-41f0-8c50-fe4e73dbd2d8"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}change-comic-banner",
+							"host": [
+								"{{base_url}}{{comics_url}}change-comic-banner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comicID\": \"a83d6de3-003a-438e-9591-ed53c42a0dd3\",\r\n    \"comicName\": \"One Piece\",\r\n    \"comicDescription\": \"One Piece, Toei Animation tarafından üretilen ve Ekim 1999'da Fuji Television'da prömiyeri yapılan bir Japon anime televizyon dizisidir. Eiichiro Oda'nın aynı isimli manga serisine dayanmaktadır. Hikaye, istemeden Şeytan Meyvesi yedikten sonra vücudu kauçuk özelliklerini kazanan Maymun D.\",\r\n    \"comicDescriptionTitle\": \"Anime Hakkında\",\r\n    \"publishDate\": \"01.10.1999\",\r\n    \"sourceCountry\": \"Japonca\",\r\n    \"comicStatus\": \"CONTINUE\",\r\n    \"comicLanguage\": \"Türkçe\",\r\n    \"comicAuthor\": \"Halil\",\r\n    \"comicEditor\": \"Halil\",\r\n    \"comicCompany\": \"Halil\",\r\n    \"comicArtist\": \"Halil\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}edit-comic",
+							"host": [
+								"{{base_url}}{{comics_url}}edit-comic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comic by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}get/a83d6de3-003a-438e-9591-ed53c42a0dd3",
+							"host": [
+								"{{base_url}}{{comics_url}}get"
+							],
+							"path": [
+								"a83d6de3-003a-438e-9591-ed53c42a0dd3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comic by Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}get-by-category/Macera",
+							"host": [
+								"{{base_url}}{{comics_url}}get-by-category"
+							],
+							"path": [
+								"Macera"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comic by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}get-by-episode/1ba15d00-043f-48f6-8faf-e06a58bf7a9b",
+							"host": [
+								"{{base_url}}{{comics_url}}get-by-episode"
+							],
+							"path": [
+								"1ba15d00-043f-48f6-8faf-e06a58bf7a9b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Comics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}get-all",
+							"host": [
+								"{{base_url}}{{comics_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}delete-comic/a83d6de3-003a-438e-9591-ed53c42a0dd3",
+							"host": [
+								"{{base_url}}{{comics_url}}delete-comic"
+							],
+							"path": [
+								"a83d6de3-003a-438e-9591-ed53c42a0dd3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comic Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"64b561da-6de9-4546-a205-a33ae9043d2c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comics_url}}confirm-delete-comic",
+							"host": [
+								"{{base_url}}{{comics_url}}confirm-delete-comic"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Comic Season",
 			"item": [
 				{
@@ -730,6 +1061,375 @@
 							"raw": "{{base_url}}{{comic_season_url}}confirm-delete-season",
 							"host": [
 								"{{base_url}}{{comic_season_url}}confirm-delete-season"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comic Episode",
+			"item": [
+				{
+					"name": "Create Comic Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comicID",
+									"value": "0759b40a-be6d-45fd-b0f7-9f4cb85fa512",
+									"type": "text"
+								},
+								{
+									"key": "episodeOrder",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "episodePrice",
+									"value": "12.99",
+									"type": "text"
+								},
+								{
+									"key": "episodeName",
+									"value": "1. Bölüm",
+									"type": "text"
+								},
+								{
+									"key": "episodePublisher",
+									"value": "hidirektor@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "episodeBanner",
+									"type": "file",
+									"src": "postman-cloud:///1ef43cd1-dbac-41f0-8c50-fe4e73dbd2d8"
+								},
+								{
+									"key": "episodeImages",
+									"type": "file",
+									"src": [
+										"-bn_ve6Mw/02.jpg",
+										"-bn_ve6Mw/03.jpg",
+										"-bn_ve6Mw/04.jpg",
+										"-bn_ve6Mw/05.jpg",
+										"-bn_ve6Mw/06.jpg",
+										"-bn_ve6Mw/07.jpg",
+										"-bn_ve6Mw/08.jpg",
+										"-bn_ve6Mw/09.jpg",
+										"-bn_ve6Mw/10.jpg",
+										"-bn_ve6Mw/11.jpg",
+										"-bn_ve6Mw/12.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}create-episode",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}create-episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"episodeID\": \"1853783b-c6e8-4145-9cf2-a8576f7ed368\",\r\n    //\"comicID\": \"\",\r\n    //\"seasonID\": \"\",\r\n    \"episodeOrder\": \"2\",\r\n    \"episodePrice\": \"23.99\",\r\n    \"episodeName\": \"Test 123\",\r\n    \"episodePublisher\": \"hidirektor@gmail.com\"   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}edit-episode",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}edit-episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Episode PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "episodeID",
+									"value": "1853783b-c6e8-4145-9cf2-a8576f7ed368",
+									"type": "text"
+								},
+								{
+									"key": "episodeImages",
+									"type": "file",
+									"src": [
+										"RZnr0_Dy-/02.jpg",
+										"RZnr0_Dy-/03.jpg",
+										"RZnr0_Dy-/04.jpg",
+										"RZnr0_Dy-/05.jpg",
+										"RZnr0_Dy-/06.jpg",
+										"RZnr0_Dy-/07.jpg",
+										"RZnr0_Dy-/08.jpg",
+										"RZnr0_Dy-/09.jpg",
+										"RZnr0_Dy-/10.jpg",
+										"RZnr0_Dy-/11.jpg",
+										"RZnr0_Dy-/12.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}change-episode-pdf",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}change-episode-pdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Episode Banner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "episodeID",
+									"value": "1ba15d00-043f-48f6-8faf-e06a58bf7a9b",
+									"type": "text"
+								},
+								{
+									"key": "episodeBanner",
+									"type": "file",
+									"src": "5k-7l7QZg/WhatsApp Görsel 2024-11-29 saat 22.34.49_ff4c7d3d.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}change-episode-banner",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}change-episode-banner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}delete-episode/82b154d1-3ab0-40ac-ae03-4a5bf1ab49e7",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}delete-episode"
+							],
+							"path": [
+								"82b154d1-3ab0-40ac-ae03-4a5bf1ab49e7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delete Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}confirm-delete-episode",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}confirm-delete-episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Episodes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}get-all",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Episode by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}get/1ba15d00-043f-48f6-8faf-e06a58bf7a9b",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}get"
+							],
+							"path": [
+								"1ba15d00-043f-48f6-8faf-e06a58bf7a9b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Episodes by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}get-by-comic/0759b40a-be6d-45fd-b0f7-9f4cb85fa512",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}get-by-comic"
+							],
+							"path": [
+								"0759b40a-be6d-45fd-b0f7-9f4cb85fa512"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Episodes by Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_episodes_url}}get-by-season/0759b40a-be6d-45fd-b0f7-9f4cb85fa512",
+							"host": [
+								"{{base_url}}{{comic_episodes_url}}get-by-season"
+							],
+							"path": [
+								"0759b40a-be6d-45fd-b0f7-9f4cb85fa512"
 							]
 						}
 					},
@@ -1604,310 +2304,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Comic",
-			"item": [
-				{
-					"name": "Create Comic",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "comicName",
-									"value": "Solo Levelling",
-									"type": "text"
-								},
-								{
-									"key": "comicDescriptionTitle",
-									"value": "Manga Hakkında",
-									"type": "text"
-								},
-								{
-									"key": "comicDescription",
-									"value": "Solo Leveling, Chugong tarafından yazılmış bir Güney Kore web roman serisidir. Seri, 25 Temmuz 2016 tarihinden bu yana Kakao'nun dijital çizgi roman ve kurgu platformu KakaoPage'de yayınlanmakta olup bunun dışında 4 Kasım 2016'dan bu yana D&C Media tarafından Papyrus baskısı altında yayınlanmaktadır.",
-									"type": "text"
-								},
-								{
-									"key": "sourceCountry",
-									"value": "Güney Kore",
-									"type": "text"
-								},
-								{
-									"key": "publishDate",
-									"value": "25.07.2016",
-									"type": "text"
-								},
-								{
-									"key": "comicStatus",
-									"value": "CONTINUE",
-									"type": "text"
-								},
-								{
-									"key": "comicLanguage",
-									"value": "Türkçe",
-									"type": "text"
-								},
-								{
-									"key": "comicBanner",
-									"type": "file",
-									"src": "qGpdg23kN/images.jpeg"
-								},
-								{
-									"key": "comicAuthor",
-									"value": "D&C Media",
-									"type": "text"
-								},
-								{
-									"key": "comicEditor",
-									"value": "Chugong",
-									"type": "text"
-								},
-								{
-									"key": "comicCompany",
-									"value": "D&C Media",
-									"type": "text"
-								},
-								{
-									"key": "comicArtist",
-									"value": "Chugong",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}create-comic",
-							"host": [
-								"{{base_url}}{{comics_url}}create-comic"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Change Comic Banner",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "comicID",
-									"value": "a83d6de3-003a-438e-9591-ed53c42a0dd3",
-									"type": "text"
-								},
-								{
-									"key": "comicBanner",
-									"type": "file",
-									"src": "postman-cloud:///1ef43cd1-dbac-41f0-8c50-fe4e73dbd2d8"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}change-comic-banner",
-							"host": [
-								"{{base_url}}{{comics_url}}change-comic-banner"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit Comic",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"comicID\": \"a83d6de3-003a-438e-9591-ed53c42a0dd3\",\r\n    \"comicName\": \"One Piece\",\r\n    \"comicDescription\": \"One Piece, Toei Animation tarafından üretilen ve Ekim 1999'da Fuji Television'da prömiyeri yapılan bir Japon anime televizyon dizisidir. Eiichiro Oda'nın aynı isimli manga serisine dayanmaktadır. Hikaye, istemeden Şeytan Meyvesi yedikten sonra vücudu kauçuk özelliklerini kazanan Maymun D.\",\r\n    \"comicDescriptionTitle\": \"Anime Hakkında\",\r\n    \"publishDate\": \"01.10.1999\",\r\n    \"sourceCountry\": \"Japonca\",\r\n    \"comicStatus\": \"CONTINUE\",\r\n    \"comicLanguage\": \"Türkçe\",\r\n    \"comicAuthor\": \"Halil\",\r\n    \"comicEditor\": \"Halil\",\r\n    \"comicCompany\": \"Halil\",\r\n    \"comicArtist\": \"Halil\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}edit-comic",
-							"host": [
-								"{{base_url}}{{comics_url}}edit-comic"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Comic by ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}get/a83d6de3-003a-438e-9591-ed53c42a0dd3",
-							"host": [
-								"{{base_url}}{{comics_url}}get"
-							],
-							"path": [
-								"a83d6de3-003a-438e-9591-ed53c42a0dd3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Comic by Category",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}get-by-category/Macera",
-							"host": [
-								"{{base_url}}{{comics_url}}get-by-category"
-							],
-							"path": [
-								"Macera"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Comics",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}get-all",
-							"host": [
-								"{{base_url}}{{comics_url}}get-all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Comic",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}delete-comic/a83d6de3-003a-438e-9591-ed53c42a0dd3",
-							"host": [
-								"{{base_url}}{{comics_url}}delete-comic"
-							],
-							"path": [
-								"a83d6de3-003a-438e-9591-ed53c42a0dd3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Comic Copy",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"operationKey\": \"64b561da-6de9-4546-a205-a33ae9043d2c\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}{{comics_url}}confirm-delete-comic",
-							"host": [
-								"{{base_url}}{{comics_url}}confirm-delete-comic"
-							]
-						}
-					},
-					"response": []
-				}
-			]
 		}
 	],
 	"event": [
@@ -1981,6 +2377,11 @@
 		{
 			"key": "comics_url",
 			"value": "comics/",
+			"type": "string"
+		},
+		{
+			"key": "comic_episodes_url",
+			"value": "comic-episodes/",
 			"type": "string"
 		}
 	]
