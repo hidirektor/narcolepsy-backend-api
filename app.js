@@ -28,7 +28,7 @@ const limiter = rateLimit({
 });
 
 app.use(cors({
-    origin: ['https://narcolepsy.com.tr', 'https://api.narcolepsy.com.tr', 'https://sysop.narcolepsy.com.tr'],
+    origin: ['https://narcolepsy.com.tr', 'https://api.narcolepsy.com.tr', 'https://sysop.narcolepsy.com.tr', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
