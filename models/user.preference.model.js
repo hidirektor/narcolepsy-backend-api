@@ -11,8 +11,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: true,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             language: {
                 type: Sequelize.STRING,

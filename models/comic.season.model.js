@@ -11,23 +11,24 @@ module.exports = (sequelize, Sequelize) => {
             },
             comicID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Comics',
+                    key: 'comicID'
+                }
             },
             seasonID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             seasonName: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             seasonOrder: {
                 type: Sequelize.INTEGER,
-                unique: false,
                 allowNull: false
             },
         },

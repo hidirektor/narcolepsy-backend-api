@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const sharp = require("sharp");
 
 class PdfGenerator {
     /**

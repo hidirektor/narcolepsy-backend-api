@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, Sequelize) => {
     const PremiumPackage = sequelize.define(
         'PremiumPackages',
@@ -9,28 +11,24 @@ module.exports = (sequelize, Sequelize) => {
             },
             packageID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             packageName: {
                 type: Sequelize.STRING,
-                unique: true,
                 allowNull: false
             },
             packageDescription: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             packagePrice: {
                 type: Sequelize.DOUBLE,
-                unique: false,
                 allowNull: false
             },
             packageTime: {
                 type: Sequelize.INTEGER,
-                unique: false,
                 allowNull: false
             }
         },

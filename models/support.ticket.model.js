@@ -1,6 +1,8 @@
 const ticket_types = require('./ticket_types');
 const ticket_status_types = require('./ticket_status_types');
 
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, Sequelize) => {
     const Tickets = sequelize.define(
         'SupportTickets',
@@ -12,50 +14,54 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             ticketID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             ticketType: {
                 type: Sequelize.ENUM,
-                unique: false,
                 values: [ticket_types.SUGGESTION, ticket_types.PROBLEM, ticket_types.APPLY],
                 allowNull: false
             },
             ticketTitle: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             ticketDescription: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             comicID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: true
+                allowNull: true,
+                references: {
+                    model: 'Comics',
+                    key: 'comicID'
+                }
             },
             episodeID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: true
+                allowNull: true,
+                references: {
+                    model: 'ComicEpisodes',
+                    key: 'episodeID'
+                }
             },
             ticketStatus: {
                 type: Sequelize.ENUM,
-                unique: false,
                 values: [ticket_status_types.CREATED, ticket_status_types.ANSWERED, ticket_status_types.CUSTOMER_RESPONSE, ticket_status_types.CLOSED],
                 allowNull: false
             },
             ticketAttachments: {
                 type: Sequelize.TEXT('long'),
-                unique: false,
                 allowNull: true
             }
         },

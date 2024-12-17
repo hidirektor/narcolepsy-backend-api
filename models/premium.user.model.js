@@ -9,22 +9,26 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             orderID: {
                 type: Sequelize.UUID,
-                unique: true,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Orders',
+                    key: 'orderID'
+                }
             },
             startDate: {
                 type: Sequelize.BIGINT,
-                unique: false,
                 allowNull: false
             },
             endDate: {
                 type: Sequelize.BIGINT,
-                unique: false,
                 allowNull: false
             }
         },

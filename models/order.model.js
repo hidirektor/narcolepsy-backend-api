@@ -1,4 +1,5 @@
 const payment_status = require("./payment_status");
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (sequelize, Sequelize) => {
     const Orders = sequelize.define(
@@ -11,23 +12,28 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             orderID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             packageID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'PremiumPackages',
+                    key: 'packageID'
+                }
             },
             paymentMethod: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             paymentStatus: {
@@ -37,22 +43,18 @@ module.exports = (sequelize, Sequelize) => {
             },
             orderPrice: {
                 type: Sequelize.DOUBLE,
-                unique: false,
                 allowNull: false
             },
             userIP: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             iyzicoToken: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             iyzicoSignature: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             orderDate: {

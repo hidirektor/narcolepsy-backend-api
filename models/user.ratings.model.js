@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, Sequelize) => {
     const UserRatings = sequelize.define(
         'UserRatings',
@@ -9,28 +11,36 @@ module.exports = (sequelize, Sequelize) => {
             },
             comicID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Comics',
+                    key: 'comicID'
+                }
             },
             episodeID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'ComicEpisodes',
+                    key: 'episodeID'
+                }
             },
-            commentID: {
+            ratingID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             userRating: {
                 type: Sequelize.DOUBLE,
-                unique: false,
                 allowNull: false
             },
         },

@@ -1,5 +1,6 @@
 const Minio = require('minio');
 const { v4: uuidv4 } = require('uuid');
+const unzipper = require('unzipper');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
@@ -12,7 +13,8 @@ class StorageService {
         this.buckets = {
             profiles: 'narcolepsy-backend-profiles',
             comics: 'narcolepsy-backend-comics',
-            tickets: 'narcolepsy-backend-support-tickets'
+            tickets: 'narcolepsy-backend-support-tickets',
+            uploads: 'narcolepsy-backend-uploads'
         };
 
         this._ensureBucketsExist().catch(err => {
@@ -397,6 +399,93 @@ class StorageService {
         } catch (error) {
             console.error(`Error fetching file stream for ${filePath} in ${bucketName}:`, error.message);
             throw new Error('File not found or failed to fetch file.');
+        }
+    }
+
+    /**
+     * Uploads a ZIP file to the uploads bucket.
+     * @param {Buffer} fileBuffer - The buffer of the file.
+     * @param {string} originalName - Original name of the file.
+     * @returns {Promise<string>} - Returns the uploaded file's path in MinIO.
+     */
+    async uploadZipToBucket(fileBuffer, originalName) {
+        try {
+            const filePath = `uploads/${Date.now()}-${uuidv4()}${path.extname(originalName)}`;
+            const metaData = { 'Content-Type': 'application/zip' };
+
+            await this.minioClient.putObject(this.buckets.uploads, filePath, fileBuffer, metaData);
+            console.log(`ZIP file uploaded: ${filePath}`);
+            return filePath;
+        } catch (error) {
+            console.error('Error uploading ZIP file:', error.message);
+            throw new Error('Failed to upload ZIP file.');
+        }
+    }
+
+    /**
+     * Extracts the contents of a ZIP file from MinIO and returns the files as buffers.
+     * @param {string} bucketName - The bucket where the ZIP file is stored.
+     * @param {string} zipPath - The path of the ZIP file in the bucket.
+     * @returns {Promise<Array<{name: string, buffer: Buffer}>>} - Array of files with name and buffer.
+     */
+    async extractZipFromBucket(bucketName, zipPath) {
+        try {
+            const zipStream = await this.minioClient.getObject(bucketName, zipPath);
+            const parseStream = unzipper.Parse({ forceStream: true });
+            const files = [];
+
+            // Pipe the ZIP stream and process each entry
+            for await (const entry of zipStream.pipe(parseStream)) {
+                const fileName = entry.path;
+                const fileBuffer = await entry.buffer(); // Convert entry to Buffer
+
+                files.push({
+                    name: fileName,
+                    buffer: fileBuffer
+                });
+            }
+
+            return files;
+        } catch (error) {
+            console.error('Error extracting ZIP file:', error.message);
+            throw new Error('Failed to extract ZIP file.');
+        }
+    }
+
+    async extractZipToFolder(bucketName, zipPath, targetFolder) {
+        try {
+            const zipStream = await this.minioClient.getObject(bucketName, zipPath);
+            const parseStream = unzipper.Parse({ forceStream: true });
+            const uploadedFiles = [];
+
+            for await (const entry of zipStream.pipe(parseStream)) {
+                if (entry.type === 'File') {
+                    const relativePath = entry.path; // ZIP içindeki dosya yolu
+                    const filePath = `${targetFolder}/${relativePath}`; // MinIO hedef yolu
+
+                    // Dosya buffer'ını oku
+                    const chunks = [];
+                    for await (const chunk of entry) {
+                        chunks.push(chunk);
+                    }
+                    const fileBuffer = Buffer.concat(chunks);
+
+                    // MinIO'ya yükle
+                    await this.minioClient.putObject(bucketName, filePath, fileBuffer, {
+                        'Content-Type': 'application/octet-stream',
+                    });
+
+                    uploadedFiles.push({ name: path.basename(relativePath), path: filePath, buffer: fileBuffer });
+                    console.log(`File extracted and uploaded: ${filePath}`);
+                } else {
+                    entry.autodrain();
+                }
+            }
+
+            return uploadedFiles;
+        } catch (error) {
+            console.error('Error extracting ZIP to folder:', error.message);
+            throw new Error('Failed to extract ZIP file to folder.');
         }
     }
 }

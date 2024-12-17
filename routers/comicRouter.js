@@ -2,6 +2,7 @@ require('dotenv/config');
 const router = require('express')();
 const multer = require('multer');
 const upload = multer();
+const uploadZip = require('../middleware/upload');
 
 const ControllerFactory = require('../controllers/controllerFactory');
 const comicController = ControllerFactory.creating('comic.controller');
@@ -25,7 +26,7 @@ router.post(
     '/bulk-create',
     tokenControl,
     Authorization.authControl([SYSOP]),
-    upload.single('file'),
+    uploadZip.single('file'),
     comicValidator.bulkCreate,
     comicController.bulkCreateComicAsync
 );

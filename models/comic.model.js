@@ -11,38 +11,32 @@ module.exports = (sequelize, Sequelize) => {
             },
             comicID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             comicName: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             comicDescriptionTitle: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: true
             },
             comicDescription: {
                 type: Sequelize.TEXT('long'),
-                unique: false,
                 allowNull: false
             },
             publishDate: {
                 type: Sequelize.DATE,
-                unique: false,
                 allowNull: false
             },
             sourceCountry: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             comicBannerID: {
                 type: Sequelize.STRING,
-                unique: true,
                 allowNull: false
             },
         },

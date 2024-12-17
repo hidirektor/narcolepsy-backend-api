@@ -1,12 +1,15 @@
+const yaml = require('js-yaml');
+const fs = require('fs');
+const moment = require('moment');
+const sharp = require('sharp');
+const { v4: uuidv4 } = require('uuid');
+const HttpStatusCode = require('http-status-codes');
+const PdfGenerator = require('../../utils/pdfGenerator');
+
 const db = require('../../models');
 const GenericCRUD = require('../genericCrud');
-const redisClient = require('../../utils/thirdParty/redis/redisClient');
-const { errorSender } = require('../../utils');
-const HttpStatusCode = require('http-status-codes');
-const crypto = require('crypto');
-const moment = require('moment');
-const { v4: uuidv4 } = require('uuid');
-
+const {queueEmail} = require("../../utils/service/NotificationService");
+const {addTaskToQueue, processEpisodesInBackground} = require("../../utils/service/WorkerService");
 const storageService = new (require('../../utils/service/StorageService'))({
     endPoint: process.env.MINIO_ENDPOINT,
     port: +process.env.MINIO_PORT,
@@ -16,10 +19,11 @@ const storageService = new (require('../../utils/service/StorageService'))({
 });
 
 const comicCrud = new GenericCRUD({ model: db.Comic });
+const usersCrud = new GenericCRUD({ model: db.User });
 const comicDetailsCrud = new GenericCRUD({ model: db.ComicDetails });
 const comicSeasonsCrud = new GenericCRUD({ model: db.ComicSeason });
 const comicEpisodesCrud = new GenericCRUD({ model: db.ComicEpisode });
-const followedComicsCrud = new GenericCRUD({ model: db.FollowedComic });
+const followedComicsCrud = new GenericCRUD({ model: db.FollowMapping });
 const comicCategoryCrud = new GenericCRUD({ model: db.ComicCategory });
 const comicCategoryMappingCrud = new GenericCRUD({ model: db.ComicCategoryMapping });
 
@@ -82,103 +86,76 @@ class ComicController {
     }
 
     async bulkCreateComicAsync(req, res) {
-        const { userID } = req.body; // episodePublisher userID olarak gelecek
+        const { userID } = req.body;
 
         try {
             if (!req.file) {
-                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'No file uploaded.' });
+                return res.status(400).json({ message: 'No file uploaded.' });
             }
 
-            const zipStream = fs.createReadStream(req.file.path).pipe(unzipper.Parse({ forceStream: true }));
-            let dataYML, comicBannerBuffer;
+            // 1- ZIP'i MinIO'ya yükle
+            const zipFileName = `uploads/${Date.now()}-${uuidv4()}.zip`;
+            await storageService.uploadFileToBucket(storageService.buckets.uploads, zipFileName, req.file.buffer, 'application/zip');
+
+            console.log(`ZIP uploaded to MinIO: ${zipFileName}`);
+
+            // 2- ZIP'i unique klasöre çıkart
+            const uniqueFolderName = `unzipped-${uuidv4()}`;
+            const extractedFiles = await storageService.extractZipToFolder(storageService.buckets.uploads, zipFileName, uniqueFolderName);
+
+            // 3- ZIP dosyasını sil
+            await storageService.deleteFile(storageService.buckets.uploads, zipFileName);
+
+            let dataYML, comicBannerBuffer, comicBannerName;
             const episodes = [];
 
-            // Zip dosyasını aç ve verileri ayrıştır
-            for await (const entry of zipStream) {
-                const fileName = entry.path;
-
-                if (fileName.endsWith('data.yml')) {
-                    const content = await entry.buffer();
-                    dataYML = yaml.load(content);
-                } else if (fileName.endsWith('comic-banner.png')) {
-                    comicBannerBuffer = await entry.buffer();
-                } else if (fileName.startsWith('episodes/Bölüm')) {
-                    const episodeNumber = parseInt(fileName.match(/\d+/)[0], 10);
-                    const buffer = await entry.buffer();
-                    episodes.push({ episodeNumber, buffer, name: path.dirname(fileName) });
-                } else {
-                    entry.autodrain();
+            // 4- ZIP içeriğini ayrıştır
+            for (const file of extractedFiles) {
+                if (file.path.endsWith('data.yml')) {
+                    dataYML = yaml.load(file.buffer.toString());
+                } else if (file.path.match(/comic-banner\.(png|jpg|jpeg|heic)$/)) {
+                    comicBannerBuffer = file.buffer;
+                    comicBannerName = file.name;
+                } else if (file.path.startsWith(`${uniqueFolderName}/episodes/Bölüm`)) {
+                    const episodeNumber = parseInt(file.path.match(/Bölüm (\d+)/)[1], 10);
+                    episodes.push({ episodeNumber, buffer: file.buffer });
                 }
             }
 
             if (!dataYML || !comicBannerBuffer) {
-                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'Invalid zip structure.' });
+                return res.status(400).json({ message: 'Invalid zip structure.' });
             }
 
-            // Kategori Kontrolü
-            let category = await comicCategoryCrud.findOne({ where: { categoryName: dataYML.comicCategory } });
-            if (!category.result) {
-                category = await comicCategoryCrud.create({ categoryName: dataYML.comicCategory });
+            // 5- Comic-banner format kontrolü
+            let processedBannerBuffer = comicBannerBuffer;
+            if (!comicBannerName.endsWith('.png')) {
+                processedBannerBuffer = await sharp(comicBannerBuffer).png().toBuffer();
             }
 
+            // Comic kaydı oluştur
             const comicID = uuidv4();
             const bannerPath = `comics/${comicID}/banner-${uuidv4()}.png`;
-            await storageService.uploadFileToBucket(storageService.buckets.comics, bannerPath, comicBannerBuffer, 'image/png');
+            await storageService.uploadFileToBucket(storageService.buckets.comics, bannerPath, processedBannerBuffer, 'image/png');
 
-            // Comics ve ComicDetails Kayıtları
-            const comic = await comicCrud.create({
+            await comicCrud.create({
                 comicID,
                 comicName: dataYML.comicName,
                 comicDescriptionTitle: dataYML.comicDescriptionTitle,
                 comicDescription: dataYML.comicDescription,
                 publishDate: moment(dataYML.publishDate, 'DD.MM.YYYY').format('YYYY-MM-DD'),
                 sourceCountry: dataYML.sourceCountry,
-                comicBannerID: bannerPath
+                comicBannerID: bannerPath,
             });
 
-            await comicDetailsCrud.create({
-                comicID,
-                comicStatus: dataYML.comicStatus,
-                comicLanguage: dataYML.comicLanguage,
-                comicAuthor: dataYML.comicAuthor || null,
-                comicEditor: dataYML.comicEditor || null,
-                comicCompany: dataYML.comicCompany || null,
-                comicArtist: dataYML.comicArtist || null
+            // 6- Episodes klasörünü arka planda işleme
+            setImmediate(() => {
+                processEpisodesInBackground(episodes, comicID, userID, bannerPath, uniqueFolderName);
             });
 
-            // Episodes İşlemi
-            for (const episode of episodes) {
-                const folderPath = `comics/${comicID}/${episode.episodeNumber}/`;
-                const bannerPath = `${folderPath}banner-${uuidv4()}.png`;
-                const pdfPath = `${folderPath}episode-${uuidv4()}.pdf`;
-
-                await storageService.uploadFileToBucket(storageService.buckets.comics, bannerPath, episode.buffer, 'image/png');
-
-                const localPdfPath = `/tmp/${uuidv4()}.pdf`;
-                const pageCount = await PdfGenerator.generatePdf([{ buffer: episode.buffer, originalname: 'page.png' }], localPdfPath);
-                const pdfBuffer = fs.readFileSync(localPdfPath);
-
-                await storageService.uploadFileToBucket(storageService.buckets.comics, pdfPath, pdfBuffer, 'application/pdf');
-                fs.unlinkSync(localPdfPath);
-
-                await comicEpisodesCrud.create({
-                    episodeID: uuidv4(),
-                    comicID,
-                    seasonID: null,
-                    episodeOrder: episode.episodeNumber,
-                    episodePrice: 0.0,
-                    episodeName: `Bölüm ${episode.episodeNumber}`,
-                    episodePublisher: userID,
-                    episodeBannerID: bannerPath,
-                    episodeFileID: pdfPath,
-                    episodePageCount: pageCount
-                });
-            }
-
-            res.status(201).json({ message: 'Comic and episodes uploaded successfully.' });
+            res.status(201).json({ message: 'Comic uploaded successfully. Episodes are being processed.' });
         } catch (error) {
             console.error('Error in bulkCreateComicAsync:', error);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: 'Failed to upload comic and episodes.' });
+            res.status(500).json({ message: 'Failed to upload comic and episodes.' });
         }
     }
 

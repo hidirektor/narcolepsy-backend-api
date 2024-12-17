@@ -1,6 +1,8 @@
 const ticket_types = require('./ticket_types');
 const ticket_status_types = require('./ticket_status_types');
 
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, Sequelize) => {
     const TicketResponses = sequelize.define(
         'SupportTicketResponses',
@@ -12,28 +14,32 @@ module.exports = (sequelize, Sequelize) => {
             },
             responseID: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
+                defaultValue: uuidv4(),
                 unique: true,
                 allowNull: false
             },
             userID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'userID'
+                }
             },
             ticketID: {
                 type: Sequelize.UUID,
-                unique: false,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'SupportTickets',
+                    key: 'ticketID'
+                }
             },
             ticketResponse: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             responseAttachments: {
                 type: Sequelize.TEXT('long'),
-                unique: false,
                 allowNull: true
             }
         },

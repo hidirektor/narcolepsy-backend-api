@@ -13,7 +13,11 @@ module.exports = (sequelize, Sequelize) => {
             comicID: {
                 type: Sequelize.UUID,
                 unique: true,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Comics',
+                    key: 'comicID'
+                }
             },
             comicStatus: {
                 type: Sequelize.ENUM,
@@ -22,27 +26,22 @@ module.exports = (sequelize, Sequelize) => {
             },
             comicLanguage: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: false
             },
             comicAuthor: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: true
             },
             comicEditor: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: true
             },
             comicCompany: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: true
             },
             comicArtist: {
                 type: Sequelize.STRING,
-                unique: false,
                 allowNull: true
             },
         },
