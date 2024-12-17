@@ -106,6 +106,10 @@ const generateSwaggerSpec = () => {
                 url: 'https://api.narcolepsy.com/v1/',
                 description: 'Main Server',
             },
+            {
+                url: 'https://upload.narcolepsy.com/v1/',
+                description: 'Upload Server',
+            },
         ],
         externalDocs: {
             description: 'Postman Collection v2.1',
