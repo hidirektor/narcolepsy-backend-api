@@ -1,8 +1,3 @@
-const ticket_types = require('./ticket_types');
-const ticket_status_types = require('./ticket_status_types');
-
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, Sequelize) => {
     const TicketResponses = sequelize.define(
         'SupportTicketResponses',
@@ -14,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             responseID: {
                 type: Sequelize.UUID,
-                defaultValue: uuidv4(),
+                defaultValue: Sequelize.UUIDV4,
                 unique: true,
                 allowNull: false
             },

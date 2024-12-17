@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, Sequelize) => {
     const PremiumPackage = sequelize.define(
         'PremiumPackages',
@@ -11,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             packageID: {
                 type: Sequelize.UUID,
-                defaultValue: uuidv4(),
+                defaultValue: Sequelize.UUIDV4,
                 unique: true,
                 allowNull: false
             },

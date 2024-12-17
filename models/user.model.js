@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 const roles = require('./roles');
 
 module.exports = (sequelize, Sequelize) => {
@@ -13,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             userID: {
                 type: Sequelize.UUID,
                 unique: true,
-                defaultValue: uuidv4(),
+                defaultValue: Sequelize.UUIDV4,
                 allowNull: false
             },
             userName: {

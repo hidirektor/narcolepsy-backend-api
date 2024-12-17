@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, Sequelize) => {
     const UserPreferences = sequelize.define(
         'UserPreference',

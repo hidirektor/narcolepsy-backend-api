@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 const comic_status= require("./comic_status");
 
 module.exports = (sequelize, Sequelize) => {

@@ -132,6 +132,20 @@ class ComicController {
                 processedBannerBuffer = await sharp(comicBannerBuffer).png().toBuffer();
             }
 
+            const categories = dataYML.comicCategory.includes(',')
+                ? dataYML.comicCategory.split(',').map(cat => cat.trim())
+                : [dataYML.comicCategory.trim()];
+
+            const categoryIDs = [];
+
+            for (const categoryName of categories) {
+                let category = await comicCategoryCrud.findOne({ where: { categoryName: categoryName } });
+                if (!category.result.categoryID) {
+                    category = await comicCategoryCrud.create({ categoryName });
+                }
+                categoryIDs.push(category.result?.categoryID || category.categoryID);
+            }
+
             // Comic kaydı oluştur
             const comicID = uuidv4();
             const bannerPath = `comics/${comicID}/banner-${uuidv4()}.png`;
@@ -146,6 +160,20 @@ class ComicController {
                 sourceCountry: dataYML.sourceCountry,
                 comicBannerID: bannerPath,
             });
+
+            await comicDetailsCrud.create({
+                comicID,
+                comicStatus: dataYML.comicStatus,
+                comicLanguage: dataYML.comicLanguage,
+                comicAuthor: dataYML.comicAuthor || null,
+                comicEditor: dataYML.comicEditor || null,
+                comicCompany: dataYML.comicCompany || null,
+                comicArtist: dataYML.comicArtist || null,
+            });
+
+            for (const categoryID of categoryIDs) {
+                await comicCategoryMappingCrud.create({ comicID, categoryID });
+            }
 
             // 6- Episodes klasörünü arka planda işleme
             setImmediate(() => {

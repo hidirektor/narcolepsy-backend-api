@@ -1,5 +1,4 @@
 const payment_status = require("./payment_status");
-const { v4: uuidv4 } = require('uuid');
 
 module.exports = (sequelize, Sequelize) => {
     const Orders = sequelize.define(
@@ -20,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             orderID: {
                 type: Sequelize.UUID,
-                defaultValue: uuidv4(),
+                defaultValue: Sequelize.UUIDV4,
                 unique: true,
                 allowNull: false
             },

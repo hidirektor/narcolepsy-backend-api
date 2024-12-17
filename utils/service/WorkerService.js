@@ -18,35 +18,39 @@ const storageService = new (require('./StorageService'))({
 
 class WorkerService {
     static async processEpisodesInBackground(episodes, comicID, userID, bannerPath, unzippedFolder) {
+        console.log(episodes);
         try {
             console.log('Worker started: Processing episodes...');
-            for (const { episodeNumber, buffer } of episodes) {
-                const episodeID = uuidv4();
-                const folderPath = `comics/${comicID}/${episodeNumber}/`;
-                const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
+            const episodeID = uuidv4();
+            const folderPath = `comics/${comicID}/episodes/`;
+            const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
 
-                // PDF oluştur ve yükle
-                const localPdfPath = `/tmp/${uuidv4()}.pdf`;
-                const pageCount = await PdfGenerator.generatePdf([{ buffer }], localPdfPath);
-                const pdfBuffer = fs.readFileSync(localPdfPath);
+            // Görselleri isim sırasına göre sırala
+            const sortedEpisodes = episodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
 
-                await storageService.uploadFileToBucket(storageService.buckets.comics, pdfPath, pdfBuffer, 'application/pdf');
-                fs.unlinkSync(localPdfPath);
+            // Tek bir PDF oluştur
+            const localPdfPath = `/tmp/${uuidv4()}.pdf`;
+            const pageCount = await PdfGenerator.generatePdf(sortedEpisodes.map(e => e.buffer), localPdfPath);
 
-                // Bölüm verisini kaydet
-                await episodeCrud.create({
-                    episodeID,
-                    comicID,
-                    seasonID: null,
-                    episodeOrder: episodeNumber,
-                    episodePrice: 0.0,
-                    episodeName: `${episodeNumber}. Bölüm`,
-                    episodePublisher: userID,
-                    episodeBannerID: null,
-                    episodeFileID: pdfPath,
-                    episodePageCount: pageCount,
-                });
-            }
+            const pdfBuffer = fs.readFileSync(localPdfPath);
+
+            // PDF dosyasını MinIO'ya yükle
+            await storageService.uploadFileToBucket(storageService.buckets.comics, pdfPath, pdfBuffer, 'application/pdf');
+            fs.unlinkSync(localPdfPath);
+
+            // Tek bir bölüm kaydı oluştur
+            await episodeCrud.create({
+                episodeID,
+                comicID,
+                seasonID: null,
+                episodeOrder: 1,
+                episodePrice: 0.0,
+                episodeName: '1. Bölüm',
+                episodePublisher: userID,
+                episodeBannerID: bannerPath || null,
+                episodeFileID: pdfPath,
+                episodePageCount: pageCount,
+            });
 
             // Kullanıcıya başarı e-postası gönder
             const user = await userCrud.findOne({ where: { userID } });
@@ -59,6 +63,7 @@ class WorkerService {
                 );
             }
 
+            // Klasörü sil
             await storageService.deleteFolder(storageService.buckets.uploads, `${unzippedFolder}/`);
 
             console.log('Worker completed: Episodes processed successfully.');
@@ -70,7 +75,7 @@ class WorkerService {
             if (user.result) {
                 await NotificationService.queueEmail(
                     'process-failure',
-                    { error: error.message },
+                    { message: error.message },
                     user.result.eMail,
                     'Episodes processing failed'
                 );

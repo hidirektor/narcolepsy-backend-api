@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, Sequelize) => {
     const ComicEpisode = sequelize.define(
         'ComicEpisode',
@@ -11,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             episodeID: {
                 type: Sequelize.UUID,
-                defaultValue: uuidv4(),
+                defaultValue: Sequelize.UUIDV4,
                 unique: true,
                 allowNull: false
             },
