@@ -22,6 +22,15 @@ router.post(
 );
 
 router.post(
+    '/bulk-create',
+    tokenControl,
+    Authorization.authControl([SYSOP]),
+    upload.single('file'),
+    comicValidator.bulkCreate,
+    comicController.bulkCreateComicAsync
+);
+
+router.post(
     '/change-comic-banner',
     tokenControl,
     Authorization.authControl([EDITOR, MODERATOR, SYSOP]),

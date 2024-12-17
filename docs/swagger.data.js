@@ -2373,6 +2373,32 @@ const endpoints = [
         controller: "controllers/comicController.createComic"
     },
     {
+        sectionTitle: "Comic Management",
+        path: "comics/bulk-create",
+        method: "post",
+        summary: "Bulk upload comics and episodes",
+        description: "Uploads a zip file containing comic metadata and episodes. The zip should include data.yml and episode folders.",
+        body: {
+            file: {
+                type: "file",
+                required: true,
+                description: "Zip file containing comic and episode data."
+            },
+            userID: {
+                type: "string",
+                required: true,
+                description: "User ID of the publisher."
+            }
+        },
+        responses: {
+            201: { description: "Comic and episodes uploaded successfully." },
+            400: { description: "Validation error." },
+            500: { description: "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/comic.controller.bulkCreateComicAsync"
+    },
+    {
         sectionTitle: 'Comic Management',
         path: 'comics/change-comic-banner',
         method: 'post',
@@ -2793,6 +2819,231 @@ const endpoints = [
         },
         security: [{ BearerAuth: [] }],
         controller: 'controllers/episodeController.getEpisodeByIdAsync',
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/follow",
+        method: "post",
+        summary: "Follow a comic or category",
+        description: "Allows users to follow a comic or category.",
+        body: {
+            userID: { "type": "string", "required": true },
+            comicID: { "type": "string", "required": false },
+            categoryID: { "type": "string", "required": false }
+        },
+        responses: {
+            200: { "description": "Followed successfully" },
+            400: { "description": "Validation error" },
+            500: { "description": "Internal server error" }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.followEntityAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/unfollow",
+        method: "post",
+        summary: "Unfollow a comic or category",
+        description: "Allows users to unfollow a comic or category.",
+        body: {
+            userID: { "type": "string", "required": true },
+            comicID: { "type": "string", "required": false },
+            categoryID: { "type": "string", "required": false }
+        },
+        responses: {
+            200: { "description": "Unfollowed successfully" },
+            400: { "description": "Validation error" },
+            500: { "description": "Internal server error" }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.unfollowEntityAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/rate",
+        method: "post",
+        summary: "Rate an episode",
+        description: "Allows users to rate an episode.",
+        body: {
+            userID: { "type": "string", "required": true },
+            episodeID: { "type": "string", "required": true },
+            userRating: { "type": "number", "required": true, "minimum": 0, "maximum": 5 }
+        },
+        responses: {
+            200: { "description": "Rated successfully" },
+            400: { "description": "Validation error" },
+            500: { "description": "Internal server error" }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.rateEpisodeAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/edit-rate",
+        method: "put",
+        summary: "Edit user rating for an episode",
+        description: "Allows a user to edit their existing rating for a specific episode.",
+        body: {
+            userID: { "type": "string", "required": true, "description": "The unique ID of the user." },
+            episodeID: { "type": "string", "required": true, "description": "The unique ID of the episode." },
+            userRating: { "type": "number", "required": true, "description": "The updated rating for the episode (1-5)." }
+        },
+        responses: {
+            200: { "description": "Rating updated successfully" },
+            404: { "description": "Rating not found for the user and episode." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.editEpisodeRateAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/delete-rate",
+        method: "delete",
+        summary: "Delete user rating for an episode",
+        description: "Deletes the user's existing rating for a specific episode.",
+        body: {
+            userID: { "type": "string", "required": true, "description": "The unique ID of the user." },
+            episodeID: { "type": "string", "required": true, "description": "The unique ID of the episode." }
+        },
+        responses: {
+            200: { "description": "Rating deleted successfully" },
+            404: { "description": "Rating not found for the user and episode." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.deleteEpisodeRateAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/comment",
+        method: "post",
+        summary: "Comment on an episode",
+        description: "Allows users to add a comment to an episode.",
+        body: {
+            userID: { "type": "string", "required": true },
+            episodeID: { "type": "string", "required": true },
+            userComment: { "type": "string", "required": true }
+        },
+        responses: {
+            200: { "description": "Comment added successfully" },
+            400: { "description": "Validation error" },
+            500: { "description": "Internal server error" }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.commentEpisodeAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/edit-comment",
+        method: "put",
+        summary: "Edit user comment for an episode",
+        description: "Allows a user to edit their existing comment for a specific episode.",
+        body: {
+            userID: { "type": "string", "required": true, "description": "The unique ID of the user." },
+            commentID: { "type": "string", "required": true, "description": "The unique ID of the comment." },
+            userComment: { "type": "string", "required": true, "description": "The updated comment content." }
+        },
+        responses: {
+            200: { "description": "Comment updated successfully" },
+            404: { "description": "Comment not found for the user." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.editEpisodeCommentAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/delete-comment",
+        method: "delete",
+        summary: "Delete user comment for an episode",
+        description: "Deletes the user's existing comment for a specific episode.",
+        body: {
+            userID: { "type": "string", "required": true, "description": "The unique ID of the user." },
+            commentID: { "type": "string", "required": true, "description": "The unique ID of the comment." }
+        },
+        responses: {
+            200: { "description": "Comment deleted successfully" },
+            404: { "description": "Comment not found for the user." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.deleteEpisodeCommentAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/comments/get-by-episode/:episodeID",
+        method: "get",
+        summary: "Get all comments by episode ID",
+        description: "Fetches all user comments associated with a specific episode.",
+        parameters: {
+            episodeID: {
+                type: "string",
+                required: true,
+                description: "The unique ID of the episode."
+            }
+        },
+        responses: {
+            200: { "description": "Comments fetched successfully" },
+            404: { "description": "No comments found for the given episode ID." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.getAllCommentsByEpisodeAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/comments/get/:commentID",
+        method: "get",
+        summary: "Get a specific comment by ID",
+        description: "Fetches a single user comment based on its unique ID.",
+        parameters: {
+            commentID: {
+                type: "string",
+                required: true,
+                description: "The unique ID of the comment."
+            }
+        },
+        responses: {
+            200: { "description": "Comment fetched successfully" },
+            404: { "description": "Comment not found." },
+            500: { "description": "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.getCommentByIDAsync"
+    },
+    {
+        sectionTitle: "User Actions",
+        path: "/user-actions/comments/get-all",
+        method: "get",
+        summary: "Get all user comments",
+        description: "Fetches all user comments available in the database.",
+        parameters: [],
+        responses: {
+            200: {
+                description: "All comments fetched successfully",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    commentID: { "type": "string", "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479" },
+                                    userID: { "type": "string", "example": "e71ac10b-91cd-4472-a567-0e02b2c3d411" },
+                                    comicID: { "type": "string", "example": "d29bc10b-33ab-4572-c101-0e02b2c3d588" },
+                                    episodeID: { "type": "string", "example": "b21ec10b-91bc-4872-d123-0e02b2c3d433" },
+                                    userComment: { "type": "string", "example": "This is a great episode!" }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            500: { description: "Internal server error." }
+        },
+        security: [{ "bearerAuth": [] }],
+        controller: "controllers/userActions.controller.getAllCommentsAsync"
     }
 ];
 

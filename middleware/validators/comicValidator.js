@@ -86,6 +86,23 @@ class ComicValidator {
         }
     }
 
+    static async bulkCreate(req, res, next) {
+        try {
+            await joi
+                .object({
+                    userID: joi.string().uuid().required()
+                })
+                .validateAsync(req.body);
+
+            if (!req.file) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({ message: 'File is required.' });
+            }
+            next();
+        } catch (error) {
+            res.status(HttpStatusCode.BAD_REQUEST).send(error.message);
+        }
+    }
+
     static async changeBanner(req, res, next) {
         try {
             const { comicID } = req.body;

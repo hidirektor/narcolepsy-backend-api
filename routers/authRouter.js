@@ -7,7 +7,6 @@ const authController = ControllerFactory.creating('auth.controller');
 const {validators, verifyToken} = require('../middleware');
 const tokenControl = verifyToken.tokenControl;
 const authValidator = validators.authValidator;
-const userValidator = validators.userValidator;
 
 router.post('/sign-up', authValidator.signUp, authController.signUpAsync);
 
