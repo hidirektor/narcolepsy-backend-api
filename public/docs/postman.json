@@ -892,7 +892,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI4MzY1YjdmYy1lNmIxLTQxYjAtODVlZC03M2VhNzhmNmU0YjIiLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0NDc2NTM1LCJleHAiOjE3MzQ1NjI5MzV9.OD_13lj_AVHWfgTruDBE7_GsEUXp7cYhapeRn3lIrgU",
 									"type": "string"
 								}
 							]
@@ -904,20 +904,20 @@
 							"formdata": [
 								{
 									"key": "userID",
-									"value": "150cf986-e74e-4e80-b7a0-b22e0e0348b7",
+									"value": "8365b7fc-e6b1-41b0-85ed-73ea78f6e4b2",
 									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef43cd1-dbac-41f0-8c50-fe4e73dbd2d8"
+									"src": "/C:/Users/hidir/OneDrive/Masaüstü/Solo Levelling/solo.zip"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}{{comics_url}}bulk-create",
+							"raw": "{{upload_url}}{{comics_url}}bulk-create",
 							"host": [
-								"{{base_url}}{{comics_url}}bulk-create"
+								"{{upload_url}}{{comics_url}}bulk-create"
 							]
 						}
 					},
@@ -2816,6 +2816,11 @@
 		{
 			"key": "base_url",
 			"value": "https://api.narcolepsy.com.tr/v1/",
+			"type": "string"
+		},
+		{
+			"key": "upload_url",
+			"value": "https://upload.narcolepsy.com.tr/v1/",
 			"type": "string"
 		},
 		{
