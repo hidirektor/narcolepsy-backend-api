@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-    const FollowedComic = sequelize.define(
-        'FollowedComic',
+    const FollowMapping = sequelize.define(
+        'FollowMapping',
         {
             id: {
                 type: Sequelize.INTEGER,
@@ -15,7 +15,12 @@ module.exports = (sequelize, Sequelize) => {
             comicID: {
                 type: Sequelize.UUID,
                 unique: false,
-                allowNull: false
+                allowNull: true
+            },
+            categoryID: {
+                type: Sequelize.UUID,
+                unique: false,
+                allowNull: true
             }
         },
         {
@@ -25,5 +30,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    return FollowedComic;
+    return FollowMapping;
 };

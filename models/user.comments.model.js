@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-    const UserReactions = sequelize.define(
-        'UserReactions',
+    const UserComments = sequelize.define(
+        'UserComments',
         {
             id: {
                 type: Sequelize.INTEGER,
@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
                 unique: false,
                 allowNull: false
             },
-            reactionID: {
+            commentID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
@@ -33,11 +33,6 @@ module.exports = (sequelize, Sequelize) => {
                 unique: false,
                 allowNull: false
             },
-            userPoint: {
-                type: Sequelize.STRING,
-                unique: false,
-                allowNull: false
-            },
         },
         {
             timestamps: false,
@@ -46,5 +41,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     );
 
-    return UserReactions;
+    return UserComments;
 };

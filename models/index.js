@@ -31,7 +31,8 @@ db.User = require('./user.model.js')(sequelize, Sequelize);
 db.UserProfile = require('./user.profile.model.js')(sequelize, Sequelize);
 db.UserPreferences = require('./user.preference.model.js')(sequelize, Sequelize);
 db.UserVerifications = require('./user.verification.model.js')(sequelize, Sequelize);
-db.UserReactions = require('./user.reactions.model.js')(sequelize, Sequelize);
+db.UserComments = require('./user.comments.model.js')(sequelize, Sequelize);
+db.UserRatings = require('./user.ratings.model.js')(sequelize, Sequelize);
 
 db.Comic = require('./comic.model.js')(sequelize, Sequelize);
 db.ComicDetails = require('./comic.details.model.js')(sequelize, Sequelize);
@@ -46,9 +47,8 @@ db.PremiumPackages = require('./premium.package.model.js')(sequelize, Sequelize)
 db.Tickets = require('./support.ticket.model.js')(sequelize, Sequelize);
 db.TicketResponses = require('./support.ticket.response.model.js')(sequelize, Sequelize);
 
-db.FollowedComic = require('./followed.comic.model.js')(sequelize, Sequelize);
-
 db.ComicCategoryMapping = require('./comic.category.mapping.model.js')(sequelize, Sequelize);
+db.FollowMapping = require('./follow.mapping.model.js')(sequelize, Sequelize);
 
 // Associations
 db.User.hasOne(db.UserProfile, {
@@ -176,40 +176,79 @@ db.ComicCategoryMapping.belongsTo(db.ComicCategory, {
 });
 
 /*
-User Reaction assosiations
+User Comments assosiations
  */
-db.Comic.hasOne(db.UserReactions, {
+db.Comic.hasOne(db.UserComments, {
     foreignKey: 'comicID',
     sourceKey: 'comicID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-db.UserReactions.belongsTo(db.Comic, {
+db.UserComments.belongsTo(db.Comic, {
     foreignKey: 'comicID',
     targetKey: 'comicID'
 });
 
-db.ComicEpisode.hasOne(db.UserReactions, {
+db.ComicEpisode.hasOne(db.UserComments, {
     foreignKey: 'episodeID',
     sourceKey: 'episodeID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-db.UserReactions.belongsTo(db.ComicEpisode, {
+db.UserComments.belongsTo(db.ComicEpisode, {
     foreignKey: 'episodeID',
     targetKey: 'episodeID'
 });
 
-db.User.hasOne(db.UserReactions, {
+db.User.hasOne(db.UserComments, {
     foreignKey: 'userID',
     sourceKey: 'userID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-db.UserReactions.belongsTo(db.User, {
+db.UserComments.belongsTo(db.User, {
+    foreignKey: 'userID',
+    targetKey: 'userID'
+});
+
+/*
+User Rating assosiations
+ */
+db.Comic.hasOne(db.UserRatings, {
+    foreignKey: 'comicID',
+    sourceKey: 'comicID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.UserRatings.belongsTo(db.Comic, {
+    foreignKey: 'comicID',
+    targetKey: 'comicID'
+});
+
+db.ComicEpisode.hasOne(db.UserRatings, {
+    foreignKey: 'episodeID',
+    sourceKey: 'episodeID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.UserRatings.belongsTo(db.ComicEpisode, {
+    foreignKey: 'episodeID',
+    targetKey: 'episodeID'
+});
+
+db.User.hasOne(db.UserRatings, {
+    foreignKey: 'userID',
+    sourceKey: 'userID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.UserRatings.belongsTo(db.User, {
     foreignKey: 'userID',
     targetKey: 'userID'
 });
@@ -326,30 +365,42 @@ db.TicketResponses.belongsTo(db.Tickets, {
 });
 
 /*
-Followed Comic Assosiations
+Follow Mapping Assosiations
  */
-db.User.hasOne(db.FollowedComic, {
+db.User.hasOne(db.FollowMapping, {
     foreignKey: 'userID',
     sourceKey: 'userID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-db.FollowedComic.belongsTo(db.User, {
+db.FollowMapping.belongsTo(db.User, {
     foreignKey: 'userID',
     targetKey: 'userID'
 });
 
-db.Comic.hasOne(db.FollowedComic, {
+db.Comic.hasOne(db.FollowMapping, {
     foreignKey: 'comicID',
     sourceKey: 'comicID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-db.FollowedComic.belongsTo(db.Comic, {
+db.FollowMapping.belongsTo(db.Comic, {
     foreignKey: 'comicID',
     targetKey: 'comicID'
+});
+
+db.ComicCategory.hasOne(db.FollowMapping, {
+    foreignKey: 'categoryID',
+    sourceKey: 'categoryID',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+});
+
+db.FollowMapping.belongsTo(db.ComicCategory, {
+    foreignKey: 'categoryID',
+    targetKey: 'categoryID'
 });
 
 module.exports = db;
