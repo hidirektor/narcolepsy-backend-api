@@ -11,5 +11,6 @@ const fileValidator = validators.fileValidator;
 const tokenControl = verifyToken.tokenControl;
 
 router.post('/upload-profile-photo', tokenControl, upload.single('profilePhoto'), fileValidator.uploadProfilePhoto, fileController.uploadProfilePhotoAsync);
+router.get('/get-profile-photo/:eMail', tokenControl, fileValidator.getProfilePhoto, fileController.getProfilePhotoAsync);
 
 module.exports = router;

@@ -242,7 +242,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIzOGM5OGQzNS02NWQ2LTRmMmYtYjNjMS0xY2FjNmRkY2IwMWMiLCJ1c2VyVHlwZSI6IlBSRU1JVU0iLCJpYXQiOjE3MzQwODk0NzAsImV4cCI6MTczNDE3NTg3MH0.FmdQvcZPiB-6bjv--ExmZytJQjkWVy_1A6KjLfeQaJU",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MzcwODExLCJleHAiOjE3MzQ0NTcyMTF9.1ZZL8RWLTI5qMgmIeuXVEhAODPvZFW9figfbs_riRm0",
 									"type": "string"
 								}
 							]
@@ -339,6 +339,33 @@
 							"raw": "{{base_url}}{{file_url}}upload-profile-photo",
 							"host": [
 								"{{base_url}}{{file_url}}upload-profile-photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJkNDRkYzA1NS01MjU1LTQxOTctOWMwYy05YWU0MDlhNmZkYjAiLCJ1c2VyVHlwZSI6IlVTRVIiLCJpYXQiOjE3MzQwOTU0MzksImV4cCI6MTczNDE4MTgzOX0.bF-3pYSV2P3aD_A_G6XFp6wccERqxW249xnTxzTRp-s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{file_url}}get-profile-photo/hidirektor@gmail.com",
+							"host": [
+								"{{base_url}}{{file_url}}get-profile-photo"
+							],
+							"path": [
+								"hidirektor@gmail.com"
 							]
 						}
 					},
@@ -1123,17 +1150,17 @@
 									"key": "episodeImages",
 									"type": "file",
 									"src": [
-										"-bn_ve6Mw/02.jpg",
-										"-bn_ve6Mw/03.jpg",
-										"-bn_ve6Mw/04.jpg",
-										"-bn_ve6Mw/05.jpg",
-										"-bn_ve6Mw/06.jpg",
-										"-bn_ve6Mw/07.jpg",
-										"-bn_ve6Mw/08.jpg",
-										"-bn_ve6Mw/09.jpg",
-										"-bn_ve6Mw/10.jpg",
-										"-bn_ve6Mw/11.jpg",
-										"-bn_ve6Mw/12.jpg"
+										"zTazHxZuU/02.jpg",
+										"zTazHxZuU/03.jpg",
+										"zTazHxZuU/04.jpg",
+										"zTazHxZuU/05.jpg",
+										"zTazHxZuU/06.jpg",
+										"zTazHxZuU/07.jpg",
+										"zTazHxZuU/08.jpg",
+										"zTazHxZuU/09.jpg",
+										"zTazHxZuU/10.jpg",
+										"zTazHxZuU/11.jpg",
+										"zTazHxZuU/12.jpg"
 									]
 								}
 							]
@@ -1200,24 +1227,24 @@
 							"formdata": [
 								{
 									"key": "episodeID",
-									"value": "1853783b-c6e8-4145-9cf2-a8576f7ed368",
+									"value": "c49a4534-0ff4-4f75-8c8c-ee21733fe7f2",
 									"type": "text"
 								},
 								{
 									"key": "episodeImages",
 									"type": "file",
 									"src": [
-										"RZnr0_Dy-/02.jpg",
-										"RZnr0_Dy-/03.jpg",
-										"RZnr0_Dy-/04.jpg",
-										"RZnr0_Dy-/05.jpg",
-										"RZnr0_Dy-/06.jpg",
-										"RZnr0_Dy-/07.jpg",
-										"RZnr0_Dy-/08.jpg",
-										"RZnr0_Dy-/09.jpg",
-										"RZnr0_Dy-/10.jpg",
-										"RZnr0_Dy-/11.jpg",
-										"RZnr0_Dy-/12.jpg"
+										"iHz_jteqz/02.jpg",
+										"iHz_jteqz/03.jpg",
+										"iHz_jteqz/04.jpg",
+										"iHz_jteqz/05.jpg",
+										"iHz_jteqz/06.jpg",
+										"iHz_jteqz/07.jpg",
+										"iHz_jteqz/08.jpg",
+										"iHz_jteqz/09.jpg",
+										"iHz_jteqz/10.jpg",
+										"iHz_jteqz/11.jpg",
+										"iHz_jteqz/12.jpg"
 									]
 								}
 							]

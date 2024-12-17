@@ -384,6 +384,21 @@ class StorageService {
             throw new Error('Failed to upload file to storage bucket.');
         }
     }
+
+    /**
+     * Returns a readable stream of the requested file from MinIO.
+     * @param {string} bucketName - The bucket name.
+     * @param {string} filePath - The path of the file in the bucket.
+     * @returns {Promise<Stream>} - The readable stream of the file.
+     */
+    async getFileStream(bucketName, filePath) {
+        try {
+            return await this.minioClient.getObject(bucketName, filePath);
+        } catch (error) {
+            console.error(`Error fetching file stream for ${filePath} in ${bucketName}:`, error.message);
+            throw new Error('File not found or failed to fetch file.');
+        }
+    }
 }
 
 module.exports = StorageService;

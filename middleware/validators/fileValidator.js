@@ -58,6 +58,23 @@ class FileValidator {
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(err.message);
         }
     }
+
+    static async getProfilePhoto(req, res, next) {
+        try {
+            await joi
+                .object({
+                    eMail: joi.string()
+                        .email()
+                        .max(100)
+                        .required(),
+                })
+                .validateAsync(req.params);
+
+            next();
+        } catch (err) {
+            res.status(HttpStatusCode.BAD_REQUEST).send(err.message);
+        }
+    }
 }
 
 module.exports = FileValidator;

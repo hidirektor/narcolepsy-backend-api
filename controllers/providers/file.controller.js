@@ -12,6 +12,7 @@ const userProfileCrud = new GenericCRUD({model: db.UserProfile, where: null});
 const roles = require('../../models/roles');
 
 const StorageService = require('../../utils/service/StorageService');
+const {basename} = require("node:path");
 
 const storageService = new StorageService({
     endPoint: process.env.MINIO_ENDPOINT,
@@ -89,6 +90,42 @@ class FileController {
             res
                 .status(err.status || HttpStatusCode.INTERNAL_SERVER_ERROR)
                 .send(err.message);
+        }
+    }
+
+    async getProfilePhotoAsync(req, res) {
+        const { eMail } = req.params;
+
+        try {
+            const findUser = await userCrud.findOne({ where: { eMail } });
+            if (!findUser || !findUser.result) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'User not found.' });
+            }
+
+            const userID = findUser.result.userID;
+
+            const userProfile = await userProfileCrud.findOne({ where: { userID } });
+            if (!userProfile || !userProfile.result.profilePhotoID) {
+                return res.status(HttpStatusCode.NOT_FOUND).json({ message: 'Profile photo not found.' });
+            }
+
+            const profilePhotoPath = userProfile.result.profilePhotoID;
+            const bucketName = storageService.buckets.profiles;
+
+            const dataStream = await storageService.getFileStream(bucketName, profilePhotoPath);
+
+            res.setHeader('Content-Type', 'image/png');
+            res.setHeader('Content-Disposition', `inline; filename="${basename(profilePhotoPath)}"`);
+
+            dataStream.on('error', (err) => {
+                console.error('Error streaming file:', err.message);
+                res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: 'Failed to stream file.' });
+            });
+
+            dataStream.pipe(res);
+        } catch (error) {
+            console.error('Error in getProfilePhotoAsync:', error.message);
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });
         }
     }
 }

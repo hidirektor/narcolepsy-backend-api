@@ -451,6 +451,45 @@ const endpoints = [
         controller: 'controllers/providers/fileController.uploadProfilePhotoAsync',
     },
     {
+        sectionTitle: "File Management",
+        path: "file/get-profile-photo/{eMail}",
+        method: "get",
+        summary: "Fetch user profile photo",
+        description: "Retrieves the profile photo of a user based on their email address. Returns the image file directly.",
+        parameters: {
+            eMail: {
+                type: "string",
+                required: true,
+                description: "The email address of the user whose profile photo is to be fetched."
+            }
+        },
+        responses: {
+            200: {
+                description: "Profile photo fetched successfully",
+                content: {
+                    "image/png": {
+                        schema: {
+                            type: "string",
+                            format: "binary"
+                        }
+                    }
+                }
+            },
+            404: {
+                "description": "User or profile photo not found."
+            },
+            500: {
+                "description": "Internal server error occurred while fetching the profile photo."
+            }
+        },
+        security: [
+            {
+                "bearerAuth": []
+            }
+        ],
+        controller: "controllers/providers/fileController.getProfilePhotoAsync"
+    },
+    {
         sectionTitle: 'Comic Category Management',
         path: 'comic-categories/get-all',
         method: 'get',
