@@ -109,7 +109,6 @@ class StatsController {
         }
     }
 
-    // Specific function for user-based stats
     async getUserStats(req, res) {
         const { statType, type, id } = req.params;
         const { userID } = req.body;
