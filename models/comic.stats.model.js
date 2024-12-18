@@ -10,31 +10,21 @@ module.exports = (sequelize, Sequelize) => {
             comicID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'Comics',
+                    key: 'comicID'
+                }
             },
-            comicN: {
-                type: Sequelize.STRING,
-                allowNull: false
+            viewCount: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0
             },
-            comicDescriptionTitle: {
-                type: Sequelize.STRING,
-                allowNull: true
-            },
-            comicDescription: {
-                type: Sequelize.TEXT('long'),
-                allowNull: false
-            },
-            publishDate: {
-                type: Sequelize.DATE,
-                allowNull: false
-            },
-            sourceCountry: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
-            comicBannerID: {
-                type: Sequelize.STRING,
-                allowNull: false
+            downloadCount: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0
             },
         },
         {

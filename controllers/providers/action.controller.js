@@ -47,6 +47,7 @@ class UserActionsController {
 
         try {
             const rating = await userRatingCrud.create({ userID, episodeID, userRating });
+
             res.status(200).json({ message: 'Rated successfully.', rating });
         } catch (error) {
             res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
