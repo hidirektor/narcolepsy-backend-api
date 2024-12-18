@@ -7,6 +7,31 @@
     <link rel="icon" type="image/svg+xml" href="https://api.narcolepsy.com.tr/images/logo.png"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css" />
     <style>
+        .external-doc-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            z-index: 1000;
+        }
+        .external-doc-buttons button {
+            background-color: #279b70;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 200px;
+            text-align: left;
+        }
+        .external-doc-buttons button:hover {
+            background-color: #8c8cfa;
+        }
+
         @media only screen and (prefers-color-scheme: dark) {
 
             a { color: #8c8cfa; }
@@ -859,6 +884,12 @@
     </style>
 </head>
 <body>
+<div class="external-doc-buttons">
+    <button onclick="window.open('https://api.narcolepsy.com.tr/docs/postman.json', '_blank')">Postman Collection v2.1</button>
+    <button onclick="window.open('https://api.narcolepsy.com.tr/docs/example.zip', '_blank')">Bulk Upload Example .zip (Comic + Episodes)</button>
+    <button onclick="window.open('https://api.narcolepsy.com.tr/docs/example2.zip', '_blank')">Bulk Upload Example .zip (Just Episodes)</button>
+</div>
+
 <div id="swagger-ui"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
