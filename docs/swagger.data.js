@@ -3044,6 +3044,123 @@ const endpoints = [
         },
         security: [{ "bearerAuth": [] }],
         controller: "controllers/userActions.controller.getAllCommentsAsync"
+    },
+    {
+        sectionTitle: "Comic Stats Management",
+        path: "comic-stats/{statType}/{type}/{id}",
+        method: "get",
+        summary: "Fetch stats based on type",
+        description: "Fetches rates, views, downloads, or comments for comics, episodes, categories, or seasons.",
+        parameters: {
+            statType: {
+                type: "string",
+                enum: ["rates", "views", "downloads", "comments"],
+                required: true
+            },
+            type: {
+                type: "string",
+                enum: ["comic", "episode", "category", "season"],
+                required: true
+            },
+            id: {
+                type: "string",
+                description: "UUID of the respective comic, episode, category, or season.",
+                required: true
+            }
+        },
+        responses: {
+            200: {
+                description: "Statistics fetched successfully",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                total: { "type": "integer", "example": 42 },
+                                data: {
+                                    type: "array",
+                                    items: {
+                                        type: "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: "Validation error: Invalid type or parameters" },
+            500: { description: "Internal server error" }
+        },
+        security: [
+            {
+                "bearerAuth": []
+            }
+        ],
+        controller: "controllers/stats/stats.controller.getStats"
+    },
+    {
+        sectionTitle: "Comic Stats Management",
+        path: "comic-stats/user-stats/{statType}/{type}/{id}",
+        method: "post",
+        summary: "Fetch user-specific stats by type",
+        description: "Fetches user-specific downloads, ratings, or comments for comics or episodes.",
+        parameters: {
+            statType: {
+                type: "string",
+                enum: ["downloads", "ratings", "comments"],
+                required: true
+            },
+            type: {
+                type: "string",
+                enum: ["comic", "episode"],
+                required: true
+            },
+            id: {
+                type: "string",
+                description: "UUID of the respective comic or episode.",
+                required: true
+            }
+        },
+        body: {
+            userID: {
+                type: "string",
+                description: "UUID of the user",
+                required: true
+            }
+        },
+        responses: {
+            200: {
+                description: "User-specific stats fetched successfully",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                statType: { "type": "string", "example": "ratings" },
+                                type: { "type": "string", "example": "comic" },
+                                id: { "type": "string", "example": "uuid-v4-id" },
+                                userID: { "type": "string", "example": "uuid-v4-id" },
+                                data: {
+                                    type: "array",
+                                    items: {
+                                        type: "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            400: { description: "Validation error: Invalid parameters or body" },
+            404: { description: "No stats found for the given parameters" },
+            500: { description: "Internal server error" }
+        },
+        security: [
+            {
+                "bearerAuth": []
+            }
+        ],
+        controller: "controllers/stats/stats.controller.getUserStats"
     }
 ];
 

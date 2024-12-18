@@ -7,13 +7,13 @@ module.exports = (sequelize, Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true
             },
-            comicID: {
+            episodeID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 allowNull: false,
                 references: {
-                    model: 'Comics',
-                    key: 'comicID'
+                    model: 'ComicEpisodes',
+                    key: 'episodeID'
                 }
             },
             viewCount: {

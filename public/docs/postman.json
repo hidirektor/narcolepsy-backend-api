@@ -468,7 +468,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0MTEyNjEzLCJleHAiOjE3MzQxOTkwMTN9.Zrw_9FKpkZ28UDNR8YTf0FXxGgvGzwM2FicTRyt48Is",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIyMjMwOTgyZS0wY2VjLTRiNTEtOTM2Zi05MTk5NGY4MTg5ZjQiLCJpYXQiOjE3MzQ1MjQ3NDEsImV4cCI6MTczNDYxMTE0MX0.jSf9JhKsHdwzB8CPXssXpl5Q-9zKhNahdBuD8QHB4Bs",
 									"type": "string"
 								}
 							]
@@ -892,7 +892,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI4MzY1YjdmYy1lNmIxLTQxYjAtODVlZC03M2VhNzhmNmU0YjIiLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0NDc2NTM1LCJleHAiOjE3MzQ1NjI5MzV9.OD_13lj_AVHWfgTruDBE7_GsEUXp7cYhapeRn3lIrgU",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIyMjMwOTgyZS0wY2VjLTRiNTEtOTM2Zi05MTk5NGY4MTg5ZjQiLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0NDc5MTg5LCJleHAiOjE3MzQ1NjU1ODl9.zz9m1LRth5iCZAdCCbwl55nEbnyFxDckC7Zzb0GP5e4",
 									"type": "string"
 								}
 							]
@@ -904,13 +904,13 @@
 							"formdata": [
 								{
 									"key": "userID",
-									"value": "8365b7fc-e6b1-41b0-85ed-73ea78f6e4b2",
+									"value": "2230982e-0cec-4b51-936f-91994f8189f4",
 									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/hidir/OneDrive/Masaüstü/Solo Levelling/solo.zip"
+									"src": "/C:/Users/hidir/OneDrive/Masaüstü/Solo Levelling/episodes.zip"
 								}
 							]
 						},
@@ -1404,7 +1404,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIyMjMwOTgyZS0wY2VjLTRiNTEtOTM2Zi05MTk5NGY4MTg5ZjQiLCJpYXQiOjE3MzQ1MjQ3NDEsImV4cCI6MTczNDYxMTE0MX0.jSf9JhKsHdwzB8CPXssXpl5Q-9zKhNahdBuD8QHB4Bs",
 									"type": "string"
 								}
 							]
@@ -2788,6 +2788,681 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Comic Stats",
+			"item": [
+				{
+					"name": "Get User Rates by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"comicID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/rates/comic",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"rates",
+								"comic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Rates by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"episodeID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/rates/episode",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"rates",
+								"episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Comments by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"comicID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/comments/comic",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"comments",
+								"comic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Comments by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"episodeID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/comments/episode",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"comments",
+								"episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Downloads by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"comicID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/downloads/comic",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"downloads",
+								"comic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Downloads by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"episodeID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}user-stats/downloads/episode",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}user-stats"
+							],
+							"path": [
+								"downloads",
+								"episode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rates by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}comic/rates/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}comic"
+							],
+							"path": [
+								"rates",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Views by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}comic/views/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}comic"
+							],
+							"path": [
+								"views",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Downloads by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}comic/downloads/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}comic"
+							],
+							"path": [
+								"downloads",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Comic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}comic/comments/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}comic"
+							],
+							"path": [
+								"comments",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rates by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}episode/rates/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}episode"
+							],
+							"path": [
+								"rates",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Views by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}episode/views/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}episode"
+							],
+							"path": [
+								"views",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Downloads by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}episode/downloads/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}episode"
+							],
+							"path": [
+								"downloads",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Episode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}episode/comments/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}episode"
+							],
+							"path": [
+								"comments",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rates by Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}category/rates/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}category"
+							],
+							"path": [
+								"rates",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Views by Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}category/views/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}category"
+							],
+							"path": [
+								"views",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Downloads by Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}category/downloads/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}category"
+							],
+							"path": [
+								"downloads",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}category/comments/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}category"
+							],
+							"path": [
+								"comments",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rates by Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}season/rates/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}season"
+							],
+							"path": [
+								"rates",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Views by Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}season/views/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}season"
+							],
+							"path": [
+								"views",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Downloads by Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}season/downloads/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}season"
+							],
+							"path": [
+								"downloads",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Season",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxNTBjZjk4Ni1lNzRlLTRlODAtYjdhMC1iMjJlMGUwMzQ4YjciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM0Mjc0NjEyLCJleHAiOjE3MzQzNjEwMTJ9.i9IhI_c5-xGnRa7D5jiyaRMWLJ6A-TymnNOnwTw-caY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{comic_stats_url}}season/comments/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{comic_stats_url}}season"
+							],
+							"path": [
+								"comments",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -2876,6 +3551,11 @@
 		{
 			"key": "user_actions_url",
 			"value": "user-actions/",
+			"type": "string"
+		},
+		{
+			"key": "comic_stats_url",
+			"value": "comic-stats/",
 			"type": "string"
 		}
 	]

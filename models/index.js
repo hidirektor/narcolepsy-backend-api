@@ -51,5 +51,6 @@ db.ComicCategoryMapping = require('./comic.category.mapping.model.js')(sequelize
 db.FollowMapping = require('./follow.mapping.model.js')(sequelize, Sequelize);
 
 db.ComicStats = require('./comic.stats.model.js')(sequelize, Sequelize);
+db.ComicDownloadMapping = require('./comic.download.mapping.model.js')(sequelize, Sequelize);
 
 module.exports = db;
