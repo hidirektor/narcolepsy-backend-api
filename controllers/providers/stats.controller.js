@@ -325,8 +325,26 @@ class StatsController {
 
             if (statType === 'downloads') {
                 result = await comicDownloadMappingCrud.getAll({ where: { userID, [`${type}ID`]: id } });
-            } else if (statType === 'ratings') {
-                result = await userRatingCrud.getAll({ where: { userID, [`${type}ID`]: id } });
+            } else if (statType === 'rates') {
+                if (type === 'comic') {
+                    // Fetch all episodes for the comic
+                    const episodes = await comicEpisodesCrud.getAll({ where: { comicID: id } });
+                    if (!episodes || episodes.length === 0) {
+                        return res.status(HttpStatusCode.NOT_FOUND).json({
+                            message: `No episodes found for comicID ${id}`,
+                        });
+                    }
+
+                    const episodeIDs = episodes.map((e) => e.episodeID);
+
+                    // Fetch ratings for all episodes of the comic
+                    result = await userRatingCrud.getAll({
+                        where: { userID, episodeID: { [db.Sequelize.Op.in]: episodeIDs } },
+                    });
+                } else {
+                    // Standard case: Fetch ratings for the specific type and ID
+                    result = await userRatingCrud.getAll({ where: { userID, [`${type}ID`]: id } });
+                }
             } else if (statType === 'comments') {
                 result = await userCommentsCrud.getAll({ where: { userID, [`${type}ID`]: id } });
             } else {
@@ -334,13 +352,17 @@ class StatsController {
             }
 
             if (!result || result.length === 0) {
-                return res.status(HttpStatusCode.NOT_FOUND).json({ message: `No ${statType} found for the given parameters.` });
+                return res.status(HttpStatusCode.NOT_FOUND).json({
+                    message: `No ${statType} found for the given parameters.`,
+                });
             }
 
             res.status(HttpStatusCode.OK).json({ statType, type, id, userID, data: result });
         } catch (error) {
             console.error(`Error fetching ${statType} for user:`, error.message);
-            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ message: `Failed to fetch ${statType} for user.` });
+            res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+                message: `Failed to fetch ${statType} for user.`,
+            });
         }
     }
 }

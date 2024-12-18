@@ -2,6 +2,9 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 
 class StatsValidator {
+    constructor() {
+    }
+
     static async getStats(req, res, next) {
         try {
             await joi
@@ -28,14 +31,13 @@ class StatsValidator {
         }
     }
 
-    // Validator for user-specific stats
     static async getUserStats(req, res, next) {
         try {
             await joi
                 .object({
                     statType: joi
                         .string()
-                        .valid('downloads', 'ratings', 'comments')
+                        .valid('downloads', 'rates', 'comments')
                         .required(),
                     type: joi
                         .string()

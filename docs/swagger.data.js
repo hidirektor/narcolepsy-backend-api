@@ -3054,12 +3054,12 @@ const endpoints = [
         parameters: {
             statType: {
                 type: "string",
-                enum: ["rates", "views", "downloads", "comments"],
+                enum: ["comic", "episode", "category", "season"],
                 required: true
             },
             type: {
                 type: "string",
-                enum: ["comic", "episode", "category", "season"],
+                enum: ["rates", "views", "downloads", "comments"],
                 required: true
             },
             id: {
@@ -3107,7 +3107,7 @@ const endpoints = [
         parameters: {
             statType: {
                 type: "string",
-                enum: ["downloads", "ratings", "comments"],
+                enum: ["downloads", "rates", "comments"],
                 required: true
             },
             type: {
