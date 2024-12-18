@@ -136,8 +136,7 @@ class AuthController {
             const tokenExpiration = req.body.rememberMe ? '365d' : '1d';
 
             const payload = {
-                userID: findUser.result.userID,
-                userType: findUser.result.userType
+                userID: findUser.result.userID
             };
 
             const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {

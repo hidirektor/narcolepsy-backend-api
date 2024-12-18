@@ -3,6 +3,10 @@ const HttpStatusCode = require('http-status-codes');
 
 const redisClient = require('../utils/thirdParty/redis/redisClient');
 
+const GenericCRUD = require('../controllers/genericCrud');
+const db = require("../models");
+const userCrud = new GenericCRUD({model: db.User, where: null});
+
 class Authorization {
     constructor() {
     }
@@ -10,7 +14,17 @@ class Authorization {
     static authControl(allowedRoles) {
         return async (req, res, next) => {
             try {
-                const userRole = req.decode.userType; // Token decode işlemi sonrası beklenen rol
+                const userID = req.decode.userID;
+
+                const foundedUser = await userCrud.findOne({ where: {userID: userID} });
+                if(!foundedUser || !foundedUser.result) {
+                    return res
+                        .status(HttpStatusCode.UNAUTHORIZED)
+                        .send('Unauthorized transaction.');
+                }
+
+                const userRole = foundedUser.result.userType;
+
                 if (!allowedRoles || allowedRoles.includes(userRole)) {
                     return next();
                 } else {
@@ -26,13 +40,25 @@ class Authorization {
 
     static async limitedAuthControl(req, res, next) {
         try {
+            const foundedUser = await userCrud.findOne({ where: {userID: userID} });
+            if(!foundedUser || !foundedUser.result) {
+                return res
+                    .status(HttpStatusCode.UNAUTHORIZED)
+                    .send('Unauthorized transaction.');
+            }
+
+            const userRole = foundedUser.result.userType;
+
             const auth =
                 routerAuthorization[req.route.path.split('/')[1].replace('-', '_')][
                     req.method
                     ].Individual_Transactions;
-            if (!auth || auth.indexOf(req.decode.userType) !== -1)
+
+            if (!auth || auth.includes(userRole)) {
                 req.Individual_Transactions = true;
-            else req.Individual_Transactions = false;
+            } else {
+                req.Individual_Transactions = false;
+            }
             next();
         } catch (error) {
             res.status(error.status || 500).send(error.message);
