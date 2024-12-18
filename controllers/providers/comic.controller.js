@@ -118,7 +118,8 @@ class ComicController {
                     comicBannerName = file.name;
                 } else if (file.path.startsWith(`${uniqueFolderName}/episodes/Bölüm`)) {
                     const episodeNumber = parseInt(file.path.match(/Bölüm (\d+)/)[1], 10);
-                    episodes.push({ episodeNumber, buffer: file.buffer });
+                    const currentBufferName = file.name;
+                    episodes.push({ episodeNumber, originalname: currentBufferName, buffer: file.buffer });
                 }
             }
 

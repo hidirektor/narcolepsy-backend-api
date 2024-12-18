@@ -1,10 +1,13 @@
 const NotificationService = require('./NotificationService');
 const PdfGenerator = require('../pdfGenerator');
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const { v4: uuidv4 } = require('uuid');
 
 const GenericCRUD = require('../../controllers/genericCrud');
 const db = require("../../models");
+const {join} = require("node:path");
 const episodeCrud = new GenericCRUD({ model: db.ComicEpisode });
 const userCrud = new GenericCRUD({ model: db.User });
 
@@ -18,43 +21,71 @@ const storageService = new (require('./StorageService'))({
 
 class WorkerService {
     static async processEpisodesInBackground(episodes, comicID, userID, bannerPath, unzippedFolder) {
-        console.log(episodes);
         try {
             console.log('Worker started: Processing episodes...');
-            const episodeID = uuidv4();
-            const folderPath = `comics/${comicID}/episodes/`;
-            const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
 
-            // Görselleri isim sırasına göre sırala
-            const sortedEpisodes = episodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
+            // 1. Bölümleri episodeNumber'a göre grupla
+            const groupedEpisodes = episodes.reduce((acc, episode) => {
+                if (!episode.episodeNumber || !episode.buffer || !episode.originalname) {
+                    console.warn(`Skipping invalid episode: ${JSON.stringify(episode)}`);
+                    return acc;
+                }
+                acc[episode.episodeNumber] = acc[episode.episodeNumber] || [];
+                acc[episode.episodeNumber].push(episode);
+                return acc;
+            }, {});
 
-            // Tek bir PDF oluştur
-            const localPdfPath = `/tmp/${uuidv4()}.pdf`;
-            const pageCount = await PdfGenerator.generatePdf(sortedEpisodes.map(e => e.buffer), localPdfPath);
+            console.log('Grouped Episodes:', Object.keys(groupedEpisodes));
 
-            const pdfBuffer = fs.readFileSync(localPdfPath);
+            // 2. Her episodeNumber için PDF oluştur ve kaydet
+            for (const [episodeNumber, episodePages] of Object.entries(groupedEpisodes)) {
+                const episodeID = uuidv4();
+                const folderPath = `comics/${comicID}/episodes/`;
+                const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
 
-            // PDF dosyasını MinIO'ya yükle
-            await storageService.uploadFileToBucket(storageService.buckets.comics, pdfPath, pdfBuffer, 'application/pdf');
-            fs.unlinkSync(localPdfPath);
+                console.log(`Processing Episode ${episodeNumber}...`);
 
-            // Tek bir bölüm kaydı oluştur
-            await episodeCrud.create({
-                episodeID,
-                comicID,
-                seasonID: null,
-                episodeOrder: 1,
-                episodePrice: 0.0,
-                episodeName: '1. Bölüm',
-                episodePublisher: userID,
-                episodeBannerID: bannerPath || null,
-                episodeFileID: pdfPath,
-                episodePageCount: pageCount,
-            });
+                // 4. PDF oluştur
+                const localPdfPath = `/tmp/${uuidv4()}.pdf`;
+                const pageCount = await PdfGenerator.generatePdf(
+                    episodePages, // PdfGenerator için format
+                    localPdfPath
+                );
 
-            // Kullanıcıya başarı e-postası gönder
+                console.log(`PDF generated for Episode ${episodeNumber}: ${localPdfPath}, Pages: ${pageCount}`);
+
+                // 5. PDF dosyasını MinIO'ya yükle
+                const pdfBuffer = fs.readFileSync(localPdfPath);
+                await storageService.uploadFileToBucket(
+                    storageService.buckets.comics,
+                    pdfPath,
+                    pdfBuffer,
+                    'application/pdf'
+                );
+
+                // Geçici PDF dosyasını sil
+                fs.unlinkSync(localPdfPath);
+
+                // 6. Bölüm kaydı oluştur
+                await episodeCrud.create({
+                    episodeID,
+                    comicID,
+                    seasonID: null,
+                    episodeOrder: parseInt(episodeNumber),
+                    episodePrice: 0.0,
+                    episodeName: `${episodeNumber}. Bölüm`,
+                    episodePublisher: userID,
+                    episodeBannerID: bannerPath || null,
+                    episodeFileID: pdfPath,
+                    episodePageCount: pageCount,
+                });
+
+                console.log(`Episode ${episodeNumber} processed successfully.`);
+            }
+
+            // 7. Kullanıcıya başarı e-postası gönder
             const user = await userCrud.findOne({ where: { userID } });
-            if (user.result) {
+            if (user?.result?.eMail) {
                 await NotificationService.queueEmail(
                     'process-success',
                     { comicID },
@@ -63,8 +94,8 @@ class WorkerService {
                 );
             }
 
-            // Klasörü sil
-            await storageService.deleteFolder(storageService.buckets.uploads, `${unzippedFolder}/`);
+            // 8. Yükleme klasörünü temizle
+            await storageService.deleteFolder(storageService.buckets.uploads, unzippedFolder);
 
             console.log('Worker completed: Episodes processed successfully.');
         } catch (error) {
@@ -72,7 +103,7 @@ class WorkerService {
 
             // Kullanıcıya hata e-postası gönder
             const user = await userCrud.findOne({ where: { userID } });
-            if (user.result) {
+            if (user?.result?.eMail) {
                 await NotificationService.queueEmail(
                     'process-failure',
                     { message: error.message },
