@@ -40,7 +40,7 @@ class WorkerService {
             // 2. Her episodeNumber için PDF oluştur ve kaydet
             for (const [episodeNumber, episodePages] of Object.entries(groupedEpisodes)) {
                 const episodeID = uuidv4();
-                const folderPath = `comics/${comicID}/episodes/`;
+                const folderPath = `comics/${comicID}/episodes/${episodeNumber}/`;
                 const pdfPath = `${folderPath}episode-${episodeID}.pdf`;
 
                 console.log(`Processing Episode ${episodeNumber}...`);

@@ -1,54 +1,72 @@
+const { encrypt } = require('node-qpdf2');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const sharp = require("sharp");
 
 class PdfGenerator {
-    /**
-     * Generates a single PDF document from an array of images.
-     * Ensures images are added without distortion, with a fixed width of 800 pixels.
-     * Handles large images properly, creating only one PDF file.
-     * @param {Array} images - Array of image objects, each containing a buffer and originalname.
-     * @param {string} outputPath - The path where the generated PDF will be saved.
-     * @returns {Promise<number>} - Resolves with the number of pages in the generated PDF.
-     */
     static async generatePdf(images, outputPath) {
-        return new Promise((resolve, reject) => {
-            try {
-                const doc = new PDFDocument({ autoFirstPage: false });
-                const stream = fs.createWriteStream(outputPath);
-                let pageCount = 0;
+        try {
+            const userPassword = process.env.PDF_USER_PASSWORD;
+            const ownerPassword = process.env.PDF_OWNER_PASSWORD;
 
-                doc.pipe(stream);
-
-                images.sort((a, b) => a.originalname.localeCompare(b.originalname));
-
-                images.forEach((image) => {
-                    const buffer = image.buffer;
-
-                    const tempImg = doc.openImage(buffer);
-                    const aspectRatio = tempImg.height / tempImg.width;
-                    const pdfWidth = 800;
-                    const pdfHeight = pdfWidth * aspectRatio;
-
-                    doc.addPage({ size: [pdfWidth, pdfHeight] }).image(buffer, 0, 0, {
-                        width: pdfWidth,
-                        height: pdfHeight,
-                    });
-
-                    pageCount++;
-                });
-
-                doc.end();
-
-                stream.on('finish', () => {
-                    resolve(pageCount);
-                });
-
-                stream.on('error', reject);
-            } catch (error) {
-                reject(error);
+            if (!userPassword || !ownerPassword) {
+                throw new Error('PDF şifreleri .env dosyasından yüklenemedi. Lütfen .env dosyasını kontrol edin.');
             }
-        });
+
+            // 1. PDF oluştur (Geçici PDF dosyasını oluşturmak için PDFKit kullanıyoruz)
+            const tempPath = outputPath.replace('.pdf', '-temp.pdf');
+            const doc = new PDFDocument({ autoFirstPage: false });
+            const stream = fs.createWriteStream(tempPath);
+            let pageCount = 0;
+
+            doc.pipe(stream);
+
+            // Görselleri sıralayıp PDF'e ekle
+            images.sort((a, b) => a.originalname.localeCompare(b.originalname));
+            images.forEach((image) => {
+                const tempImg = doc.openImage(image.buffer);
+                const aspectRatio = tempImg.height / tempImg.width;
+                const pdfWidth = 800;
+                const pdfHeight = pdfWidth * aspectRatio;
+
+                doc.addPage({ size: [pdfWidth, pdfHeight] }).image(image.buffer, 0, 0, {
+                    width: pdfWidth,
+                    height: pdfHeight,
+                });
+
+                pageCount++;
+            });
+
+            doc.end();
+
+            await new Promise((resolve, reject) => {
+                stream.on('finish', resolve);
+                stream.on('error', reject);
+            });
+
+            // 2. QPDF ile şifreleme ve kısıtlama işlemi
+            const options = {
+                input: tempPath,
+                output: outputPath,
+                password: userPassword,
+                keyLength: 256, // AES 256 şifreleme
+                restrictions: {
+                    print: 'none', // Yazdırma devre dışı
+                    modify: 'none', // Düzenleme devre dışı
+                    extract: 'n',   // Kopyalama devre dışı
+                    useAes: true,   // AES şifreleme
+                },
+            };
+
+            await encrypt(options);
+
+            // Geçici dosyayı sil
+            fs.unlinkSync(tempPath);
+
+            return pageCount;
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            throw error;
+        }
     }
 }
 
