@@ -8,16 +8,16 @@ class StatsValidator {
                 .object({
                     statType: joi
                         .string()
-                        .valid('rates', 'views', 'downloads', 'comments')
+                        .valid('comic', 'episode', 'category', 'season')
                         .required(),
                     type: joi
                         .string()
-                        .valid('comic', 'episode', 'category', 'season')
+                        .valid('rates', 'views', 'downloads', 'comments')
                         .required(),
                     id: joi.string().uuid().required(),
                 })
                 .validateAsync({
-                    statType: req.query.statType,
+                    statType: req.params.statType,
                     type: req.params.type,
                     id: req.params.id,
                 });

@@ -17,7 +17,7 @@ const db = require('./models');
 const {join} = require("node:path");
 
 // db connection with sequelize
-db.sequelize.sync({force: false, alter: true});
+db.sequelize.sync({force: false, alter: false});
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,

@@ -12,14 +12,14 @@ router.get(
     '/:statType/:type/:id',
     tokenControl,
     statsValidator.getStats,
-    statsController.getStats
+    statsController.getStatsAsync
 );
 
 router.post(
     '/user-stats/:statType/:type/:id',
     tokenControl,
     statsValidator.getUserStats,
-    statsController.getUserStats
+    statsController.getUserStatsAsync
 );
 
 module.exports = router;
