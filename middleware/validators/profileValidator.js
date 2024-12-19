@@ -4,8 +4,7 @@ const {isValidPhoneNumber, parsePhoneNumberWithError} = require('libphonenumber-
 const {User} = require("../../models");
 
 class ProfileValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async getProfile(req, res, next) {
         try {

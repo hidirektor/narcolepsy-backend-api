@@ -3469,6 +3469,188 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Restricted",
+			"item": [
+				{
+					"name": "Add New User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"Halil İbrahim\",\r\n    \"userSurname\": \"Direktör\",\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"nickName\": \"hidirektor\",\r\n    \"phoneNumber\": \"5372398284\",\r\n    \"countryCode\": \"+90\",\r\n    \"password\": \"asdasd\",\r\n    \"birthDate\": \"991087066\",\r\n    \"userType\": \"PREMIUM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}add-user",
+							"host": [
+								"{{base_url}}{{restricted_url}}add-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Existing User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"userName\": \"Halil İbrahim\",\r\n    \"userSurname\": \"Direktör\",\r\n    \"eMail\": \"hidirektor@gmail.com\",\r\n    \"nickName\": \"hidirektor\",\r\n    \"phoneNumber\": \"5372398284\",\r\n    \"countryCode\": \"+90\",\r\n    \"password\": \"asdasd\",\r\n    \"birthDate\": \"991087066\",\r\n    \"userType\": \"PREMIUM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}edit-user",
+							"host": [
+								"{{base_url}}{{restricted_url}}edit-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Existing User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}delete-user/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{restricted_url}}delete-user"
+							],
+							"path": [
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Existing Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}delete-comment/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{restricted_url}}delete-comment"
+							],
+							"path": [
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Existing Rating",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}delete-rating/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{restricted_url}}delete-rating"
+							],
+							"path": [
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Existing Download",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{restricted_url}}delete-download/user/3a11706a-cd90-4f97-97c9-bc631705c25e/episode/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{restricted_url}}delete-download"
+							],
+							"path": [
+								"user",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e",
+								"episode",
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -3567,6 +3749,11 @@
 		{
 			"key": "accessToken",
 			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIyMjMwOTgyZS0wY2VjLTRiNTEtOTM2Zi05MTk5NGY4MTg5ZjQiLCJpYXQiOjE3MzQ1MzY4NDksImV4cCI6MTczNDYyMzI0OX0.TRPnUJOqlZiP6GWMZSI0L4RqKz2FRQkt3lCzFIErMFw",
+			"type": "string"
+		},
+		{
+			"key": "restricted_url",
+			"value": "restricted/",
 			"type": "string"
 		}
 	]

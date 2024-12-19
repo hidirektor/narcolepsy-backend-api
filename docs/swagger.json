@@ -3,19 +3,36 @@
   "info": {
     "title": "NarcoLepsy API Gateway",
     "version": "1.0.0",
-    "description": "This backend system is designed to power the NarcoLepsy magazine platform."
+    "description": "This backend system is designed to power the NarcoLepsy magazine platform.",
+    "contact": {
+      "name": "Halil İbrahim Direktör",
+      "email": "hidirektor@gmail.com",
+      "url": "https://hidirektor.com.tr"
+    }
   },
   "servers": [
     {
       "url": "https://api.narcolepsy.com/v1/",
       "description": "Main Server"
+    },
+    {
+      "url": "https://upload.narcolepsy.com/v1/",
+      "description": "Upload Server"
     }
   ],
+  "externalDocs": {
+    "description": "Postman Collection v2.1",
+    "url": "https://api.narcolepsy.com.tr/docs/postman.json"
+  },
   "paths": {
     "auth/sign-up": {
       "post": {
         "summary": "Register a new user",
         "description": "Creates a new user account in the system.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -85,6 +102,10 @@
       "post": {
         "summary": "Authenticate user and provide access token",
         "description": "Authenticates the user and returns a token. Dont forget: you can choose eMail - password or phoneNumber - countryCode - password combination.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -194,6 +215,10 @@
       "post": {
         "summary": "Update the user’s password securely",
         "description": "Allows the user to change their password.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -236,6 +261,11 @@
         },
         "tags": [
           "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
@@ -243,6 +273,10 @@
       "post": {
         "summary": "Reset password",
         "description": "Sends a password reset link to the user.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -288,6 +322,10 @@
       "post": {
         "summary": "Logout user",
         "description": "Logs out the current user.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -322,6 +360,42 @@
         },
         "tags": [
           "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "auth/verify/{userID}": {
+      "get": {
+        "summary": "Verify User Email",
+        "description": "The unique identifier of the user whose email is being verified.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Your email has been successfully verified!"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "User email is already verified."
+          }
+        },
+        "tags": [
+          "Authentication"
         ]
       }
     },
@@ -329,6 +403,10 @@
       "post": {
         "summary": "Send OTP",
         "description": "This endpoint sends otp to verified user methods. It will try send both eMail and SMS otp.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -366,6 +444,10 @@
       "post": {
         "summary": "Verify OTP",
         "description": "This endpoint verifies entered otp code. And its not must used for any reset process. You can use reset-password endpoint directly.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -402,12 +484,5859 @@
           "Authentication"
         ]
       }
+    },
+    "payment/start-checkout-form": {
+      "post": {
+        "summary": "Initialize CF",
+        "description": "Initialize CF from Iyzico.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "packageID": {
+                    "type": "string"
+                  },
+                  "ipAddress": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "packageID",
+                  "ipAddress"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CF data sent successfully."
+          },
+          "400": {
+            "description": "Failed to initialize checkout."
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "Payment"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "payment/check-payment/{userID}": {
+      "post": {
+        "summary": "Check User Payment On Web",
+        "description": "This endpoint for payment callback.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Your payment has been successfully verified!"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Your payment already verified."
+          }
+        },
+        "tags": [
+          "Payment"
+        ]
+      }
+    },
+    "payment/verify-payment/{userID}": {
+      "get": {
+        "summary": "Verify User Payment On Web",
+        "description": "The unique identifier of the user whose payment is being verified.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Your payment has been successfully verified!"
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Your payment already verified."
+          }
+        },
+        "tags": [
+          "Payment"
+        ]
+      }
+    },
+    "user/get-profile": {
+      "post": {
+        "summary": "Retrieve user profile information",
+        "description": "Fetches the detailed profile information of the authenticated user. Ensure the user is authenticated by providing a valid access token.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "eMail"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile retrieve successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "Halil İbrahim"
+                        },
+                        "userSurname": {
+                          "type": "string",
+                          "example": "Direktör"
+                        },
+                        "eMail": {
+                          "type": "string",
+                          "example": "hidirektor@gmail.com"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "hidirektor"
+                        },
+                        "phoneNumber": {
+                          "type": "string",
+                          "example": "5556783423"
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "example": "+90"
+                        },
+                        "password": {
+                          "type": "string",
+                          "example": "$2a$10$suV//NKJ1kkbSeRc97Not.JRB6GVfirsC7cSPBQxO67Cb6LymPS.a"
+                        },
+                        "userType": {
+                          "type": "string",
+                          "example": "PREMIUM"
+                        }
+                      }
+                    },
+                    "profileData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "profilePhotoID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "avatarID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": "true"
+                        },
+                        "birthDate": {
+                          "type": "string",
+                          "example": "1734023795"
+                        },
+                        "updateDate": {
+                          "type": "string",
+                          "example": "1734023795"
+                        }
+                      }
+                    },
+                    "preferencesData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "profilePhotoID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "language": {
+                          "type": "string",
+                          "example": "tr"
+                        },
+                        "themeColor": {
+                          "type": "string",
+                          "example": "dark"
+                        },
+                        "pushNotification": {
+                          "type": "boolean",
+                          "example": "true"
+                        },
+                        "mailNotification": {
+                          "type": "boolean",
+                          "example": "true"
+                        }
+                      }
+                    },
+                    "verificationData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "mailVerification": {
+                          "type": "string",
+                          "example": "1734023795"
+                        },
+                        "phoneVerification": {
+                          "type": "string",
+                          "example": "1734023795"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found!"
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "User Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "user/update-profile": {
+      "post": {
+        "summary": "Update user profile information",
+        "description": "Allows authenticated users to update their profile details, including personal information, preferences, and other settings. The request body determines which fields to update, and any changes will also update the profile's timestamp. Ensure the user is authenticated by providing a valid access token.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "userName": {
+                    "type": "string"
+                  },
+                  "userSurname": {
+                    "type": "string"
+                  },
+                  "nickName": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "themeColor": {
+                    "type": "string"
+                  },
+                  "pushNotification": {
+                    "type": "boolean"
+                  },
+                  "mailNotification": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "eMail"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile update successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "Halil İbrahim"
+                        },
+                        "userSurname": {
+                          "type": "string",
+                          "example": "Direktör"
+                        },
+                        "eMail": {
+                          "type": "string",
+                          "example": "hidirektor@gmail.com"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "hidirektor"
+                        },
+                        "phoneNumber": {
+                          "type": "string",
+                          "example": "5556783423"
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "example": "+90"
+                        },
+                        "password": {
+                          "type": "string",
+                          "example": "$2a$10$suV//NKJ1kkbSeRc97Not.JRB6GVfirsC7cSPBQxO67Cb6LymPS.a"
+                        },
+                        "userType": {
+                          "type": "string",
+                          "example": "PREMIUM"
+                        }
+                      }
+                    },
+                    "profileData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "profilePhotoID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "avatarID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "example": "true"
+                        },
+                        "birthDate": {
+                          "type": "string",
+                          "example": "1734023795"
+                        },
+                        "updateDate": {
+                          "type": "string",
+                          "example": "1734023795"
+                        }
+                      }
+                    },
+                    "preferencesData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "profilePhotoID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "language": {
+                          "type": "string",
+                          "example": "tr"
+                        },
+                        "themeColor": {
+                          "type": "string",
+                          "example": "dark"
+                        },
+                        "pushNotification": {
+                          "type": "boolean",
+                          "example": "true"
+                        },
+                        "mailNotification": {
+                          "type": "boolean",
+                          "example": "true"
+                        }
+                      }
+                    },
+                    "verificationData": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "7d83ce4d-4853-43d6-8d6c-fdbaa2c1539a"
+                        },
+                        "mailVerification": {
+                          "type": "string",
+                          "example": "1734023795"
+                        },
+                        "phoneVerification": {
+                          "type": "string",
+                          "example": "1734023795"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found!"
+          },
+          "403": {
+            "description": "Validation error."
+          }
+        },
+        "tags": [
+          "User Profile"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "file/upload-profile-photo": {
+      "post": {
+        "summary": "Upload user profile photo",
+        "description": "Uploads a profile photo for the specified user, identified either by eMail or by phoneNumber and countryCode. Accepts multipart/form-data.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "profilePhoto": {
+                    "type": "file"
+                  }
+                },
+                "required": [
+                  "profilePhoto"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "File uploaded successfully"
+                    },
+                    "fileName": {
+                      "type": "string",
+                      "example": "profilephoto.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "User not found!"
+          }
+        },
+        "tags": [
+          "File Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "file/get-profile-photo/{eMail}": {
+      "get": {
+        "summary": "Fetch user profile photo",
+        "description": "Retrieves the profile photo of a user based on their email address. Returns the image file directly.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eMail",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile photo fetched successfully",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User or profile photo not found."
+          },
+          "500": {
+            "description": "Internal server error occurred while fetching the profile photo."
+          }
+        },
+        "tags": [
+          "File Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/get-all": {
+      "get": {
+        "summary": "List all Comic Category Management",
+        "description": "Retrieves a list of all Comic Category Management. Requires a valid token and one of the following roles: EDITOR, MODERATOR, SYSOP.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A list of Comic Category Management",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "categoryID": {
+                        "type": "string",
+                        "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                      },
+                      "categoryName": {
+                        "type": "string",
+                        "example": "Action"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/get/{categoryID}": {
+      "get": {
+        "summary": "Get a specific comic category",
+        "description": "Retrieves a specific comic category by its unique ID. Requires valid token and role (EDITOR, MODERATOR, SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comic category detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categoryID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "categoryName": {
+                      "type": "string",
+                      "example": "Action"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/create-category": {
+      "post": {
+        "summary": "Create a new comic category",
+        "description": "Creates a new comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "categoryName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categoryID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "categoryName": {
+                      "type": "string",
+                      "example": "Adventure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Missing or invalid categoryName"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/edit-category": {
+      "post": {
+        "summary": "Edit an existing comic category",
+        "description": "Updates the specified comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryID": {
+                    "type": "string"
+                  },
+                  "categoryName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "categoryID",
+                  "categoryName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categoryID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "categoryName": {
+                      "type": "string",
+                      "example": "Action - Updated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Missing or invalid categoryName"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/delete-category/{categoryID}": {
+      "delete": {
+        "summary": "Delete a comic category",
+        "description": "Deletes the specified comic category. Requires valid token and role (EDITOR, MODERATOR, SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Category deletion started successfully. Mappings require confirmation for deletion.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Category deletion started successfully. Mappings require confirmation for deletion."
+                    },
+                    "operationKey": {
+                      "type": "string",
+                      "example": "5728bf67-575f-48bd-b299-3ea145228a66"
+                    },
+                    "afftecedComics": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 4
+                          },
+                          "categoryID": {
+                            "type": "string",
+                            "example": "ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4"
+                          },
+                          "comicID": {
+                            "type": "string",
+                            "example": "546435tgsdfsdf"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-categories/confirm-delete-category": {
+      "post": {
+        "summary": "Confirm deletion of a comic category",
+        "description": "This endpoint confirms the deletion of a comic category and its related mappings. Requires valid token and role (EDITOR, MODERATOR, SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Category deleted successfully."
+                    },
+                    "afftecedComics": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 4
+                          },
+                          "categoryID": {
+                            "type": "string",
+                            "example": "ef3d5aff-2917-4b3c-9ef1-a5950c3f67c4"
+                          },
+                          "comicID": {
+                            "type": "string",
+                            "example": "546435tgsdfsdf"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired operation key"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Invalid token for this operation"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "Comic Category Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/get-all": {
+      "get": {
+        "summary": "List all premium packages",
+        "description": "Retrieves a list of all premium packages. Requires a valid token.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A list of premium packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "packageID": {
+                        "type": "string",
+                        "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                      },
+                      "packageName": {
+                        "type": "string",
+                        "example": "Premium"
+                      },
+                      "packageDescription": {
+                        "type": "string",
+                        "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                      },
+                      "packagePrice": {
+                        "type": "double",
+                        "example": "54.99"
+                      },
+                      "packageTime": {
+                        "type": "integer",
+                        "example": "30"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/get/{packageID}": {
+      "get": {
+        "summary": "Get a specific premium package",
+        "description": "Retrieves a specific premium package by its unique ID. Requires valid token.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "packageID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium package detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categoryID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "packageName": {
+                      "type": "string",
+                      "example": "Premium"
+                    },
+                    "packageDescription": {
+                      "type": "string",
+                      "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                    },
+                    "packagePrice": {
+                      "type": "double",
+                      "example": "54.99"
+                    },
+                    "packageTime": {
+                      "type": "integer",
+                      "example": "30"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Premium package not found."
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/create-premium-package": {
+      "post": {
+        "summary": "Create a new premium package",
+        "description": "Creates a new premium package. Requires valid token and role (SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "packageName": {
+                    "type": "string"
+                  },
+                  "packageDescription": {
+                    "type": "string"
+                  },
+                  "packagePrice": {
+                    "type": "double"
+                  },
+                  "packageTime": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "packageName",
+                  "packageDescription",
+                  "packagePrice",
+                  "packageTime"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Premium package created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "packageID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "packageName": {
+                      "type": "string",
+                      "example": "Premium"
+                    },
+                    "packageDescription": {
+                      "type": "string",
+                      "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                    },
+                    "packagePrice": {
+                      "type": "double",
+                      "example": "54.99"
+                    },
+                    "packageTime": {
+                      "type": "integer",
+                      "example": "30"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Missing or invalid categoryName"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/edit-premium-package": {
+      "post": {
+        "summary": "Edit an existing premium package",
+        "description": "Updates the specified premium package. Requires valid token and role (SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "packageID": {
+                    "type": "string"
+                  },
+                  "packageName": {
+                    "type": "string"
+                  },
+                  "packageDescription": {
+                    "type": "string"
+                  },
+                  "packagePrice": {
+                    "type": "double"
+                  },
+                  "packageTime": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "packageID",
+                  "packageName",
+                  "packageDescription",
+                  "packagePrice",
+                  "packageTime"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Premium package updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "packageID": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    "packageName": {
+                      "type": "string",
+                      "example": "Premium"
+                    },
+                    "packageDescription": {
+                      "type": "string",
+                      "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                    },
+                    "packagePrice": {
+                      "type": "double",
+                      "example": "54.99"
+                    },
+                    "packageTime": {
+                      "type": "integer",
+                      "example": "30"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request: Missing or invalid packageName, packageDescription, packagePrice, packageTime"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Premium package not found."
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/delete-premium-package/{packageID}": {
+      "delete": {
+        "summary": "Delete a premium package",
+        "description": "Deletes the specified premium package. Requires valid token and role (SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "packageID",
+            "in": "path",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium package deleted or required confirmation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium package deletion requires confirmation. Use the provided operation key to confirm."
+                    },
+                    "operationKey": {
+                      "type": "string",
+                      "example": "78e2249c-b9dd-4e72-afef-f0ae6396f891"
+                    },
+                    "affectedPremiumPackage": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 6
+                        },
+                        "packageID": {
+                          "type": "string",
+                          "example": "fc224dd0-b26b-4536-b6fe-e3a8a38f8a05"
+                        },
+                        "packageName": {
+                          "type": "string",
+                          "example": "Premium"
+                        },
+                        "packageDescription": {
+                          "type": "string",
+                          "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                        },
+                        "packagePrice": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 0.2
+                        },
+                        "packageTime": {
+                          "type": "integer",
+                          "example": 30
+                        }
+                      }
+                    },
+                    "deletedPremiumUsers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userID": {
+                            "type": "string",
+                            "example": "150cf986-e74e-4e80-b7a0-b22e0e0348b7"
+                          },
+                          "userName": {
+                            "type": "string",
+                            "example": "Halil İbrahim"
+                          },
+                          "userSurname": {
+                            "type": "string",
+                            "example": "Direktör"
+                          },
+                          "eMail": {
+                            "type": "string",
+                            "example": "hidirektor@gmail.com"
+                          }
+                        }
+                      }
+                    },
+                    "affectedOrders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 3
+                          },
+                          "userID": {
+                            "type": "string",
+                            "example": "150cf986-e74e-4e80-b7a0-b22e0e0348b7"
+                          },
+                          "orderID": {
+                            "type": "string",
+                            "example": "547f5c16-4189-448a-96db-f394ae8dc80d"
+                          },
+                          "packageID": {
+                            "type": "string",
+                            "example": "fc224dd0-b26b-4536-b6fe-e3a8a38f8a05"
+                          },
+                          "paymentMethod": {
+                            "type": "string",
+                            "example": "Iyzico"
+                          },
+                          "paymentStatus": {
+                            "type": "string",
+                            "example": "COMPLETED"
+                          },
+                          "orderPrice": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.2
+                          },
+                          "userIP": {
+                            "type": "string",
+                            "example": "192.168.2.2"
+                          },
+                          "iyzicoToken": {
+                            "type": "string",
+                            "example": "613b5b2b-0192-4530-a2ef-85a1431b4eea"
+                          },
+                          "iyzicoSignature": {
+                            "type": "string",
+                            "example": "6dac12f81c509e5c78387e140201ee6cfc2db30cb081d15bd02ce22b906cdd23"
+                          },
+                          "orderDate": {
+                            "type": "integer",
+                            "example": 1734132274
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Forbidden: Your role does not have access to this resource."
+          },
+          "404": {
+            "description": "Premium package not found."
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "premium-packages/confirm-delete-premium-package": {
+      "post": {
+        "summary": "Confirm deletion of premium package",
+        "description": "This endpoint confirms the deletion of a premium package and its related mappings. Requires valid token and role (SYSOP).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Premium package deletion requires confirmation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Premium package deletion requires confirmation. Use the provided operation key to confirm."
+                    },
+                    "affectedPremiumPackage": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "example": 6
+                        },
+                        "packageID": {
+                          "type": "string",
+                          "example": "fc224dd0-b26b-4536-b6fe-e3a8a38f8a05"
+                        },
+                        "packageName": {
+                          "type": "string",
+                          "example": "Premium"
+                        },
+                        "packageDescription": {
+                          "type": "string",
+                          "example": "HD kullanılabilir.\nUltra HD kullanılabilir."
+                        },
+                        "packagePrice": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 0.2
+                        },
+                        "packageTime": {
+                          "type": "integer",
+                          "example": 30
+                        }
+                      }
+                    },
+                    "deletedPremiumUsers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "userID": {
+                            "type": "string",
+                            "example": "150cf986-e74e-4e80-b7a0-b22e0e0348b7"
+                          },
+                          "userName": {
+                            "type": "string",
+                            "example": "Halil İbrahim"
+                          },
+                          "userSurname": {
+                            "type": "string",
+                            "example": "Direktör"
+                          },
+                          "eMail": {
+                            "type": "string",
+                            "example": "hidirektor@gmail.com"
+                          }
+                        }
+                      }
+                    },
+                    "affectedOrders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 3
+                          },
+                          "userID": {
+                            "type": "string",
+                            "example": "150cf986-e74e-4e80-b7a0-b22e0e0348b7"
+                          },
+                          "orderID": {
+                            "type": "string",
+                            "example": "547f5c16-4189-448a-96db-f394ae8dc80d"
+                          },
+                          "packageID": {
+                            "type": "string",
+                            "example": "fc224dd0-b26b-4536-b6fe-e3a8a38f8a05"
+                          },
+                          "paymentMethod": {
+                            "type": "string",
+                            "example": "Iyzico"
+                          },
+                          "paymentStatus": {
+                            "type": "string",
+                            "example": "COMPLETED"
+                          },
+                          "orderPrice": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.2
+                          },
+                          "userIP": {
+                            "type": "string",
+                            "example": "192.168.2.2"
+                          },
+                          "iyzicoToken": {
+                            "type": "string",
+                            "example": "613b5b2b-0192-4530-a2ef-85a1431b4eea"
+                          },
+                          "iyzicoSignature": {
+                            "type": "string",
+                            "example": "6dac12f81c509e5c78387e140201ee6cfc2db30cb081d15bd02ce22b906cdd23"
+                          },
+                          "orderDate": {
+                            "type": "integer",
+                            "example": 1734132274
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired operation key"
+          },
+          "401": {
+            "description": "Unauthorized or Invalid Token"
+          },
+          "403": {
+            "description": "Invalid token for this operation"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "Premium Packages"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/create-ticket": {
+      "post": {
+        "summary": "Create a ticket",
+        "description": "Allows users to create a ticket without attachments.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "ticketType": {
+                    "type": "string"
+                  },
+                  "ticketTitle": {
+                    "type": "string"
+                  },
+                  "ticketDescription": {
+                    "type": "string"
+                  },
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "eMail",
+                  "ticketType",
+                  "ticketTitle",
+                  "ticketDescription"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket created successfully"
+                    },
+                    "ticketData": {
+                      "type": "object",
+                      "properties": {
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketType": {
+                          "type": "string",
+                          "example": "SUGGESTION"
+                        },
+                        "ticketTitle": {
+                          "type": "string",
+                          "example": "App Issue"
+                        },
+                        "ticketDescription": {
+                          "type": "string",
+                          "example": "Detailed description of the issue"
+                        },
+                        "ticketStatus": {
+                          "type": "string",
+                          "example": "CREATED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Missing fields"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/create-ticket/with-attachment": {
+      "post": {
+        "summary": "Create a ticket with attachments",
+        "description": "Allows users to create a ticket with one or more attachments (max 3).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "ticketType": {
+                    "type": "string"
+                  },
+                  "ticketTitle": {
+                    "type": "string"
+                  },
+                  "ticketDescription": {
+                    "type": "string"
+                  },
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  },
+                  "attachments": {
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "eMail",
+                  "ticketType",
+                  "ticketTitle",
+                  "ticketDescription",
+                  "attachments"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket created with attachments"
+                    },
+                    "ticketData": {
+                      "type": "object",
+                      "properties": {
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketType": {
+                          "type": "string",
+                          "example": "SUGGESTION"
+                        },
+                        "ticketTitle": {
+                          "type": "string",
+                          "example": "App Issue"
+                        },
+                        "ticketDescription": {
+                          "type": "string",
+                          "example": "Detailed description of the issue"
+                        },
+                        "ticketStatus": {
+                          "type": "string",
+                          "example": "CREATED"
+                        },
+                        "ticketAttachments": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "path/to/attachment.jpg"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Missing fields or invalid attachment count"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/reply-ticket": {
+      "post": {
+        "summary": "Reply to a ticket",
+        "description": "Allows users to reply to an existing ticket without attachments.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "ticketID": {
+                    "type": "string"
+                  },
+                  "ticketResponse": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "eMail",
+                  "ticketID",
+                  "ticketResponse"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reply added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Reply added successfully"
+                    },
+                    "responseData": {
+                      "type": "object",
+                      "properties": {
+                        "responseID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketResponse": {
+                          "type": "string",
+                          "example": "Reply content"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Missing fields"
+          },
+          "404": {
+            "description": "User or ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/reply-ticket/with-attachment": {
+      "post": {
+        "summary": "Reply to a ticket with attachments",
+        "description": "Allows users to reply to an existing ticket and upload attachments.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "ticketID": {
+                    "type": "string"
+                  },
+                  "ticketResponse": {
+                    "type": "string"
+                  },
+                  "attachments": {
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "eMail",
+                  "ticketID",
+                  "ticketResponse",
+                  "attachments"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reply added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Reply added with attachments"
+                    },
+                    "responseData": {
+                      "type": "object",
+                      "properties": {
+                        "responseID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "userID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketResponse": {
+                          "type": "string",
+                          "example": "Reply content"
+                        },
+                        "responseAttachments": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "path/to/attachment.jpg"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Missing fields or invalid attachment count"
+          },
+          "404": {
+            "description": "User or ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/delete-ticket/{ticketID}": {
+      "delete": {
+        "summary": "Initiate deletion of a ticket",
+        "description": "Allows SYSOP users to initiate ticket deletion. Returns an operation key for confirmation.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ticketID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket deletion initiation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket deletion requires confirmation. Use the provided operation key to confirm."
+                    },
+                    "operationKey": {
+                      "type": "string",
+                      "example": "uuid-v4-string"
+                    },
+                    "ticketData": {
+                      "type": "object",
+                      "properties": {
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketType": {
+                          "type": "string",
+                          "example": "SUGGESTION"
+                        },
+                        "ticketTitle": {
+                          "type": "string",
+                          "example": "App Issue"
+                        },
+                        "ticketDescription": {
+                          "type": "string",
+                          "example": "Detailed description of the issue"
+                        },
+                        "ticketStatus": {
+                          "type": "string",
+                          "example": "CREATED"
+                        }
+                      }
+                    },
+                    "responseData": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "responseID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketResponse": {
+                            "type": "string",
+                            "example": "Reply content"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Invalid ticket ID or other issues"
+          },
+          "403": {
+            "description": "Unauthorized: Only SYSOP users can access this endpoint"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/confirm-delete-ticket": {
+      "post": {
+        "summary": "Confirm ticket deletion",
+        "description": "Allows SYSOP users to confirm ticket deletion using an operation key. Deletes the ticket and its associated data.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket and associated data deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket and associated data deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired operation key."
+          },
+          "403": {
+            "description": "Unauthorized: Only SYSOP users can access this endpoint"
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/get-all": {
+      "get": {
+        "summary": "Fetch all tickets",
+        "description": "Allows SYSOP users to fetch all tickets and their responses. Optionally filter by ticket status. Optional filter for ticket status (e.g., CREATED, ANSWERED, CUSTOMER_RESPONSE).",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tickets fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Tickets fetched successfully"
+                    },
+                    "tickets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ticketID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketType": {
+                            "type": "string",
+                            "example": "SUGGESTION"
+                          },
+                          "ticketTitle": {
+                            "type": "string",
+                            "example": "App Issue"
+                          },
+                          "ticketDescription": {
+                            "type": "string",
+                            "example": "Detailed description of the issue"
+                          },
+                          "ticketStatus": {
+                            "type": "string",
+                            "example": "CREATED"
+                          }
+                        }
+                      }
+                    },
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "responseID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketResponse": {
+                            "type": "string",
+                            "example": "Reply content"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized: Only SYSOP users can access this endpoint"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/get-ticket/{ticketID}": {
+      "get": {
+        "summary": "Fetch specific ticket and responses",
+        "description": "Fetches a specific ticket and its associated responses by ticket ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ticketID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket and responses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket fetched successfully"
+                    },
+                    "ticket": {
+                      "type": "object",
+                      "properties": {
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketType": {
+                          "type": "string",
+                          "example": "SUGGESTION"
+                        },
+                        "ticketTitle": {
+                          "type": "string",
+                          "example": "App Issue"
+                        },
+                        "ticketDescription": {
+                          "type": "string",
+                          "example": "Detailed description of the issue"
+                        },
+                        "ticketStatus": {
+                          "type": "string",
+                          "example": "CREATED"
+                        }
+                      }
+                    },
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "responseID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketResponse": {
+                            "type": "string",
+                            "example": "Reply content"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/get-response/{responseID}": {
+      "get": {
+        "summary": "Fetch specific response",
+        "description": "Fetches a specific response by its response ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "responseID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Response fetched successfully"
+                    },
+                    "response": {
+                      "type": "object",
+                      "properties": {
+                        "responseID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketResponse": {
+                          "type": "string",
+                          "example": "Reply content"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/get-responses/{ticketID}": {
+      "get": {
+        "summary": "Fetch all responses for a ticket",
+        "description": "Fetches all responses associated with a specific ticket by ticket ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ticketID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Responses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Responses fetched successfully"
+                    },
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "responseID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketResponse": {
+                            "type": "string",
+                            "example": "Reply content"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/get-user-ticket/{eMail}": {
+      "get": {
+        "summary": "Fetch user tickets and responses",
+        "description": "Fetches all tickets and responses for a specific user by their email address.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eMail",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User tickets and responses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User tickets fetched successfully"
+                    },
+                    "tickets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ticketID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketType": {
+                            "type": "string",
+                            "example": "SUGGESTION"
+                          },
+                          "ticketTitle": {
+                            "type": "string",
+                            "example": "App Issue"
+                          },
+                          "ticketDescription": {
+                            "type": "string",
+                            "example": "Detailed description of the issue"
+                          },
+                          "ticketStatus": {
+                            "type": "string",
+                            "example": "CREATED"
+                          }
+                        }
+                      }
+                    },
+                    "responses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "responseID": {
+                            "type": "string",
+                            "example": "uuid-v4-string"
+                          },
+                          "ticketResponse": {
+                            "type": "string",
+                            "example": "Reply content"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/close-ticket/{ticketID}": {
+      "patch": {
+        "summary": "Close a ticket",
+        "description": "Allows users to close a ticket. USER and PREMIUM users can only close their own tickets. Returns an error if the ticket is already closed.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ticketID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket closed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket closed successfully"
+                    },
+                    "ticketID": {
+                      "type": "string",
+                      "example": "uuid-v4-string"
+                    },
+                    "updatedStatus": {
+                      "type": "string",
+                      "example": "CLOSED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This ticket is already closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "This ticket is already closed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized: You cannot close this ticket",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to close this ticket"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "An unexpected error occurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/delete-response/{responseID}": {
+      "delete": {
+        "summary": "Delete a response",
+        "description": "Allows users to delete a response they created. If the response has attachments, they are also deleted from MinIO.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "responseID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Response deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid responseID parameter"
+          },
+          "403": {
+            "description": "Unauthorized: You can only delete your own responses"
+          },
+          "404": {
+            "description": "Response not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/edit-response": {
+      "put": {
+        "summary": "Edit a ticket response",
+        "description": "Allows users to edit their responses to tickets. Responses cannot be edited if the associated ticket is closed.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "responseID": {
+                    "type": "string"
+                  },
+                  "ticketResponse": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "responseID",
+                  "ticketResponse"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Response updated successfully"
+                    },
+                    "updatedResponse": {
+                      "type": "object",
+                      "properties": {
+                        "responseID": {
+                          "type": "string",
+                          "example": "uuid-v4-string"
+                        },
+                        "ticketResponse": {
+                          "type": "string",
+                          "example": "Updated response content"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or response cannot be edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "This response cannot be edited as the associated ticket is closed."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized: User does not own the response"
+          },
+          "404": {
+            "description": "Response or associated ticket not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/edit-ticket": {
+      "put": {
+        "summary": "Edit an existing ticket",
+        "description": "Allows users to edit their own tickets. At least one of \"ticketTitle\" or \"ticketDescription\" must be provided. Tickets with \"CLOSED\" status cannot be edited.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ticketID": {
+                    "type": "string"
+                  },
+                  "ticketTitle": {
+                    "type": "string"
+                  },
+                  "ticketDescription": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ticketID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket updated successfully"
+                    },
+                    "updatedTicket": {
+                      "type": "object",
+                      "properties": {
+                        "ticketID": {
+                          "type": "string",
+                          "example": "9b3c2345-5a1e-4e6d-96cd-10b821f92f2f"
+                        },
+                        "ticketTitle": {
+                          "type": "string",
+                          "example": "Updated Ticket Title"
+                        },
+                        "ticketDescription": {
+                          "type": "string",
+                          "example": "Updated Ticket Description"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid ticket status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Validation error message or \"This ticket is closed and cannot be edited\""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized: User is not allowed to edit this ticket",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "You are not authorized to edit this ticket"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Ticket not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/delete-attachment": {
+      "delete": {
+        "summary": "Delete an attachment from a ticket or response",
+        "description": "Allows users to delete an attachment from either a ticket or a response.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ticketID": {
+                    "type": "string"
+                  },
+                  "responseID": {
+                    "type": "string"
+                  },
+                  "fileName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "fileName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attachment deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Attachment removed successfully from the ticket."
+                    },
+                    "updatedAttachments": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "updated-file-name.png"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Ticket, response, or file not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "support-tickets/add-attachment": {
+      "post": {
+        "summary": "Add attachments to a ticket or response",
+        "description": "Allows users to add attachments to either a ticket or a response. Maximum of 3 attachments are allowed.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ticketID": {
+                    "type": "string"
+                  },
+                  "responseID": {
+                    "type": "string"
+                  },
+                  "attachments": {
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "attachments"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attachments added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Attachments added successfully to the ticket."
+                    },
+                    "updatedAttachments": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "new-file-name.png"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or too many attachments"
+          },
+          "404": {
+            "description": "Ticket or response not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Support Tickets Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/create-season": {
+      "post": {
+        "summary": "Create a new season",
+        "description": "Allows users to create a new season for a comic.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "seasonName": {
+                    "type": "string"
+                  },
+                  "seasonOrder": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "comicID",
+                  "seasonName",
+                  "seasonOrder"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Season created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Season created successfully."
+                    },
+                    "seasonData": {
+                      "type": "object",
+                      "properties": {
+                        "seasonID": {
+                          "type": "string",
+                          "example": "uuid-value"
+                        },
+                        "seasonName": {
+                          "type": "string",
+                          "example": "Season 1"
+                        },
+                        "seasonOrder": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/edit-season": {
+      "put": {
+        "summary": "Edit an existing season",
+        "description": "Allows users to update the details of an existing season.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "seasonID": {
+                    "type": "string"
+                  },
+                  "seasonName": {
+                    "type": "string"
+                  },
+                  "seasonOrder": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "seasonID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Season updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Season updated successfully."
+                    },
+                    "updatedSeason": {
+                      "type": "object",
+                      "properties": {
+                        "seasonID": {
+                          "type": "string",
+                          "example": "uuid-value"
+                        },
+                        "seasonName": {
+                          "type": "string",
+                          "example": "Updated Season Name"
+                        },
+                        "seasonOrder": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "404": {
+            "description": "Season not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/get-all": {
+      "get": {
+        "summary": "Get all seasons",
+        "description": "Fetches a list of all seasons available.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of seasons retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Seasons retrieved successfully."
+                    },
+                    "seasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "seasonID": {
+                            "type": "string",
+                            "example": "uuid-value"
+                          },
+                          "seasonName": {
+                            "type": "string",
+                            "example": "Season 1"
+                          },
+                          "seasonOrder": {
+                            "type": "integer",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/get/{seasonID}": {
+      "get": {
+        "summary": "Get a specific season by ID",
+        "description": "Fetches the details of a season by its unique identifier.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "seasonID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Season details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Season retrieved successfully."
+                    },
+                    "season": {
+                      "type": "object",
+                      "properties": {
+                        "seasonID": {
+                          "type": "string",
+                          "example": "uuid-value"
+                        },
+                        "seasonName": {
+                          "type": "string",
+                          "example": "Season 1"
+                        },
+                        "seasonOrder": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Season not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/delete-season/{seasonID}": {
+      "delete": {
+        "summary": "Delete a season",
+        "description": "Allows users to delete a season by its unique identifier.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "seasonID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Season deletion initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Season deletion initiated. Use operation key to confirm."
+                    },
+                    "operationKey": {
+                      "type": "string",
+                      "example": "uuid-value"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Season not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/confirm-delete-season": {
+      "post": {
+        "summary": "Confirm season deletion",
+        "description": "Confirms the deletion of a season using an operation key.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Season deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Season deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired operation key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-seasons/get-seasons-by-comic/{comicID}": {
+      "get": {
+        "summary": "Get all seasons by comic ID",
+        "description": "Fetches all seasons related to a specific comic.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "comicID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seasons retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Seasons retrieved successfully."
+                    },
+                    "seasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "seasonID": {
+                            "type": "string",
+                            "example": "uuid-value"
+                          },
+                          "seasonName": {
+                            "type": "string",
+                            "example": "Season 1"
+                          },
+                          "seasonOrder": {
+                            "type": "integer",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comic not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Season Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/create-comic": {
+      "post": {
+        "summary": "Create a new comic",
+        "description": "Create a new comic along with its details and upload a banner image to MinIO storage.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comicName": {
+                    "type": "string"
+                  },
+                  "comicDescription": {
+                    "type": "string"
+                  },
+                  "comicDescriptionTitle": {
+                    "type": "string"
+                  },
+                  "sourceCountry": {
+                    "type": "string"
+                  },
+                  "publishDate": {
+                    "type": "string"
+                  },
+                  "comicStatus": {
+                    "type": "string"
+                  },
+                  "comicLanguage": {
+                    "type": "string"
+                  },
+                  "comicAuthor": {
+                    "type": "string"
+                  },
+                  "comicEditor": {
+                    "type": "string"
+                  },
+                  "comicCompany": {
+                    "type": "string"
+                  },
+                  "comicArtist": {
+                    "type": "string"
+                  },
+                  "comicBanner": {
+                    "type": "file"
+                  }
+                },
+                "required": [
+                  "comicName",
+                  "comicDescription",
+                  "sourceCountry",
+                  "publishDate",
+                  "comicStatus",
+                  "comicLanguage",
+                  "comicBanner"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comic created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Comic created successfully."
+                    },
+                    "comic": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data or missing file."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/bulk-create": {
+      "post": {
+        "summary": "Bulk upload comics and episodes",
+        "description": "Uploads a zip file containing comic metadata and episodes. The zip should include data.yml and episode folders.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "file"
+                  },
+                  "userID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file",
+                  "userID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comic and episodes uploaded successfully."
+          },
+          "400": {
+            "description": "Validation error."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/change-comic-banner": {
+      "post": {
+        "summary": "Change comic banner",
+        "description": "Allows users to update the banner image of an existing comic.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "comicBanner": {
+                    "type": "file"
+                  }
+                },
+                "required": [
+                  "comicID",
+                  "comicBanner"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comic banner updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Comic banner updated successfully"
+                    },
+                    "comicID": {
+                      "type": "string",
+                      "example": "uuid-value"
+                    },
+                    "comicBannerID": {
+                      "type": "string",
+                      "example": "new-uploaded-file-name.png"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "404": {
+            "description": "Comic not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ]
+      }
+    },
+    "comics/delete-comic/{comicID}": {
+      "delete": {
+        "summary": "Delete a comic",
+        "description": "Deletes a comic and its associated data. Requires confirmation if dependencies exist.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "comicID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comic deleted successfully"
+          },
+          "400": {
+            "description": "Comic has dependencies; confirmation required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/confirm-delete-comic": {
+      "post": {
+        "summary": "Confirm comic deletion",
+        "description": "Confirms the deletion of a comic and its dependencies.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comic and dependencies deleted successfully"
+          },
+          "400": {
+            "description": "Invalid or expired operation key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/edit-comic": {
+      "put": {
+        "summary": "Edit an existing comic",
+        "description": "Allows users to update the details of an existing comic. Only the fields provided in the request body will be updated.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "comicName": {
+                    "type": "string"
+                  },
+                  "comicDescription": {
+                    "type": "string"
+                  },
+                  "comicDescriptionTitle": {
+                    "type": "string"
+                  },
+                  "sourceCountry": {
+                    "type": "string"
+                  },
+                  "publishDate": {
+                    "type": "string"
+                  },
+                  "comicStatus": {
+                    "type": "string"
+                  },
+                  "comicLanguage": {
+                    "type": "string"
+                  },
+                  "comicAuthor": {
+                    "type": "string"
+                  },
+                  "comicEditor": {
+                    "type": "string"
+                  },
+                  "comicCompany": {
+                    "type": "string"
+                  },
+                  "comicArtist": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "comicID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comic updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Comic updated successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data."
+          },
+          "404": {
+            "description": "Comic not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/get-all": {
+      "get": {
+        "summary": "Get all comics",
+        "description": "Retrieves all comics.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Comics fetched successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/get/{comicID}": {
+      "get": {
+        "summary": "Get a comic by ID",
+        "description": "Retrieves a specific comic by its unique identifier.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "comicID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comic fetched successfully"
+          },
+          "404": {
+            "description": "Comic not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/get-by-category/{categoryName}": {
+      "get": {
+        "summary": "Get comics by category",
+        "description": "Retrieves comics that belong to a specific category.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "categoryName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comics fetched successfully"
+          },
+          "404": {
+            "description": "No comics found for the specified category"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comics/get-by-episode/{episodeID}": {
+      "get": {
+        "summary": "Get a comic by episode ID",
+        "description": "Retrieves the comic associated with a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "episodeID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comic fetched successfully"
+          },
+          "404": {
+            "description": "No comic found for the specified episode"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/create-episode": {
+      "post": {
+        "summary": "Create a new episode",
+        "description": "Creates a new episode with a banner and multiple images converted into a PDF.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "seasonID": {
+                    "type": "string"
+                  },
+                  "episodeOrder": {
+                    "type": "integer"
+                  },
+                  "episodePrice": {
+                    "type": "number"
+                  },
+                  "episodeName": {
+                    "type": "string"
+                  },
+                  "episodePublisher": {
+                    "type": "string"
+                  },
+                  "episodeBanner": {
+                    "type": "file"
+                  },
+                  "episodeImages": {
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "comicID",
+                  "episodeOrder",
+                  "episodePrice",
+                  "episodeName",
+                  "episodePublisher",
+                  "episodeBanner",
+                  "episodeImages"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Episode created successfully."
+          },
+          "400": {
+            "description": "Validation error or missing required data."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/change-episode-pdf": {
+      "post": {
+        "summary": "Change episode PDF",
+        "description": "Updates the PDF for an existing episode, deleting the old one.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "episodeID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "episodeID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Episode PDF updated successfully."
+          },
+          "400": {
+            "description": "Validation error or missing required data."
+          },
+          "404": {
+            "description": "Episode not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/edit-episode": {
+      "put": {
+        "summary": "Edit episode details",
+        "description": "Updates the details of an existing episode, excluding files.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "episodeID": {
+                    "type": "string"
+                  },
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "seasonID": {
+                    "type": "string"
+                  },
+                  "episodeOrder": {
+                    "type": "integer"
+                  },
+                  "episodePrice": {
+                    "type": "number"
+                  },
+                  "episodeName": {
+                    "type": "string"
+                  },
+                  "episodePublisher": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "episodeID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Episode details updated successfully."
+          },
+          "400": {
+            "description": "Validation error or missing required data."
+          },
+          "404": {
+            "description": "Episode not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/change-episode-banner": {
+      "post": {
+        "summary": "Change episode banner",
+        "description": "Updates the banner image for an existing episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "episodeID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "episodeID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Episode banner updated successfully."
+          },
+          "400": {
+            "description": "Validation error or missing required data."
+          },
+          "404": {
+            "description": "Episode not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/delete-episode/{episodeID}": {
+      "delete": {
+        "summary": "Delete an episode",
+        "description": "Deletes an episode if it has no dependencies, otherwise requires confirmation.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "episodeID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode deleted successfully."
+          },
+          "400": {
+            "description": "Episode has dependencies and requires confirmation."
+          },
+          "404": {
+            "description": "Episode not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/confirm-delete-episode": {
+      "post": {
+        "summary": "Confirm delete episode",
+        "description": "Confirms the deletion of an episode with dependencies after user confirmation.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operationKey"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Episode and dependencies deleted successfully."
+          },
+          "400": {
+            "description": "Invalid or expired operation key."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/get-all": {
+      "get": {
+        "summary": "Get all episodes",
+        "description": "Retrieves all episodes.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Episodes fetched successfully."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/get-by-season/{seasonID}": {
+      "get": {
+        "summary": "Get episodes by season",
+        "description": "Retrieves episodes belonging to a specific season.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "seasonID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episodes fetched successfully."
+          },
+          "404": {
+            "description": "No episodes found for the specified season."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/get-by-comic/{comicID}": {
+      "get": {
+        "summary": "Get episodes by comic",
+        "description": "Retrieves episodes belonging to a specific comic.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "comicID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episodes fetched successfully."
+          },
+          "404": {
+            "description": "No episodes found for the specified comic."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-episodes/get/{episodeID}": {
+      "get": {
+        "summary": "Get episode by ID",
+        "description": "Retrieves the details of an episode by its unique identifier.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "episodeID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode fetched successfully."
+          },
+          "404": {
+            "description": "Episode not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "Comic Episode Management"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/follow": {
+      "post": {
+        "summary": "Follow a comic or category",
+        "description": "Allows users to follow a comic or category.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "categoryID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Followed successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/unfollow": {
+      "post": {
+        "summary": "Unfollow a comic or category",
+        "description": "Allows users to unfollow a comic or category.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "comicID": {
+                    "type": "string"
+                  },
+                  "categoryID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unfollowed successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/rate": {
+      "post": {
+        "summary": "Rate an episode",
+        "description": "Allows users to rate an episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  },
+                  "userRating": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "episodeID",
+                  "userRating"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/edit-rate": {
+      "put": {
+        "summary": "Edit user rating for an episode",
+        "description": "Allows a user to edit their existing rating for a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  },
+                  "userRating": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "episodeID",
+                  "userRating"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rating updated successfully"
+          },
+          "404": {
+            "description": "Rating not found for the user and episode."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/delete-rate": {
+      "delete": {
+        "summary": "Delete user rating for an episode",
+        "description": "Deletes the user's existing rating for a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "episodeID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rating deleted successfully"
+          },
+          "404": {
+            "description": "Rating not found for the user and episode."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/comment": {
+      "post": {
+        "summary": "Comment on an episode",
+        "description": "Allows users to add a comment to an episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "episodeID": {
+                    "type": "string"
+                  },
+                  "userComment": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "episodeID",
+                  "userComment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment added successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/edit-comment": {
+      "put": {
+        "summary": "Edit user comment for an episode",
+        "description": "Allows a user to edit their existing comment for a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "commentID": {
+                    "type": "string"
+                  },
+                  "userComment": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "commentID",
+                  "userComment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          },
+          "404": {
+            "description": "Comment not found for the user."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/delete-comment": {
+      "delete": {
+        "summary": "Delete user comment for an episode",
+        "description": "Deletes the user's existing comment for a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "commentID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID",
+                  "commentID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully"
+          },
+          "404": {
+            "description": "Comment not found for the user."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/comments/get-by-episode/:episodeID": {
+      "get": {
+        "summary": "Get all comments by episode ID",
+        "description": "Fetches all user comments associated with a specific episode.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "episodeID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments fetched successfully"
+          },
+          "404": {
+            "description": "No comments found for the given episode ID."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/comments/get/:commentID": {
+      "get": {
+        "summary": "Get a specific comment by ID",
+        "description": "Fetches a single user comment based on its unique ID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commentID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment fetched successfully"
+          },
+          "404": {
+            "description": "Comment not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user-actions/comments/get-all": {
+      "get": {
+        "summary": "Get all user comments",
+        "description": "Fetches all user comments available in the database.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All comments fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "commentID": {
+                        "type": "string",
+                        "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                      },
+                      "userID": {
+                        "type": "string",
+                        "example": "e71ac10b-91cd-4472-a567-0e02b2c3d411"
+                      },
+                      "comicID": {
+                        "type": "string",
+                        "example": "d29bc10b-33ab-4572-c101-0e02b2c3d588"
+                      },
+                      "episodeID": {
+                        "type": "string",
+                        "example": "b21ec10b-91bc-4872-d123-0e02b2c3d433"
+                      },
+                      "userComment": {
+                        "type": "string",
+                        "example": "This is a great episode!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "tags": [
+          "User Actions"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-stats/{statType}/{type}/{id}": {
+      "get": {
+        "summary": "Fetch stats based on type",
+        "description": "Fetches rates, views, downloads, or comments for comics, episodes, categories, or seasons.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "statType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "example": 42
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Invalid type or parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Stats Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "comic-stats/user-stats/{statType}/{type}/{id}": {
+      "post": {
+        "summary": "Fetch user-specific stats by type",
+        "description": "Fetches user-specific downloads, ratings, or comments for comics or episodes.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "statType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User-specific stats fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statType": {
+                      "type": "string",
+                      "example": "ratings"
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "comic"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "uuid-v4-id"
+                    },
+                    "userID": {
+                      "type": "string",
+                      "example": "uuid-v4-id"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: Invalid parameters or body"
+          },
+          "404": {
+            "description": "No stats found for the given parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Comic Stats Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/add-user": {
+      "post": {
+        "summary": "Add a new user",
+        "description": "Allows SYSOP to add a new user with the specified details.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string"
+                  },
+                  "userSurname": {
+                    "type": "string"
+                  },
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "nickName": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string"
+                  },
+                  "userType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userName",
+                  "userSurname",
+                  "eMail",
+                  "nickName",
+                  "phoneNumber",
+                  "countryCode",
+                  "password",
+                  "birthDate",
+                  "userType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User added successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/edit-user": {
+      "put": {
+        "summary": "Edit an existing user",
+        "description": "Allows SYSOP to edit the details of an existing user.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "type": "string"
+                  },
+                  "userName": {
+                    "type": "string"
+                  },
+                  "userSurname": {
+                    "type": "string"
+                  },
+                  "eMail": {
+                    "type": "string"
+                  },
+                  "nickName": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string"
+                  },
+                  "userType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/delete-user/:userID": {
+      "delete": {
+        "summary": "Delete a user",
+        "description": "Allows SYSOP to delete an existing user by their userID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/delete-comment/:id": {
+      "delete": {
+        "summary": "Delete a comment",
+        "description": "Allows SYSOP to delete a user comment by its commentID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/delete-rating/:id": {
+      "delete": {
+        "summary": "Delete a rating",
+        "description": "Allows SYSOP to delete a user rating by its ratingID.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rating deleted successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Rating not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "restricted/delete-download/user/:userID/episode/:episodeID": {
+      "delete": {
+        "summary": "Delete a download",
+        "description": "Allows SYSOP to delete a user download entry by specifying both userID and episodeID in the request.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "episodeID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Download entry deleted successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Download entry not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "tags": [
+          "Restricted Management"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "tags": [
     {
       "name": "Authentication",
       "description": "All endpoints related to Authentication"
+    },
+    {
+      "name": "Payment",
+      "description": "All endpoints related to Payment"
+    },
+    {
+      "name": "User Profile",
+      "description": "All endpoints related to User Profile"
+    },
+    {
+      "name": "File Management",
+      "description": "All endpoints related to File Management"
+    },
+    {
+      "name": "Comic Category Management",
+      "description": "All endpoints related to Comic Category Management"
+    },
+    {
+      "name": "Premium Packages",
+      "description": "All endpoints related to Premium Packages"
+    },
+    {
+      "name": "Support Tickets Management",
+      "description": "All endpoints related to Support Tickets Management"
+    },
+    {
+      "name": "Comic Season Management",
+      "description": "All endpoints related to Comic Season Management"
+    },
+    {
+      "name": "Comic Management",
+      "description": "All endpoints related to Comic Management"
+    },
+    {
+      "name": "Comic Episode Management",
+      "description": "All endpoints related to Comic Episode Management"
+    },
+    {
+      "name": "User Actions",
+      "description": "All endpoints related to User Actions"
+    },
+    {
+      "name": "Comic Stats Management",
+      "description": "All endpoints related to Comic Stats Management"
+    },
+    {
+      "name": "Restricted Management",
+      "description": "All endpoints related to Restricted Management"
     }
   ]
 }

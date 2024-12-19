@@ -2,8 +2,7 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 
 class SeasonValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async createSeason(req, res, next) {
         try {

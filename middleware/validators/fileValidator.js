@@ -4,8 +4,7 @@ const {isValidPhoneNumber, parsePhoneNumberWithError} = require('libphonenumber-
 const {User} = require("../../models");
 
 class FileValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async uploadProfilePhoto(req, res, next) {
         try {

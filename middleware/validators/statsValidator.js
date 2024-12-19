@@ -2,8 +2,7 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 
 class StatsValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async getStats(req, res, next) {
         try {

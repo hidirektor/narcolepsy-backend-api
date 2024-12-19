@@ -2,8 +2,7 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 
 class CommonValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async limitAndOffset(req, res, next) {
         try {

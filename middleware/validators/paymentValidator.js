@@ -2,8 +2,7 @@ const joi = require('joi');
 const HttpStatusCode = require('http-status-codes');
 
 class PaymentValidator {
-    constructor() {
-    }
+    constructor() {}
 
     static async startCF(req, res, next) {
         try {
