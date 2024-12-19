@@ -2,32 +2,20 @@ module.exports = (sequelize, Sequelize) => {
     const ComicEpisode = sequelize.define(
         'ComicEpisode',
         {
-            id: {
-                type: Sequelize.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
             episodeID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
-                allowNull: false
+                allowNull: false,
+                primaryKey: true
             },
             comicID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Comics',
-                    key: 'comicID'
-                }
+                allowNull: false
             },
             seasonID: {
                 type: Sequelize.UUID,
-                allowNull: true,
-                references: {
-                    model: 'ComicSeasons',
-                    key: 'seasonID'
-                }
+                allowNull: true
             },
             episodeOrder: {
                 type: Sequelize.INTEGER,

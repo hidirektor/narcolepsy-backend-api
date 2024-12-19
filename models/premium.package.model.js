@@ -2,16 +2,12 @@ module.exports = (sequelize, Sequelize) => {
     const PremiumPackage = sequelize.define(
         'PremiumPackages',
         {
-            id: {
-                type: Sequelize.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
             packageID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
-                allowNull: false
+                allowNull: false,
+                primaryKey: true
             },
             packageName: {
                 type: Sequelize.STRING,

@@ -15,19 +15,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
+                allowNull: false
             },
             ticketID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'SupportTickets',
-                    key: 'ticketID'
-                }
+                allowNull: false
             },
             ticketResponse: {
                 type: Sequelize.STRING,

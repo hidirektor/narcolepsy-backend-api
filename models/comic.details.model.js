@@ -12,11 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             comicID: {
                 type: Sequelize.UUID,
                 unique: true,
-                allowNull: false,
-                references: {
-                    model: 'Comics',
-                    key: 'comicID'
-                }
+                allowNull: false
             },
             comicStatus: {
                 type: Sequelize.ENUM,

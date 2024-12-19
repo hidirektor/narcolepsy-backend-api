@@ -2,16 +2,12 @@ module.exports = (sequelize, Sequelize) => {
     const ComicCategory = sequelize.define(
         'ComicCategory',
         {
-            id: {
-                type: Sequelize.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
             categoryID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
-                allowNull: false
+                allowNull: false,
+                primaryKey: true
             },
             categoryName: {
                 type: Sequelize.STRING,

@@ -9,11 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
+                allowNull: false
             },
             phoneVerification: {
                 type: Sequelize.BIGINT,

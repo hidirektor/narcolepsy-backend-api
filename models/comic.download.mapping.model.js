@@ -9,27 +9,15 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
+                allowNull: false
             },
             comicID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Comics',
-                    key: 'comicID'
-                }
+                allowNull: false
             },
             episodeID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'ComicEpisodes',
-                    key: 'episodeID'
-                }
+                allowNull: false
             }
         },
         {

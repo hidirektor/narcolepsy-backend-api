@@ -4,32 +4,20 @@ module.exports = (sequelize, Sequelize) => {
     const Orders = sequelize.define(
         'Orders',
         {
-            id: {
-                type: Sequelize.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
-            userID: {
-                type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
-            },
             orderID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
+                allowNull: false,
+                primaryKey: true
+            },
+            userID: {
+                type: Sequelize.UUID,
                 allowNull: false
             },
             packageID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'PremiumPackages',
-                    key: 'packageID'
-                }
+                allowNull: false
             },
             paymentMethod: {
                 type: Sequelize.STRING,

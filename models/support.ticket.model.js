@@ -5,23 +5,15 @@ module.exports = (sequelize, Sequelize) => {
     const Tickets = sequelize.define(
         'SupportTickets',
         {
-            id: {
-                type: Sequelize.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
-            userID: {
-                type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
-            },
             ticketID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
                 unique: true,
+                allowNull: false,
+                primaryKey: true
+            },
+            userID: {
+                type: Sequelize.UUID,
                 allowNull: false
             },
             ticketType: {
@@ -39,19 +31,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             comicID: {
                 type: Sequelize.UUID,
-                allowNull: true,
-                references: {
-                    model: 'Comics',
-                    key: 'comicID'
-                }
+                allowNull: true
             },
             episodeID: {
                 type: Sequelize.UUID,
-                allowNull: true,
-                references: {
-                    model: 'ComicEpisodes',
-                    key: 'episodeID'
-                }
+                allowNull: true
             },
             ticketStatus: {
                 type: Sequelize.ENUM,

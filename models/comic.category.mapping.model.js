@@ -9,19 +9,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             categoryID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'ComicCategories',
-                    key: 'categoryID'
-                }
+                allowNull: false
             },
             comicID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Comics',
-                    key: 'comicID'
-                }
+                allowNull: false
             }
         },
         {

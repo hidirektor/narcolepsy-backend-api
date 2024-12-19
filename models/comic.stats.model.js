@@ -10,11 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             episodeID: {
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4,
-                allowNull: false,
-                references: {
-                    model: 'ComicEpisodes',
-                    key: 'episodeID'
-                }
+                allowNull: false
             },
             viewCount: {
                 type: Sequelize.INTEGER,

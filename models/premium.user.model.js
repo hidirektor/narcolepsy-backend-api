@@ -9,19 +9,11 @@ module.exports = (sequelize, Sequelize) => {
             },
             userID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'userID'
-                }
+                allowNull: false
             },
             orderID: {
                 type: Sequelize.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Orders',
-                    key: 'orderID'
-                }
+                allowNull: false
             },
             startDate: {
                 type: Sequelize.BIGINT,
