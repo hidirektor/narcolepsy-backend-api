@@ -15,8 +15,7 @@ const roles = require('../../models/roles');
 const NotificationService = require('../../utils/service/NotificationService');
 
 class AuthController {
-    constructor() {
-    }
+    constructor() {}
 
     async signUpAsync(req, res) {
         const transaction = await db.sequelize.transaction();

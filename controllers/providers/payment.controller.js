@@ -21,8 +21,7 @@ const premiumCrud = new GenericCRUD({model: db.PremiumUsers, where: null});
 const packageCrud = new GenericCRUD({model: db.PremiumPackages, where: null});
 
 class PaymentController {
-    constructor() {
-    }
+    constructor() {}
 
     /**
      * Starts the checkout process by initializing the request to Iyzico's API.

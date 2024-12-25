@@ -20,8 +20,7 @@ const episodeCrud = new GenericCRUD({ model: db.ComicEpisode });
 const userCrud = new GenericCRUD({ model: db.User });
 
 class EpisodeController {
-    constructor() {
-    }
+    constructor() {}
 
     async createEpisodeAsync(req, res) {
         try {

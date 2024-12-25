@@ -8,8 +8,7 @@ const { errorSender } = require('../../utils');
 const { v4: uuidv4 } = require('uuid');
 
 class SeasonController {
-    constructor() {
-    }
+    constructor() {}
 
     async createSeasonAsync(req, res) {
         const { comicID, seasonName, seasonOrder } = req.body;

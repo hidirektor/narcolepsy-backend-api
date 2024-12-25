@@ -3297,6 +3297,163 @@ const endpoints = [
         },
         security: [{ bearerAuth: [] }],
         controller: 'controllers/providers/restrictedController.deleteDownloadAsync',
+    },
+    {
+        sectionTitle: 'Coupon Management',
+        path: 'coupon/create-coupon',
+        method: 'post',
+        summary: 'Create a new coupon',
+        description: 'Creates a new coupon with either a packageID or a salePercent. Generates a unique coupon code unless provided.',
+        body: {
+            packageID: { type: 'string', required: false, description: 'Optional UUID of the package.' },
+            salePercent: { type: 'number', required: false, description: 'Discount percentage (1-100).' },
+            couponCode: { type: 'string', required: false, description: 'Optional custom coupon code (8 characters).' },
+        },
+        responses: {
+            201: {
+                description: 'Coupon created successfully.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Coupon created successfully.' },
+                                coupon: {
+                                    type: 'object',
+                                    properties: {
+                                        couponID: { type: 'string', example: 'uuid-v4' },
+                                        packageID: { type: 'string', example: 'uuid-v4' },
+                                        salePercent: { type: 'number', example: 10 },
+                                        couponCode: { type: 'string', example: 'ABCD1234' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error.' },
+            409: { description: 'Coupon code already exists.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ bearerAuth: [] }],
+        controller: 'controllers/providers/couponController.createCouponAsync',
+    },
+    {
+        sectionTitle: 'Coupon Management',
+        path: 'coupon/edit-coupon',
+        method: 'put',
+        summary: 'Edit an existing coupon',
+        description: 'Edits an existing coupon by providing a valid couponID. Updates packageID, salePercent, or couponCode.',
+        body: {
+            couponID: { type: 'string', required: true, description: 'UUID of the coupon to be edited.' },
+            packageID: { type: 'string', required: false, description: 'Optional UUID of the package.' },
+            salePercent: { type: 'number', required: false, description: 'Discount percentage (1-100).' },
+            couponCode: { type: 'string', required: false, description: 'Optional custom coupon code (8 characters).' },
+        },
+        responses: {
+            200: {
+                description: 'Coupon updated successfully.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                message: { type: 'string', example: 'Coupon updated successfully.' },
+                                coupon: {
+                                    type: 'object',
+                                    properties: {
+                                        couponID: { type: 'string', example: 'uuid-v4' },
+                                        packageID: { type: 'string', example: 'uuid-v4' },
+                                        salePercent: { type: 'number', example: 20 },
+                                        couponCode: { type: 'string', example: 'NEWCODE8' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error.' },
+            404: { description: 'Coupon not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ bearerAuth: [] }],
+        controller: 'controllers/providers/couponController.editCouponAsync',
+    },
+    {
+        sectionTitle: 'Coupon Management',
+        path: 'coupon/delete-coupon/{couponID}',
+        method: 'delete',
+        summary: 'Delete a coupon',
+        description: 'Deletes a coupon by its couponID.',
+        parameters: {
+            couponID: { type: 'string', required: true, description: 'UUID of the coupon to be deleted.' },
+        },
+        responses: {
+            200: { description: 'Coupon deleted successfully.' },
+            400: { description: 'Validation error.' },
+            404: { description: 'Coupon not found.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ bearerAuth: [] }],
+        controller: 'controllers/providers/couponController.deleteCouponAsync',
+    },
+    {
+        sectionTitle: 'Coupon Management',
+        path: 'coupon/confirm-delete-coupon',
+        method: 'post',
+        summary: 'Confirm and delete a coupon',
+        description: 'Checks if the coupon is associated with any orders before deleting.',
+        body: {
+            couponID: { type: 'string', required: true, description: 'UUID of the coupon to confirm deletion.' },
+        },
+        responses: {
+            200: { description: 'Coupon deleted successfully.' },
+            400: { description: 'Validation error.' },
+            404: { description: 'Coupon not found.' },
+            409: { description: 'Coupon is associated with orders and cannot be deleted.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ bearerAuth: [] }],
+        controller: 'controllers/providers/couponController.confirmDeleteCouponAsync',
+    },
+    {
+        sectionTitle: 'Coupon Management',
+        path: 'coupon/get-used-orders',
+        method: 'post',
+        summary: 'Get all orders that used a coupon',
+        description: 'Fetches orders where the specified coupon was applied.',
+        body: {
+            couponID: { type: 'string', required: true, description: 'UUID of the coupon to search for orders.' },
+        },
+        responses: {
+            200: {
+                description: 'List of orders using the specified coupon.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    orderID: { type: 'string', example: 'uuid-v4-order-id' },
+                                    userID: { type: 'string', example: 'uuid-v4-user-id' },
+                                    couponID: { type: 'string', example: 'uuid-v4-coupon-id' },
+                                    orderDate: { type: 'string', example: '2024-01-01T12:00:00Z' },
+                                    totalPrice: { type: 'number', example: 99.99 },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: { description: 'Validation error.' },
+            404: { description: 'No orders found with the specified coupon.' },
+            500: { description: 'Internal server error.' },
+        },
+        security: [{ bearerAuth: [] }],
+        controller: 'controllers/providers/couponController.getUsedOrdersAsync',
     }
 ];
 

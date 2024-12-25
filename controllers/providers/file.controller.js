@@ -23,8 +23,7 @@ const storageService = new StorageService({
 });
 
 class FileController {
-    constructor() {
-    }
+    constructor() {}
 
     async uploadProfilePhotoAsync(req, res) {
         const { file } = req;

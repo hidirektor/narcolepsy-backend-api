@@ -19,6 +19,11 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: true,
                 defaultValue: 0
             },
+            couponCode: {
+                type: Sequelize.STRING,
+                unique: true,
+                allowNull: false
+            },
         },
         {
             timestamps: false,

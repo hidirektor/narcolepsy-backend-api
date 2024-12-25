@@ -3651,6 +3651,166 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Coupons",
+			"item": [
+				{
+					"name": "Create Coupon for Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"packageID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}create-coupon",
+							"host": [
+								"{{base_url}}{{coupons_url}}create-coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Coupon for Sale",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"salePercent\": \"25.0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}create-coupon",
+							"host": [
+								"{{base_url}}{{coupons_url}}create-coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Coupon",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"couponID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"packageID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\",\r\n    \"salePercent\": \"20.0\",\r\n    \"couponCode\": \"asdasda213\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}edit-coupon",
+							"host": [
+								"{{base_url}}{{coupons_url}}edit-coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Coupon",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}delete-coupon/3a11706a-cd90-4f97-97c9-bc631705c25e",
+							"host": [
+								"{{base_url}}{{coupons_url}}delete-coupon"
+							],
+							"path": [
+								"3a11706a-cd90-4f97-97c9-bc631705c25e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delete Coupon",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationKey\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}confirm-delete-coupon",
+							"host": [
+								"{{base_url}}{{coupons_url}}confirm-delete-coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Used Orders by couponID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"couponID\": \"3a11706a-cd90-4f97-97c9-bc631705c25e\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{coupons_url}}get-used-orders",
+							"host": [
+								"{{base_url}}{{coupons_url}}get-used-orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -3754,6 +3914,11 @@
 		{
 			"key": "restricted_url",
 			"value": "restricted/",
+			"type": "string"
+		},
+		{
+			"key": "coupons_url",
+			"value": "coupons/",
 			"type": "string"
 		}
 	]

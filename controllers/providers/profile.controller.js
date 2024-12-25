@@ -12,8 +12,7 @@ const userPreferencesCrud = new GenericCRUD({model: db.UserPreferences, where: n
 const userVerificationsCrud = new GenericCRUD({model: db.UserVerifications, where: null});
 
 class ProfileController {
-    constructor() {
-    }
+    constructor() {}
 
     async getProfileAsync(req, res) {
         try {

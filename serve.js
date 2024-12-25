@@ -34,6 +34,7 @@ app.use('/v1/comic-episodes', routers.episodeRouter);
 app.use('/v1/user-actions', routers.actionRouter);
 app.use('/v1/comic-stats', routers.statsRouter);
 app.use('/v1/restricted', routers.authorizedRouter);
+app.use('/v1/coupons', routers.couponRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('404 NOT FOUND');
