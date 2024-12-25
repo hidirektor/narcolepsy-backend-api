@@ -53,6 +53,8 @@ db.FollowMapping = require('./follow.mapping.model.js')(sequelize, Sequelize);
 db.ComicStats = require('./comic.stats.model.js')(sequelize, Sequelize);
 db.ComicDownloadMapping = require('./comic.download.mapping.model.js')(sequelize, Sequelize);
 
+db.Coupon = require('./coupon.model.js')(sequelize, Sequelize);
+
 /*
 User Relations
  */
@@ -90,6 +92,8 @@ Premium Packages Relations
  */
 db.PremiumPackages.hasMany(db.Orders, { foreignKey: 'packageID', onDelete: 'NO ACTION', onUpdate: 'CASCADE' });
 db.Orders.belongsTo(db.PremiumPackages, { foreignKey: 'packageID' });
+db.PremiumPackages.hasMany(db.Coupon, { foreignKey: 'packageID', onDelete: 'NO ACTION', onUpdate: 'CASCADE' });
+db.Coupon.belongsTo(db.PremiumPackages, { foreignKey: 'packageID' });
 
 /*
 Comic Relations
@@ -146,5 +150,11 @@ Support Tickets Relations
  */
 db.Tickets.hasOne(db.TicketResponses, { foreignKey: 'ticketID', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 db.TicketResponses.belongsTo(db.Tickets, { foreignKey: 'ticketID' });
+
+/*
+Coupon Relations
+ */
+db.Coupon.hasMany(db.Orders, { foreignKey: 'couponID', onDelete: 'NO ACTION', onUpdate: 'CASCADE' });
+db.Orders.belongsTo(db.Coupon, { foreignKey: 'couponID' });
 
 module.exports = db;

@@ -19,6 +19,11 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.UUID,
                 allowNull: false
             },
+            couponID: {
+                type: Sequelize.UUID,
+                allowNull: true,
+                defaultValue: null
+            },
             paymentMethod: {
                 type: Sequelize.STRING,
                 allowNull: false
