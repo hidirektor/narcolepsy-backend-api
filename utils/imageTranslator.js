@@ -16,25 +16,23 @@ class ImageTranslationUtil {
             const apiKey = process.env.GOOGLE_TRANSLATE_API_KEY;
             if (!apiKey) throw new Error('Google Translate API anahtarı bulunamadı!');
 
-            // Vision API kimlik doğrulama için JSON ortam değişkeninden yükle
             const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIAL_JSON);
             const client = new vision.ImageAnnotatorClient({ credentials });
 
-            // Görselden metin çıkarma
+
             const [result] = await client.textDetection(imageBuffer);
             const detections = result.textAnnotations;
             if (!detections || detections.length === 0) return imageBuffer;
 
-            // Görsel boyutlarını al
             const metadata = await sharp(imageBuffer).metadata();
             const width = metadata.width;
             const height = metadata.height;
 
             let overlays = [];
 
-            for (let i = 1; i < detections.length; i++) { // İlk satır tam metin, diğerleri detay
+            for (let i = 1; i < detections.length; i++) {
                 const text = detections[i].description;
-                if (!/^[a-zA-Z0-9.,!? ]+$/.test(text)) continue; // İngilizce karakter kontrolü
+                if (!/^[a-zA-Z0-9.,!? ]+$/.test(text)) continue;
 
                 const vertices = detections[i].boundingPoly.vertices;
                 const x = vertices[0].x || 0;
@@ -42,7 +40,6 @@ class ImageTranslationUtil {
                 const widthBox = vertices[1].x - vertices[0].x || 100;
                 const heightBox = vertices[2].y - vertices[0].y || 30;
 
-                // İngilizceden Türkçeye çevir
                 const translateResponse = await axios.post(
                     `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,
                     {
@@ -52,7 +49,6 @@ class ImageTranslationUtil {
                 );
                 const translation = translateResponse.data.data.translations[0].translatedText;
 
-                // Çeviri konumlandırması ve font koruma
                 overlays.push({
                     input: Buffer.from(
                         `<svg width=\"${widthBox}\" height=\"${heightBox}\">
@@ -66,7 +62,6 @@ class ImageTranslationUtil {
                 });
             }
 
-            // Metinleri görsele yerleştir
             const imgWithText = await sharp(imageBuffer)
                 .composite(overlays)
                 .toBuffer();
