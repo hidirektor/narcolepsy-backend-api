@@ -1,5 +1,6 @@
 const NotificationService = require('./NotificationService');
 const PdfGenerator = require('../pdfGenerator');
+const imageTranslator = require('../imageTranslator');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -45,10 +46,20 @@ class WorkerService {
 
                 console.log(`Processing Episode ${episodeNumber}...`);
 
+                const translatedPages = [];
+                for (const page of episodePages) {
+                    // Görsel çevirisi
+                    const translatedImage = await imageTranslator.processImageTranslation(page.buffer);
+                    translatedPages.push({
+                        ...page,
+                        buffer: translatedImage
+                    });
+                }
+
                 // 4. PDF oluştur
                 const localPdfPath = `/tmp/${uuidv4()}.pdf`;
                 const pageCount = await PdfGenerator.generatePdf(
-                    episodePages, // PdfGenerator için format
+                    translatedPages, // PdfGenerator için format
                     localPdfPath
                 );
 
@@ -84,11 +95,11 @@ class WorkerService {
             }
 
             // 7. Kullanıcıya başarı e-postası gönder
-            const user = await userCrud.findOne({ where: { userID } });
+            const user = await userCrud.findOne({where: {userID}});
             if (user?.result?.eMail) {
                 await NotificationService.queueEmail(
                     'process-success',
-                    { comicID },
+                    {comicID},
                     user.result.eMail,
                     'Episodes processing completed'
                 );
@@ -102,11 +113,11 @@ class WorkerService {
             console.error('Worker error while processing episodes:', error.message);
 
             // Kullanıcıya hata e-postası gönder
-            const user = await userCrud.findOne({ where: { userID } });
+            const user = await userCrud.findOne({where: {userID}});
             if (user?.result?.eMail) {
                 await NotificationService.queueEmail(
                     'process-failure',
-                    { message: error.message },
+                    {message: error.message},
                     user.result.eMail,
                     'Episodes processing failed'
                 );

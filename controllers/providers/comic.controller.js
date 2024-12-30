@@ -116,8 +116,8 @@ class ComicController {
                 } else if (file.path.match(/comic-banner\.(png|jpg|jpeg|heic)$/)) {
                     comicBannerBuffer = file.buffer;
                     comicBannerName = file.name;
-                } else if (file.path.startsWith(`${uniqueFolderName}/episodes/Bölüm`)) {
-                    const episodeNumber = parseInt(file.path.match(/Bölüm (\d+)/)[1], 10);
+                } else if (file.path.startsWith(`${uniqueFolderName}/episodes/Chapter`)) {
+                    const episodeNumber = parseInt(file.path.match(/Chapter (\d+)/)[1], 10);
                     const currentBufferName = file.name;
                     episodes.push({ episodeNumber, originalname: currentBufferName, buffer: file.buffer });
                 }
