@@ -13,10 +13,10 @@ services:
     ports:
       - '${PORT}:${PORT}'
     networks:
-      - narco-network
+      - narcolepsy-network
     env_file:
       - .env
 
 networks:
-  narco-network:
+  narcolepsy-network:
     external: true
