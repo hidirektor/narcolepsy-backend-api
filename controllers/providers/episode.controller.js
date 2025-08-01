@@ -5,11 +5,11 @@ const { v4: uuidv4 } = require('uuid');
 const redisClient = require('../../utils/thirdParty/redis/redisClient');
 
 const storageService = new (require('../../utils/service/StorageService'))({
-    endPoint: process.env.MINIO_ENDPOINT,
-    port: +process.env.MINIO_PORT,
+    endPoint: process.env.MINIO_ENDPOINT || 'minio',
+    port: +(process.env.MINIO_PORT || 9099),
     useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
+    accessKey: process.env.MINIO_ACCESS_KEY || process.env.MINIO_ROOT_USER,
+    secretKey: process.env.MINIO_SECRET_KEY || process.env.MINIO_ROOT_PASSWORD,
 });
 const PdfGenerator = require('../../utils/pdfGenerator');
 const fs = require('fs');

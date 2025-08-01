@@ -15,11 +15,11 @@ const StorageService = require('../../utils/service/StorageService');
 const {basename} = require("node:path");
 
 const storageService = new StorageService({
-    endPoint: process.env.MINIO_ENDPOINT,
-    port: +process.env.MINIO_PORT,
+    endPoint: process.env.MINIO_ENDPOINT || 'minio',
+    port: +(process.env.MINIO_PORT || 9099),
     useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY
+    accessKey: process.env.MINIO_ACCESS_KEY || process.env.MINIO_ROOT_USER,
+    secretKey: process.env.MINIO_SECRET_KEY || process.env.MINIO_ROOT_PASSWORD
 });
 
 class FileController {

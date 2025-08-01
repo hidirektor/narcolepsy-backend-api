@@ -1,6 +1,5 @@
 const amqp = require('amqplib/callback_api');
 const nodemailer = require('nodemailer');
-const twilio = require('twilio');
 const ejs = require('ejs');
 const path = require('path');
 const GenericCRUD = require("../../../controllers/genericCrud");
@@ -15,7 +14,11 @@ const RABBITMQ_PASSWORD = process.env.RABBITMQ_PASSWORD || 'guest';
 const RABBITMQ_HOST = process.env.RABBITMQ_HOST || 'localhost';
 const RABBITMQ_PORT = process.env.RABBITMQ_PORT || 5672;
 
-const fullRabbitMQUrl = `amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`;
+// Password'deki özel karakterleri encode et
+const encodedUser = encodeURIComponent(RABBITMQ_USER);
+const encodedPassword = encodeURIComponent(RABBITMQ_PASSWORD);
+
+const fullRabbitMQUrl = `amqp://${encodedUser}:${encodedPassword}@${RABBITMQ_HOST}:${RABBITMQ_PORT}`;
 
 let connection = null;
 let channel = null;
@@ -30,7 +33,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 const sendEmailWithRetry = async (mailOptions, retries = 5, delay = 5000) => {
     try {
@@ -99,10 +102,7 @@ const startQueueListener = () => {
                                 await processEmail(message);
                             }
 
-                            if (message.type === 'sms') {
-                                await sendSMS(message.to, message.message);
-                                console.log('SMS mesajı alındı:', message);
-                            }
+
                         } else if (queueName === 'expiredPremiumQueue') {
                             await processPremiumUser(message);
                         }
@@ -160,20 +160,7 @@ const processPremiumUser = async (message) => {
     }
 };
 
-const sendSMS = (to, body) => {
-    twilioClient.messages
-        .create({
-            body: body,
-            from: process.env.TWILIO_PHONE_NUMBER,
-            to: to,
-        })
-        .then((message) => {
-            console.log('SMS gönderildi:', message.sid);
-        })
-        .catch((error) => {
-            console.error('SMS gönderimi hatası:', error);
-        });
-};
+
 
 const connectToRabbitMQ = () => {
     amqp.connect(fullRabbitMQUrl, (error, conn) => {

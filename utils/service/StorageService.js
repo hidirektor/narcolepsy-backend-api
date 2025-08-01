@@ -9,7 +9,17 @@ const roles = require('../../models/roles');
 
 class StorageService {
     constructor(minioConfig) {
-        this.minioClient = new Minio.Client(minioConfig);
+        // Endpoint'ten protokol ve port'u temizle
+        const cleanEndpoint = minioConfig.endPoint
+            ? minioConfig.endPoint.replace(/^https?:\/\//, '').split(':')[0]
+            : 'localhost';
+        
+        const cleanConfig = {
+            ...minioConfig,
+            endPoint: cleanEndpoint
+        };
+        
+        this.minioClient = new Minio.Client(cleanConfig);
         this.buckets = {
             profiles: 'narcolepsy-backend-profiles',
             comics: 'narcolepsy-backend-comics',
@@ -25,15 +35,32 @@ class StorageService {
 
     async _ensureBucketsExist() {
         for (const bucketName of Object.values(this.buckets)) {
-            const exists = await this.minioClient.bucketExists(bucketName);
-            if (!exists) {
-                await this.minioClient.makeBucket(bucketName);
-                console.log(`Bucket created: ${bucketName}`);
-            }
+            try {
+                const exists = await this.minioClient.bucketExists(bucketName);
+                if (!exists) {
+                    try {
+                        await this.minioClient.makeBucket(bucketName);
+                        console.log(`Bucket created: ${bucketName}`);
+                    } catch (createError) {
+                        // Bucket zaten varsa hata verme, devam et
+                        if (createError.code === 'BucketAlreadyOwnedByYou' || createError.code === 'BucketAlreadyExists') {
+                            console.log(`Bucket already exists: ${bucketName}`);
+                        } else {
+                            throw createError;
+                        }
+                    }
+                } else {
+                    console.log(`Bucket already exists: ${bucketName}`);
+                }
 
-            if (bucketName === this.buckets.tickets) {
-                await this._createFolderIfNotExists(bucketName, 'ticket-attachments/');
-                await this._createFolderIfNotExists(bucketName, 'response-attachments/');
+                if (bucketName === this.buckets.tickets) {
+                    await this._createFolderIfNotExists(bucketName, 'ticket-attachments/');
+                    await this._createFolderIfNotExists(bucketName, 'response-attachments/');
+                }
+            } catch (error) {
+                console.error(`Error ensuring bucket ${bucketName} exists:`, error.message);
+                // Bucket kontrol/oluşturma hatası varsa uygulama çalışmaya devam etsin
+                // throw error; // Bu satırı comment'ledik
             }
         }
     }

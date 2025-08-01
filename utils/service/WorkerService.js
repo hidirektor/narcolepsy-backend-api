@@ -13,11 +13,11 @@ const episodeCrud = new GenericCRUD({ model: db.ComicEpisode });
 const userCrud = new GenericCRUD({ model: db.User });
 
 const storageService = new (require('./StorageService'))({
-    endPoint: process.env.MINIO_ENDPOINT,
-    port: +process.env.MINIO_PORT,
+    endPoint: process.env.MINIO_ENDPOINT || 'minio',
+    port: +(process.env.MINIO_PORT || 9099),
     useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
+    accessKey: process.env.MINIO_ACCESS_KEY || process.env.MINIO_ROOT_USER,
+    secretKey: process.env.MINIO_SECRET_KEY || process.env.MINIO_ROOT_PASSWORD,
 });
 
 class WorkerService {

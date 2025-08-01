@@ -11,11 +11,11 @@ const GenericCRUD = require('../genericCrud');
 const {queueEmail} = require("../../utils/service/NotificationService");
 const {addTaskToQueue, processEpisodesInBackground} = require("../../utils/service/WorkerService");
 const storageService = new (require('../../utils/service/StorageService'))({
-    endPoint: process.env.MINIO_ENDPOINT,
-    port: +process.env.MINIO_PORT,
+    endPoint: process.env.MINIO_ENDPOINT || 'minio',
+    port: +(process.env.MINIO_PORT || 9099),
     useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY,
+    accessKey: process.env.MINIO_ACCESS_KEY || process.env.MINIO_ROOT_USER,
+    secretKey: process.env.MINIO_SECRET_KEY || process.env.MINIO_ROOT_PASSWORD,
 });
 
 const comicCrud = new GenericCRUD({ model: db.Comic });
