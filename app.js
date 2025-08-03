@@ -28,9 +28,12 @@ const limiter = rateLimit({
 });
 
 app.use(cors({
-    origin: ['https://narcolepsy.com.tr', 'https://api.narcolepsy.com.tr', 'https://sysop.narcolepsy.com.tr', 'http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: true, // Tüm origin'lere izin ver
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
 app.use(limiter);
