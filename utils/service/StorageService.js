@@ -8,7 +8,14 @@ const fs = require('fs');
 const roles = require('../../models/roles');
 
 class StorageService {
+    static instance = null;
+    static isInitialized = false;
+
     constructor(minioConfig) {
+        if (StorageService.instance) {
+            return StorageService.instance;
+        }
+
         // Endpoint'ten protokol ve port'u temizle
         const cleanEndpoint = minioConfig.endPoint
             ? minioConfig.endPoint.replace(/^https?:\/\//, '').split(':')[0]
@@ -27,10 +34,16 @@ class StorageService {
             uploads: 'narcolepsy-backend-uploads'
         };
 
-        this._ensureBucketsExist().catch(err => {
-            console.error('Error ensuring buckets exist:', err);
-            process.exit(1);
-        });
+        // Sadece ilk instance'da bucket kontrolü yap
+        if (!StorageService.isInitialized) {
+            this._ensureBucketsExist().catch(err => {
+                console.error('Error ensuring buckets exist:', err);
+                process.exit(1);
+            });
+            StorageService.isInitialized = true;
+        }
+
+        StorageService.instance = this;
     }
 
     async _ensureBucketsExist() {
@@ -49,8 +62,6 @@ class StorageService {
                             throw createError;
                         }
                     }
-                } else {
-                    console.log(`Bucket already exists: ${bucketName}`);
                 }
 
                 if (bucketName === this.buckets.tickets) {
